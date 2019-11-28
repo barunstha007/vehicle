@@ -1,26 +1,49 @@
 const router = require("express").Router();
 const auth = require("../middleware/auth");
 const User = require("../models/UserDetails.model");
+const ServiceCenter = require("../models/ServiceCenter.model");
 const mongoose = require("mongoose");
 const { check, validationResult } = require("express-validator");
 
-// @route   GET /service-center
-// @desc    get admin Service Center
-// @access  @Admin
-router.get("/", auth, async (req, res) => {
+// @route   GET /service-center/:id
+// @desc    get admin's Service Center
+// @access  Admin, Superadmin
+router.get("/:id", auth, async (req, res) => {
   try {
-    //   Check admin role, 2 is admin
-    if (req.user.role !== 2) {
+    // if requested by customer
+    if (req.user.role >= 3) {
       return res.status(400).json("You are not admin");
     }
-    // Check booking for current user
-    const serviceCenter = await User.findOne({ user: req.user.id });
-    // If no booking
-    if (!serviceCenter) {
-      res.json("There is no service center for this user");
+
+    let serviceCenterProfile;
+
+    //if Admin, get admin's profile only
+    if (req.user.role == 2 && req.user.id == req.params.id) {
+      // Check service center of current admin
+      serviceCenterProfile = await ServiceCenter.findOne({
+        admin: req.user.id
+      });
+      // If no service center for admin
+      if (!serviceCenterProfile) {
+        return res.json("There is no service center for this user");
+      }
+      //If there is service center
+      return res.json(serviceCenterProfile);
     }
-    //If there is booking
-    res.json(serviceCenter);
+
+    //if Superadmin, get any admins service center
+    if (req.user.role == 1) {
+      // Check service center for params admin
+      const serviceCenterProfile = await ServiceCenter.findOne({
+        admin: req.params.id
+      });
+      // If no service center
+      if (!serviceCenterProfile) {
+        res.json("There is no service center for this admin");
+      }
+      //If there is service center
+      res.json(serviceCenterProfile);
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -31,14 +54,14 @@ router.get("/", auth, async (req, res) => {
 //@desc     add admins servicing center
 //@access   Admin
 router.post(
-  "/",
+  "/:id",
   [
     auth,
     [
       check("name", "Please enter your name")
         .not()
         .isEmpty(),
-      check("location", "Please enter a location")
+      check("serviceLocation", "Please enter a location")
         .not()
         .isEmpty(),
       check("maxBookingDays", "Please enter max booking days")
@@ -67,53 +90,39 @@ router.post(
     let serviceCenterUser;
     const newServiceCenter = {};
 
-    // Admin can create and update only their profile
-    if (req.user.role == 2) {
-      // Check service center for user
-      serviceCenterUser = await User.findOne({ user: req.user.id });
-      newServiceCenter.admin = req.user.id;
-    }
-
-    if (req.body.name) newServiceCenter.name = req.body.name;
-    if (req.body.serviceLocation)
-      newServiceCenter.serviceLocation = req.body.serviceLocation;
-    if (req.body.maxBookingDays)
-      newServiceCenter.maxBookingDays = req.body.maxBookingDays;
-    if (req.body.bookingLimit)
-      newServiceCenter.bookingLimit = req.body.bookingLimit;
-    if (req.body.bikeNumber) bike.bikeNumber = req.body.bikeNumber;
-
     try {
-      // look for the profile with user req.user.id
-      let booking = await Booking.findOne({ user: req.user.id });
+      // Admin can create and update only their profile
+      if (req.user.role == 2 && req.params.id == req.user.id) {
+        // Check service center for admin
+        serviceCenterUser = await ServiceCenter.findOne({ admin: req.user.id });
+        if (serviceCenterUser) {
+          // For Update
+          serviceCenterUser = await ServiceCenter.findOneAndUpdate(
+            // Update profile in this id
+            { admin: req.user.id },
+            { $set: serviceCenterUser },
+            { new: true }
+          );
 
-      // if profile is found for the user
-      if (booking) {
-        console.log("Profile Found");
-        // For Update
-        mongoose.set("useFindAndModify", false);
-        booking = await Booking.findOneAndUpdate(
-          // Update profile in this id
-          { user: req.user.id },
-          { $set: bookingFields },
-          { new: true }
-        );
-
-        return res.json(booking);
-        // console.log('Booking Updated')
+          res.json(profile);
+          console.log("Profile Updated");
+        }
+      }
+      // if Superuser
+      else if (req.user.role < 2) {
+        newServiceCenter.admin = req.body.admin;
       }
 
-      console.log("Profile NOT Found");
-      // Else Create new profile
-      booking = new Booking(bookingFields);
-      console.log(booking); //CORRECT (has user id of current user)
-      await booking.save();
-      // res.json(booking)
-      console.log("Booking Created");
-      console.log(req.user);
+      if (req.body.name) newServiceCenter.name = req.body.name;
+      if (req.body.serviceLocation)
+        newServiceCenter.serviceLocation = req.body.serviceLocation;
+      if (req.body.maxBookingDays)
+        newServiceCenter.maxBookingDays = req.body.maxBookingDays;
+      if (req.body.bookingLimit)
+        newServiceCenter.bookingLimit = req.body.bookingLimit;
+      if (req.body.bikeNumber) bike.bikeNumber = req.body.bikeNumber;
     } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error");
+      return res.status(500).json("Server Error");
     }
   }
 );
