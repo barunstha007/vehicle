@@ -12,7 +12,7 @@ router.get("/:id", auth, async (req, res) => {
   try {
     // if requested by customer
     if (req.user.role >= 3) {
-      return res.status(400).json("You are not admin");
+      return res.status(400).json("Know your limits!");
     }
 
     let serviceCenterProfile;
@@ -22,7 +22,7 @@ router.get("/:id", auth, async (req, res) => {
       // Check service center of current admin
       serviceCenterProfile = await ServiceCenter.findOne({
         admin: req.user.id
-      });
+      }).populate("UserDetails", ["name", "avatar"]);
       // If no service center for admin
       if (!serviceCenterProfile) {
         return res.json("There is no service center for this user");
@@ -77,7 +77,7 @@ router.post(
   async (req, res) => {
     // if user is customer, role == 3
     if (req.user.role > 2) {
-      return res.status(400).json("You are not admin");
+      return res.status(400).json("Know your limits!");
     }
 
     const errors = validationResult(req);
@@ -87,27 +87,45 @@ router.post(
       return res.status(400).json({ errors: array() });
     }
 
-    let serviceCenterUser;
+    let serviceCenterProfile;
     const newServiceCenter = {};
 
     try {
       // Admin can create and update only their profile
       if (req.user.role == 2 && req.params.id == req.user.id) {
+        // set admin to current user
+        newServiceCenter.admin = req.user.id;
+        // set other details from request
+        if (req.body.name) newServiceCenter.name = req.body.name;
+        if (req.body.serviceLocation)
+          newServiceCenter.serviceLocation = req.body.serviceLocation;
+        if (req.body.maxBookingDays)
+          newServiceCenter.maxBookingDays = req.body.maxBookingDays;
+        if (req.body.bookingLimit)
+          newServiceCenter.bookingLimit = req.body.bookingLimit;
+
         // Check service center for admin
-        serviceCenterUser = await ServiceCenter.findOne({ admin: req.user.id });
-        if (serviceCenterUser) {
+        serviceCenterProfile = await ServiceCenter.findOne({
+          admin: req.user.id
+        });
+        if (serviceCenterProfile) {
           // For Update
-          serviceCenterUser = await ServiceCenter.findOneAndUpdate(
+          serviceCenterProfile = await ServiceCenter.findOneAndUpdate(
             // Update profile in this id
             { admin: req.user.id },
-            { $set: serviceCenterUser },
+            { $set: newServiceCenter },
             { new: true }
           );
 
-          res.json(profile);
           console.log("Profile Updated");
+          return res.json(profile);
         }
+
+        // Else Create new profile for service center
+        serviceCenterProfile = new ServiceCenter(newServiceCenter);
+        await serviceCenterProfile.save();
       }
+
       // if Superuser
       else if (req.user.role < 2) {
         newServiceCenter.admin = req.body.admin;
