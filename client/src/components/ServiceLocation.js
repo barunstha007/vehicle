@@ -1,70 +1,164 @@
-import React from 'react'
-import { MdEdit, MdDelete } from 'react-icons/md';
-import { IoIosAddCircle } from 'react-icons/io';
+import React from "react";
+import ReactDOM from "react-dom";
+import CRUDTable, {
+  Fields,
+  Field,
+  CreateForm,
+  UpdateForm,
+  DeleteForm
+} from "react-crud-table";
 
-export default function ServiceLocation() {
-    return (
-        <div className="d-flex justify-content-center mt-3">
-            <div className="col-md-6">
-                <h2 className="my-3 text-center"><strong>Servicing Centers </strong></h2><br />
-                <tr>
-                    <td></td>
-                    <td><input type="text" value="" placeholder="Service Center Name" className="form-control mr-2 p-2" /></td>
-                    <td><input type="text" value="" placeholder="Service Center Location" className="form-control mr-4 p-2" /></td>
-                    <td><input type="text" value="" placeholder="Service Center Admin" className="form-control p-2" /></td>
-                    <td className="text-center">
-                        <button className='btn btn-info m-1'>
-                            <IoIosAddCircle size={17} />
-                        </button></td>
+// Component's Base CSS
+// import "./`index`.css";
 
-                </tr>
-                {/* Table Here */}
-                <table className="p-3 mt-3">
-                    {/* Head */}
-                    <thead>
-                        <tr className="text-center b-1">
-                            <td className="b-1">S.N</td>
-                            <td>Name</td>
-                            <td>Location</td>
-                            <td>Admin</td>
-                            <td className="text-center">Edit</td>
-                            <td className="text-center">Del</td>
-                        </tr>
-                    </thead>
+const DescriptionRenderer = ({ field }) => <textarea {...field} />;
 
-                    <tr>
-                        <td>1</td>
-                        <td><input type="text" value="Star Garage" className="form-control m-0 p-2" /></td>
-                        <td><input type="text" value="Lazimpat" className="form-control m-0 p-2" /></td>
-                        <td><input type="text" value="Lokesh" className="form-control m-0 p-2" /></td>
-                        <td className="text-center">
-                            <a className='btn btn-info btn-xs' href="#">
-                                <MdEdit size={18} />
-                            </a></td>
-                        <td>  <a href="#" className="btn btn-danger btn-xs ml-1">
-                            <MdDelete size={18} />
-                        </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td><input type="text" value="Star Garage" className="form-control m-0 p-2" /></td>
-                        <td><input type="text" value="Lazimpat" className="form-control m-0 p-2" /></td>
-                        <td><input type="text" value="Lokesh" className=" form-control m-0 p-2" /></td>
-                        <td className="text-center">
-                            <a className='btn btn-info btn-xs' href="#">
-                                <MdEdit size={18} />
-                            </a></td>
-                        <td>  <a href="#" className="btn btn-danger btn-xs ml-1">
-                            <MdDelete size={18} />
-                        </a>
-                        </td>
-                    </tr>
+let tasks = [
+  {
+    id: 1,
+    title: "Create an example",
+    description: "Create an example of how to use the component"
+  },
+  {
+    id: 2,
+    title: "Improve",
+    description: "Improve the component!"
+  }
+];
 
-                    {/* Add New Service Center */}
+const SORTERS = {
+  NUMBER_ASCENDING: mapper => (a, b) => mapper(a) - mapper(b),
+  NUMBER_DESCENDING: mapper => (a, b) => mapper(b) - mapper(a),
+  STRING_ASCENDING: mapper => (a, b) => mapper(a).localeCompare(mapper(b)),
+  STRING_DESCENDING: mapper => (a, b) => mapper(b).localeCompare(mapper(a))
+};
 
-                </table>
-            </div>
-        </div>
-    )
-}
+const getSorter = data => {
+  const mapper = x => x[data.field];
+  let sorter = SORTERS.STRING_ASCENDING(mapper);
+
+  if (data.field === "id") {
+    sorter =
+      data.direction === "ascending"
+        ? SORTERS.NUMBER_ASCENDING(mapper)
+        : SORTERS.NUMBER_DESCENDING(mapper);
+  } else {
+    sorter =
+      data.direction === "ascending"
+        ? SORTERS.STRING_ASCENDING(mapper)
+        : SORTERS.STRING_DESCENDING(mapper);
+  }
+
+  return sorter;
+};
+
+let count = tasks.length;
+const service = {
+  fetchItems: payload => {
+    let result = Array.from(tasks);
+    result = result.sort(getSorter(payload.sort));
+    return Promise.resolve(result);
+  },
+  create: task => {
+    count += 1;
+    tasks.push({
+      ...task,
+      id: count
+    });
+    return Promise.resolve(task);
+  },
+  update: data => {
+    const task = tasks.find(t => t.id === data.id);
+    task.title = data.title;
+    task.description = data.description;
+    return Promise.resolve(task);
+  },
+  delete: data => {
+    const task = tasks.find(t => t.id === data.id);
+    tasks = tasks.filter(t => t.id !== task.id);
+    return Promise.resolve(task);
+  }
+};
+
+const styles = {
+  container: { margin: "auto", width: "fit-content" }
+};
+
+const ServiceCenter = () => (
+  <div style={styles.container}>
+    <CRUDTable
+      caption="Tasks"
+      fetchItems={payload => service.fetchItems(payload)}
+    >
+      <Fields>
+        <Field name="id" label="Id" hideInCreateForm />
+        <Field name="title" label="Title" placeholder="Title" />
+        <Field
+          name="description"
+          label="Description"
+          render={DescriptionRenderer}
+        />
+      </Fields>
+      <CreateForm
+        title="Task Creation"
+        message="Create a new task!"
+        trigger="Create Task"
+        onSubmit={task => service.create(task)}
+        submitText="Create"
+        validate={values => {
+          const errors = {};
+          if (!values.title) {
+            errors.title = "Please, provide task's title";
+          }
+
+          if (!values.description) {
+            errors.description = "Please, provide task's description";
+          }
+
+          return errors;
+        }}
+      />
+
+      <UpdateForm
+        title="Task Update Process"
+        message="Update task"
+        trigger="Update"
+        onSubmit={task => service.update(task)}
+        submitText="Update"
+        validate={values => {
+          const errors = {};
+
+          if (!values.id) {
+            errors.id = "Please, provide id";
+          }
+
+          if (!values.title) {
+            errors.title = "Please, provide task's title";
+          }
+
+          if (!values.description) {
+            errors.description = "Please, provide task's description";
+          }
+
+          return errors;
+        }}
+      />
+
+      <DeleteForm
+        title="Task Delete Process"
+        message="Are you sure you want to delete the task?"
+        trigger="Delete"
+        onSubmit={task => service.delete(task)}
+        submitText="Delete"
+        validate={values => {
+          const errors = {};
+          if (!values.id) {
+            errors.id = "Please, provide id";
+          }
+          return errors;
+        }}
+      />
+    </CRUDTable>
+  </div>
+);
+export default ServiceCenter;

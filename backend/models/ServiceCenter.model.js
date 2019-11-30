@@ -5,7 +5,7 @@ const serviceCenterSchema = new Schema(
   {
     admin: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "UserDetails",
       required: true
     },
     name: {
