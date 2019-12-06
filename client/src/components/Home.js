@@ -10,9 +10,9 @@ export default function Home() {
         serviceLocations: ['Lazimpat', 'Lainchaur', 'Sohrakhuttey', 'Naxal']
     })
 
-    const serviceLocation = state.serviceLocations.map(location => {
+    const serviceLocation = state.serviceLocations.map((location, index) => {
         return (
-            <option>{location}</option>
+            <option key={index}>{location}</option>
         )
     })
     const handleChange = date => {
@@ -21,18 +21,22 @@ export default function Home() {
         });
     };
 
+    const bookHandler = () => {
+        console.log('asdf')
+    }
+
     console.log(state.serviceLocations)
     return (
         <React.Fragment>
             <div className="jumbotron img-container">
                 <h3 className="display-4">Book Servicing <br /> Remotely</h3>
                 <p className="text-primary"><strong>Available Servicing Locations:</strong></p>
-                <div className="form-group row container">
+                <div className="form-group row container" onSubmit={bookHandler}>
 
                     <select className="form-control" placeholder="asdf" >
                         {serviceLocation}
                     </select>
-                    <a className="btn btn-primary mx-1" href="/" >Book</a>
+                    <a className="btn btn-primary mx-1" href="/" type="submit" >Book</a>
                 </div>
 
             </div>

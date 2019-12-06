@@ -3,7 +3,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
-import { Alert } from 'react-datepicker'
+// import { Alert } from 'react-datepicker'
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -11,6 +11,11 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from 'axios'
+import PropTypes from 'prop-types';
+// REDUX
+import { connect } from 'react-redux'
+import { setAlert } from '../redux/actions/alert'
+import Alert from '../layout/Alert'
 
 function Copyright() {
     return (
@@ -50,7 +55,8 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function SignUp() {
+
+function SignUp(props) {
     const classes = useStyles();
 
     const [state, setstate] = useState({
@@ -60,75 +66,54 @@ export default function SignUp() {
         location: '',
         username: '',
         password: '',
+        cpassword: '',
         errors: []
     })
-    const onChangeName = e => {
-        setstate({
-            ...state, name: e.target.value
-        })
-    }
 
-    const onChangePhone = e => {
+    const onChangeHandler = e => {
         setstate({
-            ...state, phone: e.target.value
-        })
-    }
-
-    const onChangeEmail = e => {
-        setstate({
-            ...state, email: e.target.value
-        })
-    }
-
-    const onChangeLocation = e => {
-        setstate({
-            ...state, location: e.target.value
-        })
-    }
-
-    const onChangeUsername = e => {
-        setstate({
-            ...state, username: e.target.value
-        })
-    }
-
-
-    const onChangePassword = e => {
-        setstate({
-            ...state, password: e.target.value
+            ...state, [e.target.id]: e.target.value
         })
     }
 
     const onSubmitHandler = e => {
+
         const register = {
             name: state.name,
             phone: state.phone,
             email: state.email,
             location: state.location,
             username: state.username,
-            password: state.password
+            password: state.password,
+            cpassword: state.cpassword
         }
 
-        axios.post('/register', register)
-            .then(req => console.log(req.data))
-            .catch(err => {
-                const errors = [...err.response.data.error]
+        if (register.password !== register.cpassword) {
+            props.setAlert('Passwords do not match !', 'danger')
+        } else
 
-                setstate({ ...state, errors: { ...err.response.data.error } })
-                // err.response.data.error.map(error)
-                console.log(state.errors[0])
-            })
 
-        console.log(register)
+            // axios.post('/register', register)
+            //     .then(req => console.log(req.data))
+            //     .catch(err => {
+            //         const errors = [...err.response.data.error]
 
-        setstate({
-            name: '', phone: '', email: '', location: '', username: '', password: ''
-        })
+            //         setstate({ ...state, errors: { ...err.response.data.error } })
+            //         // err.response.data.error.map(error)
+            //         console.log(state.errors[0])
+            //     })
+
+            console.log(register)
+
+        // setstate({
+        //     name: '', phone: '', email: '', location: '', username: '', password: '', cpassword: ''
+        // })
         e.preventDefault()
     }
 
     return (
         <Container component="main" maxWidth="xs">
+
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
@@ -137,17 +122,17 @@ export default function SignUp() {
                     Sign up
         </Typography>
 
+                {/* Stateful Component */}
+                <Alert />
+                {/*  */}
                 <form className={classes.form} onSubmit={onSubmitHandler}>
-                    {/* Alert */}
-                    <div className="alert alert-primary invisible" role="alert">
-                        {state.errors[0]}
-                    </div>
+
                     {/* Input Fields */}
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <TextField
                                 value={state.name}
-                                onChange={onChangeName}
+                                onChange={onChangeHandler}
                                 autoComplete="name"
                                 name="name"
                                 variant="outlined"
@@ -161,7 +146,7 @@ export default function SignUp() {
                         <Grid item xs={6}>
                             <TextField
                                 value={state.phone}
-                                onChange={onChangePhone}
+                                onChange={onChangeHandler}
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -173,21 +158,8 @@ export default function SignUp() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                value={state.email}
-                                onChange={onChangeEmail}
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
                                 value={state.location}
-                                onChange={onChangeLocation}
+                                onChange={onChangeHandler}
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -200,8 +172,21 @@ export default function SignUp() {
                         </Grid>
                         <Grid item xs={6}>
                             <TextField
+                                value={state.email}
+                                onChange={onChangeHandler}
+                                variant="outlined"
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email Address"
+                                name="email"
+                                autoComplete="email"
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
                                 value={state.username}
-                                onChange={onChangeUsername}
+                                onChange={onChangeHandler}
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -216,7 +201,7 @@ export default function SignUp() {
                         <Grid item xs={6}>
                             <TextField
                                 value={state.password}
-                                onChange={onChangePassword}
+                                onChange={onChangeHandler}
                                 variant="outlined"
                                 required
                                 fullWidth
@@ -227,12 +212,20 @@ export default function SignUp() {
                                 autoComplete="current-password"
                             />
                         </Grid>
-                        {/* <Grid item xs={12}>
-                            <FormControlLabel
-                                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                label="I want to receive inspiration, marketing promotions and updates via email."
+                        <Grid item xs={6}>
+                            <TextField
+                                value={state.cpassword}
+                                onChange={onChangeHandler}
+                                variant="outlined"
+                                required
+                                fullWidth
+                                name="cpassword"
+                                label="Confirm Password"
+                                type="password"
+                                id="cpassword"
+                                autoComplete="current-password"
                             />
-                        </Grid> */}
+                        </Grid>
                     </Grid>
                     <Button
                         type="submit"
@@ -258,3 +251,7 @@ export default function SignUp() {
         </Container>
     );
 }
+SignUp.prototypes = {
+    setAlert: PropTypes.func.isRequired
+}
+export default connect(null, { setAlert })(SignUp)

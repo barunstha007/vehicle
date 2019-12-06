@@ -11,6 +11,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import axios from 'axios'
 
 function Copyright() {
   return (
@@ -55,24 +56,37 @@ export default function SignIn() {
 
   // Custom functions
   const [state, setstate] = useState({
-    username: "",
-    password: ""
+    login: {
+      username: "",
+      password: ""
+    },
+    loginbtn: ""
   });
 
   const onSubmitHandler = e => {
-    const user = {
+    const login = {
       username: state.username,
       password: state.password
-    };
+    }
 
-    console.log(user);
+    axios.post('/login', login)
+      .then(req => console.log(req.data))
+      .catch(err => {
+        const errors = [...err.response.data.error]
+
+        setstate({ ...state, errors: { ...err.response.data.error } })
+        // err.response.data.error.map(error)
+        console.log(state.errors[0])
+      })
+
+    console.log(login)
 
     setstate({
-      username: "",
-      password: ""
-    });
-    e.preventDefault();
-  };
+      name: '', phone: '', email: '', location: '', username: '', password: ''
+    })
+    e.preventDefault()
+  }
+
   const onChangeUsername = e => {
     // Spread operator because hooks replace the whole object
     // so copying the old object
