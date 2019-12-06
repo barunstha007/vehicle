@@ -1,0 +1,78 @@
+.img-container {
+    height: 20em;
+    width: 100vw;
+    position: relative;
+    background-image: url('../../assets/parts-banner.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* bring image to right side */
+    background-position-y: -70px;
+}
+@media(max-width: 768px){
+    .img-container{
+        height: 25em;
+        background-position-y: -50px;
+
+    }
+}
+
+
+@media(max-width: 526px){
+    .img-container{
+        height: 25em;
+        background-size: cover;
+        /* bring image to right side */
+        background-position-x: -180px;
+        background-position-y: -10px;
+
+    }
+}
+
+
+.img-container>img{
+    width: 100%;
+    height: inherit;
+    object-fit : cover
+}
+
+.top-left {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    background-color: #fd7e14
+  }
+
+  /* Card View */
+  body{
+    background: #eee;
+}
+span{
+    font-size:15px;
+}
+
+.box{
+    padding:10px 0px;
+}
+
+.box-part{
+    background:#FFF;
+    border-radius:0;
+    padding:30px 10px;
+    margin:10px 0px;
+}
+.text{
+    margin:20px 0px;
+}
+
+.fa{
+     color:#4183D7;
+}
+
+/* Custom */
+.card-title{
+    padding-top: 1.5rem!important;
+}
+
+.form-group .form-control{
+    width: 13em;
+}
