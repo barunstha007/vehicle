@@ -11,39 +11,31 @@ const { check, validationResult } = require("express-validator");
 
 const User = require("../../models/UserDetails.model");
 
-// @route   POST '/register/admin'
-// @desc    Register admin, role = 2
-//@access   Superadmin
-router.post(
-  "/",
-  [
-    auth,
-    [
-      // express validator
-      check("name", "Name is required")
-        .not()
-        .isEmpty(),
-      check("phone", "Please Enter a Phone")
-        .not()
-        .isEmpty(),
-      check("location", "Please Enter location")
-        .not()
-        .isEmpty(),
-      check("email", "PLease include a valid email").isEmail(),
-      check("username", "Username must be atleast 4 characters").isLength({
-        min: 4
-      }),
-      check("password", "Password must be atleast 5 characters").isLength({
-        min: 5
-      })
-    ]
-  ],
+// @route   POST '/register/'
+// @desc    Register user, role == 3
+// @access  Public
+router.post("/", [
+  // express validator
+  check("name", "Name is required")
+    .not()
+    .isEmpty(),
+  check("phone", "Please Enter a Phone")
+    .not()
+    .isEmpty(),
+  check("location", "Please Enter location")
+    .not()
+    .isEmpty(),
+  check("email", "PLease include a valid email").isEmail(),
+  check("username", "Username must be atleast 4 characters").isLength({
+    min: 4
+  }),
+  check("password", "Password must be atleast 5 characters").isLength({
+    min: 5
+  })
+],
   // async await function
   async (req, res) => {
     //   Check if User is Superadmin
-    if (req.user.role !== 1) {
-      return res.status(400).json("Not authorized");
-    }
 
     const error = validationResult(req);
     // if error is not empty || if there is error
@@ -83,7 +75,7 @@ router.post(
         email: req.body.email,
         username: req.body.username,
         password: req.body.password,
-        role: 2,
+        role: 3,
         avatar
       });
 

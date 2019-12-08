@@ -47,7 +47,7 @@ router.post('/', auth, async (req, res) => {
 
     // Build profile Object
     const bookingFields = {}
-    
+
     bookingFields.bike = req.user.id
 
     try {

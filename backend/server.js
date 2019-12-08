@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -24,26 +23,20 @@ connection.once("open", () => {
   console.log("MongoDB succesfully connected");
 });
 
-//Require and Use files created
-// const userRouter = require("./routes/userRoute");
-// const bookingRouter = require("./routes/bookingRoute");
-const superadminRegisterRouter = require("./routes/register/SuperAdminRegister");
-const adminRegisterRouter = require("./routes/register/AdminRegister");
-const userRegisterRouter = require("./routes/register/userRegister");
+//Require and Use routes created
 const login = require("./routes/Login");
-const bikeRouter = require("./routes/bikeRoute");
+const userRegisterRoute = require("./routes/userRoutes/userRegister");
+const superadminRoute = require("./routes/userRoutes/SuperAdminRoutes");
+const adminRoute = require("./routes/userRoutes/AdminRoutes");
 const serviceCenterRouter = require("./routes/ServiceCenterRoute");
+const bikeRouter = require("./routes/bikeRoute");
 
-app.use("/register/superadmin", superadminRegisterRouter);
-app.use("/register/admin", adminRegisterRouter);
-app.use("/register", userRegisterRouter);
 app.use("/login", login);
-app.use("/bike", bikeRouter);
+app.use("/register", userRegisterRoute);
+app.use("/superadmin", superadminRoute);
+app.use("/admin", adminRoute);
 app.use("/service-center", serviceCenterRouter);
-
-// app.use("/", userRouter);
-// app.use("/mybike", bikeRouter);
-// app.use("/bookings", bookingRouter);
+app.use("/bike", bikeRouter);
 
 // listen to port
 app.listen(port, () => {

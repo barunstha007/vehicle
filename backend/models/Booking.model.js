@@ -1,11 +1,15 @@
 const mongoose = require('mongoose')
-
 const Schema = mongoose.Schema
 
 const bookingSchema = new Schema({
     bike: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Bike',
+        required: true,
+    },
+    serviceCenter: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ServiceCenter',
         required: true,
     },
     // mm-dd-yy format
@@ -16,17 +20,12 @@ const bookingSchema = new Schema({
         required: true,
         trim: true
     },
-    checkInDate: Date,
-    estimatedCheckOutDate: Date,
+    servicingDate: Date,
     checkOutDate: Date,
 
     //user books
-    bookingStatus: {
-        type: Boolean,
-        default: false,
-    },
 
-    queueStatus: {
+    bookingStatus: {
         type: Boolean,
         default: false,
     },

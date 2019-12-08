@@ -23,7 +23,8 @@ const serviceCenterSchema = new Schema(
     bookingLimit: {
       type: Number,
       required: true
-    }
+    },
+    contact: Number
   },
   {
     timestamps: true

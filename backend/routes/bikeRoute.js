@@ -6,22 +6,20 @@ const User = require("../models/UserDetails.model");
 
 //@route    POST /bike
 //@desc     add user bike
-//@access   Superadmin, Admin, User
-router.post(
-  "/",
-  [
-    auth,
-    [
-      check("number", "Please enter your bike number")
-        .not()
-        .isEmpty(),
-      check("number", "bike number must be a number").isNumeric(),
-      check("model", "Please select a bike model")
-        .not()
-        .isEmpty()
-    ]
-  ],
+//@access   User
+router.post("/", [auth, [
+  check("number", "Please enter your bike number")
+    .not()
+    .isEmpty(),
+  check("number", "bike number must be a number").isNumeric(),
+  check("model", "Please select a bike model")
+    .not()
+    .isEmpty()
+]],
   async (req, res) => {
+    if (req.user.role !== 3) {
+      return res.status(400).json('Create Customer account!')
+    }
     const error = validationResult(req);
     // If validation errors
     if (!error.isEmpty()) {
