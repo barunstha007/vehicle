@@ -3,20 +3,36 @@ import {
     REGISTER_SUCCESS,
     REGISTER_FAIL
 } from './types'
-
+import { setAlert } from './alert'
 // Register User
-export const register = ({ name, email, password }) => async dispatch => {
+export const register = (userDetails) => async dispatch => {
     const config = {
         headers: {
             'Content-type': 'application/json'
         }
     }
 
-    const body = JSON.stringify({ name, email, password })
+    // Stringify userdetails
+    const body = JSON.stringify(userDetails)
 
     try {
-        const res = await axios.post('/users', body, config)
-    } catch (err) {
+        // POST for registration
+        const res = await axios.post('/register', body, config)
 
+        dispatch({
+            type: REGISTER_SUCCESS,
+            // get token from response
+            payload: res.data
+        })
+    } catch (err) {
+        const errors = err.response.data.error
+        console.log(errors)
+        if (errors) {
+            dispatch(setAlert(errors[0].msg, 'danger'))
+
+        }
+        dispatch({
+            type: REGISTER_FAIL
+        })
     }
 }

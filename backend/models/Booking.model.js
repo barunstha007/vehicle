@@ -26,8 +26,8 @@ const bookingSchema = new Schema({
     //user books
 
     bookingStatus: {
-        type: Boolean,
-        default: false,
+        type: Number,
+        default: 0,
     },
     totalPrice: Number,
 }, {

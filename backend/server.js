@@ -28,15 +28,18 @@ const login = require("./routes/Login");
 const userRegisterRoute = require("./routes/userRoutes/userRegister");
 const superadminRoute = require("./routes/userRoutes/SuperAdminRoutes");
 const adminRoute = require("./routes/userRoutes/AdminRoutes");
-const serviceCenterRouter = require("./routes/ServiceCenterRoute");
-const bikeRouter = require("./routes/bikeRoute");
+const serviceCenterRoute = require("./routes/ServiceCenterRoute");
+const bikeRoute = require("./routes/bikeRoute");
+// const bookingRoute = require("./routes/bookingRoute");
+// const profile = require("./routes/profile");
 
 app.use("/login", login);
 app.use("/register", userRegisterRoute);
 app.use("/superadmin", superadminRoute);
 app.use("/admin", adminRoute);
-app.use("/service-center", serviceCenterRouter);
-app.use("/bike", bikeRouter);
+app.use("/service-center", serviceCenterRoute);
+app.use("/bike", bikeRoute);
+// app.use("/booking", bookingRoute);
 
 // listen to port
 app.listen(port, () => {

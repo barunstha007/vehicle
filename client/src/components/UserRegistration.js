@@ -10,11 +10,11 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import axios from 'axios'
 import PropTypes from 'prop-types';
 // REDUX
 import { connect } from 'react-redux'
 import { setAlert } from '../redux/actions/alert'
+import { register } from '../redux/actions/auth'
 import Alert from '../layout/Alert'
 
 function Copyright() {
@@ -67,7 +67,6 @@ function SignUp(props) {
         username: '',
         password: '',
         cpassword: '',
-        errors: []
     })
 
     const onChangeHandler = e => {
@@ -76,7 +75,8 @@ function SignUp(props) {
         })
     }
 
-    const onSubmitHandler = e => {
+    const onSubmitHandler = async e => {
+        e.preventDefault()
 
         const register = {
             name: state.name,
@@ -90,25 +90,15 @@ function SignUp(props) {
 
         if (register.password !== register.cpassword) {
             props.setAlert('Passwords do not match !', 'danger')
-        } else
+        } else {
+            props.register(register)
+        }
 
-
-            // axios.post('/register', register)
-            //     .then(req => console.log(req.data))
-            //     .catch(err => {
-            //         const errors = [...err.response.data.error]
-
-            //         setstate({ ...state, errors: { ...err.response.data.error } })
-            //         // err.response.data.error.map(error)
-            //         console.log(state.errors[0])
-            //     })
-
-            console.log(register)
+        console.log(register)
 
         // setstate({
         //     name: '', phone: '', email: '', location: '', username: '', password: '', cpassword: ''
         // })
-        e.preventDefault()
     }
 
     return (
@@ -136,7 +126,7 @@ function SignUp(props) {
                                 autoComplete="name"
                                 name="name"
                                 variant="outlined"
-                                required
+                                // required
                                 fullWidth
                                 id="name"
                                 label="Name"
@@ -148,7 +138,7 @@ function SignUp(props) {
                                 value={state.phone}
                                 onChange={onChangeHandler}
                                 variant="outlined"
-                                required
+                                // required
                                 fullWidth
                                 id="phone"
                                 label="Phone"
@@ -161,7 +151,7 @@ function SignUp(props) {
                                 value={state.location}
                                 onChange={onChangeHandler}
                                 variant="outlined"
-                                required
+                                // required
                                 fullWidth
                                 name="location"
                                 label="Location"
@@ -175,7 +165,7 @@ function SignUp(props) {
                                 value={state.email}
                                 onChange={onChangeHandler}
                                 variant="outlined"
-                                required
+                                // required
                                 fullWidth
                                 id="email"
                                 label="Email Address"
@@ -188,7 +178,7 @@ function SignUp(props) {
                                 value={state.username}
                                 onChange={onChangeHandler}
                                 variant="outlined"
-                                required
+                                // required
                                 fullWidth
                                 name="username"
                                 label="Username"
@@ -203,7 +193,7 @@ function SignUp(props) {
                                 value={state.password}
                                 onChange={onChangeHandler}
                                 variant="outlined"
-                                required
+                                // required
                                 fullWidth
                                 name="password"
                                 label="Password"
@@ -217,7 +207,7 @@ function SignUp(props) {
                                 value={state.cpassword}
                                 onChange={onChangeHandler}
                                 variant="outlined"
-                                required
+                                // required
                                 fullWidth
                                 name="cpassword"
                                 label="Confirm Password"
@@ -251,7 +241,8 @@ function SignUp(props) {
         </Container>
     );
 }
-SignUp.prototypes = {
-    setAlert: PropTypes.func.isRequired
+SignUp.propTypes = {
+    setAlert: PropTypes.func.isRequired,
+    register: PropTypes.func.isRequired
 }
-export default connect(null, { setAlert })(SignUp)
+export default connect(null, { setAlert, register })(SignUp)

@@ -16,16 +16,10 @@ const User = require("../../models/UserDetails.model");
 // @access  Public
 router.post("/", [
   // express validator
-  check("name", "Name is required")
-    .not()
-    .isEmpty(),
-  check("phone", "Please Enter a Phone")
-    .not()
-    .isEmpty(),
-  check("location", "Please Enter location")
-    .not()
-    .isEmpty(),
-  check("email", "PLease include a valid email").isEmail(),
+  check("name", "Name must be minimum of 3 characters").isLength({ min: 3 }),
+  check("phone", "Phone number must be of minimum of 7 length ").isLength({ min: 7 }),
+  check("location", "Location must be of minimum 4 characters").isLength({ min: 4 }),
+  check("email", "Please include a valid email").isEmail(),
   check("username", "Username must be atleast 4 characters").isLength({
     min: 4
   }),
@@ -53,10 +47,18 @@ router.post("/", [
       let email = await User.findOne({ email: req.body.email });
       let phone = await User.findOne({ phone: req.body.phone });
 
-      if (username || email || phone) {
+      if (username) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
+          .json({ error: [{ msg: "The username already exists" }] });
+      } else if (email) {
+        return res
+          .status(400)
+          .json({ error: [{ msg: "The email already exists" }] });
+      } else if (phone) {
+        return res
+          .status(400)
+          .json({ error: [{ msg: "The phone number already exists" }] });
       }
 
       //Get user Gravatar from the email in request body
