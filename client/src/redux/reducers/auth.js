@@ -1,26 +1,52 @@
 import {
     REGISTER_SUCCESS,
-    REGISTER_FAIL
+    REGISTER_FAIL,
+    USER_LOADED,
+    AUTH_ERROR,
+    LOGIN_SUCCESS,
+    LOGIN_FAIL,
+    LOGOUT
 } from '../actions/types'
 
 const inititalState = {
+    // token we got back from local storage
     token: localStorage.getItem('token'),
     isAuthenticated: null,
+    authStatus: 0,
     loading: true,
     user: null
 }
 
 export default function (state = inititalState, action) {
     switch (action.type) {
-        case REGISTER_SUCCESS:
-            localStorage.setItem('token', action.payload.token)
+        case USER_LOADED:
             return {
                 ...state,
-                ...payload,
                 isAuthenticated: true,
+                authStatus: action.payload.role,
+                loading: false,
+                user: action.payload
+
+            }
+
+        // REGISTER USER
+        case REGISTER_SUCCESS:
+        case LOGIN_SUCCESS:
+            // If register is success we get token back
+            localStorage.setItem('token', action.payload.token)
+
+            return {
+                ...state,
+                ...action.payload,
+                isAuthenticated: true,
+                authStatus: action.payload.role,
                 loading: false
             }
+
         case REGISTER_FAIL:
+        case AUTH_ERROR:
+        case LOGIN_FAIL:
+        case LOGOUT:
             localStorage.removeItem('token')
             return {
                 ...state,
@@ -28,6 +54,8 @@ export default function (state = inititalState, action) {
                 isAuthenticated: false,
                 loading: false
             }
+
+
         default: return state
     }
 }

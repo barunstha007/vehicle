@@ -1,43 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FaCalendarCheck, FaFlagCheckered } from 'react-icons/fa';
 import { IoIosTime } from 'react-icons/io';
 import "react-datepicker/dist/react-datepicker.css";
 import './Home.css'
+import ServiceCenterBook from '../layout/ServiceCenterBook';
 
 export default function Home() {
 
-    const [state, setstate] = useState({
-        serviceLocations: ['Lazimpat', 'Lainchaur', 'Sohrakhuttey', 'Naxal']
-    })
-
-    const serviceLocation = state.serviceLocations.map((location, index) => {
-        return (
-            <option key={index}>{location}</option>
-        )
-    })
-    const handleChange = date => {
-        setstate({
-            startDate: date
-        });
-    };
-
-    const bookHandler = () => {
-        console.log('asdf')
-    }
-
-    console.log(state.serviceLocations)
     return (
         <React.Fragment>
             <div className="jumbotron img-container">
                 <h3 className="display-4">Book Servicing <br /> Remotely</h3>
                 <p className="text-primary"><strong>Available Servicing Locations:</strong></p>
-                <div className="form-group row container" onSubmit={bookHandler}>
-
-                    <select className="form-control" placeholder="asdf" >
-                        {serviceLocation}
-                    </select>
-                    <a className="btn btn-primary mx-1" href="/" type="submit" >Book</a>
-                </div>
+                {/* Smart Component */}
+                <ServiceCenterBook />
 
             </div>
 

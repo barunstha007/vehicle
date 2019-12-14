@@ -24,7 +24,7 @@ connection.once("open", () => {
 });
 
 //Require and Use routes created
-const login = require("./routes/Login");
+const login = require("./routes/LoginAndAuth");
 const userRegisterRoute = require("./routes/userRoutes/userRegister");
 const superadminRoute = require("./routes/userRoutes/SuperAdminRoutes");
 const adminRoute = require("./routes/userRoutes/AdminRoutes");
@@ -33,7 +33,7 @@ const bikeRoute = require("./routes/bikeRoute");
 // const bookingRoute = require("./routes/bookingRoute");
 // const profile = require("./routes/profile");
 
-app.use("/login", login);
+app.use("/auth", login);
 app.use("/register", userRegisterRoute);
 app.use("/superadmin", superadminRoute);
 app.use("/admin", adminRoute);

@@ -1,8 +1,25 @@
 import React from 'react'
 import { Navbar, Nav } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
+// Redux
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import { logout } from '../redux/actions/auth'
 
-export default function Navigation() {
+function Navigation(props) {
+
+    const authLinks = (
+        <Navbar.Text>
+            <a onClick={props.logout} href="#!">logout</a>
+        </Navbar.Text>
+    )
+
+    const guestLinks = (
+        <Navbar.Text>
+            <a href="/Login">login</a>
+        </Navbar.Text>
+    )
+
     return (
         <Navbar bg="light" expand="sm">
             <Navbar.Brand href="/">KTM Service Booking</Navbar.Brand>
@@ -16,11 +33,20 @@ export default function Navigation() {
                     <Nav.Link href="/service-centers">Service Centers</Nav.Link>
                     <Nav.Link href="/admin-users">Power Users</Nav.Link>
                 </Nav>
-                <Navbar.Text>
-                    <a href="/Login">login</a>
-                </Navbar.Text>
+                {props.auth.isAuthenticated ? authLinks : guestLinks}
 
             </Navbar.Collapse>
         </Navbar >
     )
 }
+
+Navigation.propTypes = {
+    logout: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => ({
+    auth: state.auth
+})
+
+export default connect(mapStateToProps, { logout })(Navigation)

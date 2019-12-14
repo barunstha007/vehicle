@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 // Public
@@ -16,12 +16,25 @@ import AdminHome from './components/Admin/AdminHome'
 import ServiceCenter from './components/Superadmin/ServiceLocation'
 import AdminUsers from './components/Superadmin/AdminUsers'
 
-
 // Redux
 import { Provider } from 'react-redux';
 import store from './redux/store'
+import setAuthToken from './utils/setAuthToken';
+import { loadUser } from './redux/actions/auth'
+import { serviceCenterList } from './redux/actions/serviceCenterList';
 
-function App() {
+// If localstorage has token, set token
+if (localStorage.token) {
+  setAuthToken(localStorage.token)
+}
+
+const App = () => {
+
+  useEffect(() => {
+    // load user (auth) action called in start of the component lifecycle
+    store.dispatch(loadUser())
+  }, [])
+
   return (
     <Provider store={store}>
       <div className="App">

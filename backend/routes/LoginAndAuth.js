@@ -9,7 +9,7 @@ const config = require("config");
 // express validator
 const { check, validationResult } = require("express-validator");
 
-// @route   GET /auth
+// @route   GET '/auth/'
 // @desc    get current user
 // @access  Public
 router.get("/", auth, async (req, res) => {
@@ -24,16 +24,14 @@ router.get("/", auth, async (req, res) => {
 
 // authenticate the login user
 
-// @route   POST '/login'
+// @route   POST '/auth/login'
 // @desc    Login user
 //@access     Public
-router.post(
-  "/",
-  [
-    // express validator
-    check("username", "Please enter your username").exists(),
-    check("password", "Please enter your password").exists()
-  ],
+router.post("/login", [
+  // express validator
+  check("username", "Please enter your username").exists(),
+  check("password", "Please enter your password").exists()
+],
   // async await function
   async (req, res) => {
     const error = validationResult(req);
@@ -41,6 +39,7 @@ router.post(
     if (!error.isEmpty()) {
       return (
         // return Bad Request
+
         res.status(400).json({ error: error.array() })
       );
     }
@@ -70,7 +69,7 @@ router.post(
       if (!isMatch) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "Invalid credentials" }] });
+          .json({ error: [{ msg: "Invalid credentials" }] });
       }
 
       // Return JsonWebToken
@@ -87,13 +86,15 @@ router.post(
         { expiresIn: 36000 },
         (err, token) => {
           if (err) res.json({ err });
-          // Send back the token
-          res.json({ token });
-          console.log("Token Generate SUCCESFULL");
+
+          // Send token and user role in json
+          const role = payload.user.role
+          res.json({ token, role });
+          console.log("Login Token Generate SUCCESFULL");
         }
       );
     } catch (err) {
-      console.error(err.message);
+      console.error(err);
       res.status(500).send("Server Error");
     }
   }

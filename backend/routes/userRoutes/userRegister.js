@@ -11,7 +11,7 @@ const { check, validationResult } = require("express-validator");
 
 const User = require("../../models/UserDetails.model");
 
-// @route   POST '/register/'
+// @route   POST '/register'
 // @desc    Register user, role == 3
 // @access  Public
 router.post("/", [
@@ -29,7 +29,6 @@ router.post("/", [
 ],
   // async await function
   async (req, res) => {
-    //   Check if User is Superadmin
 
     const error = validationResult(req);
     // if error is not empty || if there is error
@@ -68,7 +67,6 @@ router.post("/", [
         d: "mm"
       });
 
-      console.log("here");
       // saving details from req.body
       user = new User({
         name: req.body.name,
@@ -102,8 +100,11 @@ router.post("/", [
         { expiresIn: 36000 },
         (err, token) => {
           if (err) res.json({ err });
-          res.json({ token });
-          console.log("Token Generate SUCCESFULL");
+          // Send token and user role in json
+          const role = payload.user.role
+          res.json({ token, role });
+
+          console.log("Register Token Generate SUCCESFULL");
         }
       );
 

@@ -1,9 +1,38 @@
 import axios from "axios";
 import {
+
     REGISTER_SUCCESS,
-    REGISTER_FAIL
+    REGISTER_FAIL,
+    USER_LOADED,
+    AUTH_ERROR,
+    LOGIN_SUCCESS,
+    LOGIN_FAIL,
+    LOGOUT
 } from './types'
 import { setAlert } from './alert'
+import setAuthToken from "../../utils/setAuthToken";
+
+// Load User
+export const loadUser = () => async dispatch => {
+
+    // if localstorage has token, put token in global header
+    if (localStorage.token) {
+        setAuthToken(localStorage.token)
+    }
+
+    try {
+        const res = await axios.get('/auth')
+        dispatch({
+            type: USER_LOADED,
+            payload: res.data
+        })
+    } catch (err) {
+        dispatch({
+            type: AUTH_ERROR
+        })
+    }
+}
+
 // Register User
 export const register = (userDetails) => async dispatch => {
     const config = {
@@ -16,14 +45,19 @@ export const register = (userDetails) => async dispatch => {
     const body = JSON.stringify(userDetails)
 
     try {
-        // POST for registration
+        // POST for registration, with req.body
         const res = await axios.post('/register', body, config)
+        console.log(res.data);
 
         dispatch({
             type: REGISTER_SUCCESS,
             // get token from response
             payload: res.data
         })
+
+        // load user after login
+        dispatch(loadUser())
+
     } catch (err) {
         const errors = err.response.data.error
         console.log(errors)
@@ -35,4 +69,49 @@ export const register = (userDetails) => async dispatch => {
             type: REGISTER_FAIL
         })
     }
+}
+
+// Login User
+export const login = (loginDetails) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }
+
+    // Stringify loginDetails
+    const body = JSON.stringify(loginDetails)
+
+    try {
+        // POST for registration, with req.body
+        const res = await axios.post('/auth/login', body, config)
+        console.log(res.data);
+
+        dispatch({
+            type: LOGIN_SUCCESS,
+            // get token from response
+            payload: res.data
+        })
+
+        // load user after login
+        dispatch(loadUser())
+
+    } catch (err) {
+        const errors = err.response.data.errors
+        console.log(errors)
+        if (errors) {
+            dispatch(setAlert(errors[0].msg, 'danger'))
+
+        }
+        dispatch({
+            type: LOGIN_FAIL
+        })
+    }
+}
+
+// Logout
+export const logout = () => dispatch => {
+    dispatch({
+        type: LOGOUT
+    })
 }

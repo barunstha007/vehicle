@@ -4,47 +4,29 @@ const User = require("../models/UserDetails.model");
 const ServiceCenter = require("../models/ServiceCenter.model");
 const { check, validationResult } = require("express-validator");
 
-// @route   GET /service-center/
-// @desc    get Service Center
-// @access  Admin- only admins, Superadmin - all
-router.get("/", auth, async (req, res) => {
-  try {
-    // if CUSTOMER
-    if (req.user.role >= 3) {
-      return res.status(400).json("Know your limits!");
-    }
 
-    //if ADMIN, get admin's profile only
-    if (req.user.role == 2) {
-      // Check service center of current admin
-      serviceCenterProfile = await ServiceCenter.findOne({
-        admin: req.user.id
-      }).populate("admin", "name");
-      // If no service center for admin
-      if (!serviceCenterProfile) {
-        return res.json("There is no service center for this user");
-      }
-      //If there is service center
-      return res.json(serviceCenterProfile);
+// @route   GET /service-center/
+// @desc    get all service Center
+// @access  Public
+router.get("/", async (req, res) => {
+  try {
+    // get all service center
+
+    // Check service center for params admin
+    const serviceCenterProfile = await ServiceCenter.find({}).sort('serviceLocation');
+    // If no service center
+    if (serviceCenterProfile.length == 0) {
+      return res.json("No service center found");
     }
-    //if SUPERADMIN, get all service center
-    if (req.user.role == 1) {
-      // Check service center for params admin
-      const serviceCenterProfile = await ServiceCenter.find(
-        {}
-      ).populate("admin", ["name", "avatar"]);
-      // If no service center
-      if (serviceCenterProfile.length == 0) {
-        return res.json("No service center found");
-      }
-      //If there is service center
-      return res.status(200).json(serviceCenterProfile);
-    }
+    //If there is service center
+    return res.status(200).json(serviceCenterProfile);
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
 });
+
 
 //@router   POST /service-center/
 //@desc     add new / update admins servicing center
@@ -143,5 +125,48 @@ router.delete("/:id", auth, async (req, res) => {
 }
 );
 
-
 module.exports = router;
+
+
+
+// @route   GET /service-center/
+// @desc    get Service Center
+// @access  Admin- only admins, Superadmin - all
+// router.get("/", auth, async (req, res) => {
+//   try {
+//     // if CUSTOMER
+//     if (req.user.role >= 3) {
+//       return res.status(400).json("Know your limits!");
+//     }
+
+//     //if ADMIN, get admin's profile only
+//     if (req.user.role == 2) {
+//       // Check service center of current admin
+//       serviceCenterProfile = await ServiceCenter.findOne({
+//         admin: req.user.id
+//       }).populate("admin", "name");
+//       // If no service center for admin
+//       if (!serviceCenterProfile) {
+//         return res.json("There is no service center for this user");
+//       }
+//       //If there is service center
+//       return res.json(serviceCenterProfile);
+//     }
+//     //if SUPERADMIN, get all service center
+//     if (req.user.role == 1) {
+//       // Check service center for params admin
+//       const serviceCenterProfile = await ServiceCenter.find(
+//         {}
+//       ).populate("admin", ["name", "avatar"]);
+//       // If no service center
+//       if (serviceCenterProfile.length == 0) {
+//         return res.json("No service center found");
+//       }
+//       //If there is service center
+//       return res.status(200).json(serviceCenterProfile);
+//     }
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send("Server Error");
+//   }
+// });
