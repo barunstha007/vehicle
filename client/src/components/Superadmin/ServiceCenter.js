@@ -11,6 +11,20 @@ function ServiceCenter(props) {
 
 	const title = ['S.N', 'Location', 'Service Center Name', 'Admin', 'Booking Days', 'Booking Limit', 'Contact', 'Actions']
 
+
+	// map vacant admin to select options
+	const vacantAdmin = props.vadminlist.map((al, index) => {
+		return (
+			<option key={index} value={al._id}>{al.name}</option>
+		)
+	})
+
+
+	const deleteHandler = e => {
+
+	}
+
+
 	useEffect(() => {
 		// get list of service centers
 		props.serviceCenterList()
@@ -25,6 +39,8 @@ function ServiceCenter(props) {
 
 	}, [props.initialSelect])
 
+
+
 	const [state, setState] = useState({
 		name: "",
 		serviceLocation: "",
@@ -32,10 +48,21 @@ function ServiceCenter(props) {
 		maxBookingDays: "",
 		contact: "",
 		bookingLimit: "",
-
+		updateToggle: false
 	})
 
-	// create change handler
+	const [updateValues, setUpdateValues] = useState({
+		name: "",
+		serviceLocation: "",
+		admin: "",
+		maxBookingDays: "",
+		contact: "",
+		bookingLimit: "",
+
+		updateToggle: false
+	})
+
+	// CREATE change handler
 	const onChangeHandler = e => {
 		setState({
 			...state,
@@ -47,26 +74,123 @@ function ServiceCenter(props) {
 		console.log(state)
 	}
 
+	// GET AND UPDATE
 
-	const updateHandler = (e, index) => {
-		setState({
-			...state,
+	const onUpdateChange = e => {
+		setUpdateValues({
+			...updateValues,
 			[e.target.name]: e.target.value
 		})
-		console.log(state)
+
+
 	}
 
 
-	const deleteHandler = e => {
+	const updateHandler = (data, index) => {
 
+		console.log(data, index)
+
+		updatelist()
 	}
 
-	// map vacant admin to select options
-	const vacantAdmin = props.vadminlist.map((al, index) => {
+	// updatelist submit update
+	const submitUpdate = () => {
+		console.log(updateValues)
+	}
+
+
+	const getlist = props.sclists.map((sclist, index) => {
 		return (
-			<option key={index} value={al._id}>{al.name}</option>
+			<tr key={index}>
+				<td className="pt-3-half" >{index + 1}</td>
+				<td className="pt-3-half" name="location">{sclist.serviceLocation}</td>
+				<td className="pt-3-half" name="name">{sclist.name}</td>
+				<td className="pt-3-half" name="admin">{sclist.admin.name}</td>
+				<td className="pt-3-half" name="bookingDays">{sclist.maxBookingDays}</td>
+				<td className="pt-3-half" name="bookingLimit">{sclist.bookingLimit}</td>
+				<td className="pt-3-half" name="contact">{sclist.contact}</td>
+				<td>
+					<span className="table-remove">
+						<button
+							type="button"
+							className="btn btn-primary btn-rounded btn-sm my-0 mx-1"
+							onClick={() => updateHandler(sclist, index)}>Update</button>
+
+						<button
+							type="button"
+							className="btn btn-danger btn-rounded btn-sm my-0"
+							onClick={deleteHandler}>Delete</button>
+					</span>
+				</td>
+			</tr>
 		)
 	})
+
+	function updatelist() {
+		return (
+			<tr >
+				<td className="pt-3-half" ></td>
+				<td className="pt-3-half" name="location">
+					<input
+						className="form-control"
+						type="text"
+						value={updateValues.serviceLocation}
+						onChange={onUpdateChange}
+						name="serviceLocation" />
+				</td>
+				<td className="pt-3-half" name="name">
+					<input
+						className="form-control"
+						type="text"
+						value={updateValues.name}
+						onChange={onUpdateChange}
+						name="name" />
+				</td>
+				<td className="pt-3-half" name="admin">
+					<input
+						className="form-control"
+						type="text"
+						value={updateValues.admin}
+						onChange={onUpdateChange}
+						name="admin" />
+				</td>
+				<td className="pt-3-half" name="bookingDays">
+					<input
+						className="form-control"
+						type="text"
+						value={updateValues.maxBookingDays}
+						onChange={onUpdateChange}
+						name="maxBookingDays" />
+				</td>
+				<td className="pt-3-half" name="bookingLimit">
+					<input
+						className="form-control"
+						type="text"
+						value={updateValues.bookingLimit}
+						onChange={onUpdateChange}
+						name="bookingLimit" />
+				</td>
+				<td className="pt-3-half" name="contact">
+					<input
+						className="form-control"
+						type="text"
+						value={updateValues.contact}
+						onChange={onUpdateChange}
+						name="contact" />
+				</td>
+				<td>
+					<span className="table-remove">
+						<button
+							type="button"
+							className="btn btn-primary btn-rounded btn-sm my-0 mx-1"
+							onClick={submitUpdate}
+						>Update</button>
+					</span>
+				</td>
+			</tr>
+		)
+	}
+
 
 	return (
 
@@ -153,33 +277,9 @@ function ServiceCenter(props) {
 								</td>
 							</tr>
 
-							{props.sclists.map((sclist, index) => {
-								return (
-									<tr key={index}>
-										<td className="pt-3-half" >{index + 1}</td>
-										<td className="pt-3-half" name="location">{sclist.serviceLocation}</td>
-										<td className="pt-3-half" name="name">{sclist.name}</td>
-										<td className="pt-3-half" name="admin">{sclist.admin.name}</td>
-										<td className="pt-3-half" name="bookingDays">{sclist.maxBookingDays}</td>
-										<td className="pt-3-half" name="bookingLimit">{sclist.bookingLimit}</td>
-										<td className="pt-3-half" name="contact">{sclist.contact}</td>
-										<td>
-											<span className="table-remove">
-												<button
-													type="button"
-													className="btn btn-primary btn-rounded btn-sm my-0 mx-1"
-													onClick={() => updateHandler(sclist, index)}>Update</button>
 
-												<button
-													type="button"
-													className="btn btn-danger btn-rounded btn-sm my-0"
-													onClick={deleteHandler}>Delete</button>
-											</span>
-										</td>
-									</tr>
+							{getlist}
 
-								)
-							})}
 
 						</tbody>
 					</table>
@@ -188,6 +288,13 @@ function ServiceCenter(props) {
 		</div >
 	)
 }
+
+
+
+
+
+
+
 
 ServiceCenter.propTypes = {
 	serviceCenterList: PropTypes.func.isRequired,
