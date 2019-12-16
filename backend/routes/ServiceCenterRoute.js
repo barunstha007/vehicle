@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
     // get all service center
 
     // Check service center for params admin
-    const serviceCenterProfile = await ServiceCenter.find({}).sort('serviceLocation');
+    const serviceCenterProfile = await ServiceCenter.find({}).sort('serviceLocation').populate('admin', 'name');
     // If no service center
     if (serviceCenterProfile.length == 0) {
       return res.json("No service center found");

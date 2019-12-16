@@ -1,31 +1,34 @@
 import axios from "axios";
 import {
-    GETSERVICECENTER_SUCCESS,
-    GETSERVICECENTER_FAIL,
     SERVICECENTER_ADD_SUCCESS,
-    SERVICECENTER_ADD_FAIL
+    SERVICECENTER_ADD_FAIL,
+
+    GETVACANTADMIN_SUCCESS,
+    GETVACANTADMIN_FAIL,
 } from './types';
 import { setAlert } from './alert'
 
-export const serviceCenterList = () => async dispatch => {
+export const vacantAdminList = () => async dispatch => {
 
     try {
-        const res = await axios.get('/service-center')
+        const res = await axios.get('/admin')
 
         dispatch({
-            type: GETSERVICECENTER_SUCCESS,
+            type: GETVACANTADMIN_SUCCESS,
             payload: res.data
         })
 
+        console.log(res.data)
+
     } catch (err) {
         dispatch({
-            type: GETSERVICECENTER_FAIL
+            type: GETVACANTADMIN_FAIL
         })
     }
 }
 
 // Update service center
-export const addServiceCenter = (serviceCenterDetails) => async dispatch => {
+export const addAdmin = (serviceCenterDetails) => async dispatch => {
     const config = {
         headers: {
             'Content-type': 'application/json'

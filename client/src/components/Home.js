@@ -11,7 +11,7 @@ export default function Home() {
         <React.Fragment>
             <div className="jumbotron img-container">
                 <h3 className="display-4">Book Servicing <br /> Remotely</h3>
-                <p className="text-primary"><strong>Available Servicing Locations:</strong></p>
+                <p className="text-success"><strong>Available Servicing Locations:</strong></p>
                 {/* Smart Component */}
                 <ServiceCenterBook />
 

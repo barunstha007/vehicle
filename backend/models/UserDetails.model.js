@@ -44,6 +44,11 @@ const userDetailsSchema = new Schema(
     role: {
       type: Number,
       required: true
+    },
+    assignedServiceCenter: {
+      type: Number,
+      required: true,
+      default: 0
     }
   },
   {

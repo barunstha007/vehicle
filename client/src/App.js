@@ -13,7 +13,7 @@ import Config from './components/Admin/Config';
 import AdminHome from './components/Admin/AdminHome'
 
 // Super Users
-import ServiceCenter from './components/Superadmin/ServiceLocation'
+import ServiceCenter from './components/Superadmin/ServiceCenter'
 import AdminUsers from './components/Superadmin/AdminUsers'
 
 // Redux
@@ -21,7 +21,6 @@ import { Provider } from 'react-redux';
 import store from './redux/store'
 import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './redux/actions/auth'
-import { serviceCenterList } from './redux/actions/serviceCenterList';
 
 // If localstorage has token, set token
 if (localStorage.token) {

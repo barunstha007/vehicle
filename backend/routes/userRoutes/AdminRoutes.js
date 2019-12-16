@@ -9,7 +9,7 @@ const User = require("../../models/UserDetails.model");
 const { check, validationResult } = require("express-validator");
 
 // @route   GET '/admin'
-// @desc    get all admin
+// @desc    get all vacant admin
 // @access  Superadmin
 router.get('/', auth, async (req, res) => {
 
@@ -20,10 +20,10 @@ router.get('/', auth, async (req, res) => {
 
   try {
     // Search admin 
-    const adminList = await User.find({ role: 2 })
+    const adminList = await User.find({ role: 2, assignedServiceCenter: 0 })
     // If no admin
-    if (!adminList) {
-      return res.json("There are no admin")
+    if (adminList.length == 0) {
+      return res.json("There are no vacant admin")
 
     }
     //If there is admin
@@ -103,6 +103,7 @@ router.post("/register", [
         username: req.body.username,
         password: req.body.password,
         role: 2,
+        assignedServiceCenter: 0,
         avatar
       });
 
