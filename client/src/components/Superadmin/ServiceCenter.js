@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import MaterialTable from 'material-table'
 import PropTypes from 'prop-types';
+import { MdModeEdit, MdDelete, MdCancel } from 'react-icons/md'
 // Redux
 import { connect } from 'react-redux'
 import { serviceCenterList } from '../../redux/actions/serviceCenterList'
@@ -11,7 +11,6 @@ function ServiceCenter(props) {
 
 	const title = ['S.N', 'Location', 'Service Center Name', 'Admin', 'Booking Days', 'Booking Limit', 'Contact', 'Actions']
 
-
 	// map vacant admin to select options
 	const vacantAdmin = props.vadminlist.map((al, index) => {
 		return (
@@ -19,11 +18,13 @@ function ServiceCenter(props) {
 		)
 	})
 
+	const addHandler = e => {
+		console.log(state)
+	}
 
 	const deleteHandler = e => {
 
 	}
-
 
 	useEffect(() => {
 		// get list of service centers
@@ -39,8 +40,7 @@ function ServiceCenter(props) {
 
 	}, [props.initialSelect])
 
-
-
+	// Create input change
 	const [state, setState] = useState({
 		name: "",
 		serviceLocation: "",
@@ -51,54 +51,57 @@ function ServiceCenter(props) {
 		updateToggle: false
 	})
 
-	const [updateValues, setUpdateValues] = useState({
-		name: "",
-		serviceLocation: "",
-		admin: "",
-		maxBookingDays: "",
-		contact: "",
-		bookingLimit: "",
 
-		updateToggle: false
-	})
-
-	// CREATE change handler
+	// input change handler
 	const onChangeHandler = e => {
 		setState({
 			...state,
 			[e.target.name]: e.target.value
 		})
-	}
-
-	const addHandler = e => {
-		console.log(state)
+		// console.log(state)
 	}
 
 	// GET AND UPDATE
+	const updateHandler = e => {
 
-	const onUpdateChange = e => {
-		setUpdateValues({
-			...updateValues,
-			[e.target.name]: e.target.value
+		setState({
+			...state,
+			name: e.name,
+			serviceLocation: e.serviceLocation,
+			admin: e.admin._id,
+			maxBookingDays: e.maxBookingDays,
+			contact: e.contact,
+			bookingLimit: e.bookingLimit,
+
+			updateToggle: true
 		})
 
-
-	}
-
-
-	const updateHandler = (data, index) => {
-
-		console.log(data, index)
-
-		updatelist()
+		// Add current admin to admin dropdown while update
+		props.vadminlist.unshift(e.admin);
 	}
 
 	// updatelist submit update
 	const submitUpdate = () => {
-		console.log(updateValues)
+		console.log(state)
 	}
 
+	// Cancle update
+	const updateCancelHandler = () => {
+		setState({
+			name: "",
+			serviceLocation: "",
+			admin: props.initialSelect,
+			maxBookingDays: "",
+			contact: "",
+			bookingLimit: "",
 
+			updateToggle: false
+		})
+		// Remove 'selected for update' admin from list 
+		props.vadminlist.shift()
+	}
+
+	// render list of service centers
 	const getlist = props.sclists.map((sclist, index) => {
 		return (
 			<tr key={index}>
@@ -111,86 +114,45 @@ function ServiceCenter(props) {
 				<td className="pt-3-half" name="contact">{sclist.contact}</td>
 				<td>
 					<span className="table-remove">
+						{/* Update */}
 						<button
 							type="button"
 							className="btn btn-primary btn-rounded btn-sm my-0 mx-1"
-							onClick={() => updateHandler(sclist, index)}>Update</button>
+							onClick={() => updateHandler(sclist)}><MdModeEdit /></button>
 
 						<button
 							type="button"
 							className="btn btn-danger btn-rounded btn-sm my-0"
-							onClick={deleteHandler}>Delete</button>
+							onClick={deleteHandler}><MdDelete /></button>
 					</span>
 				</td>
 			</tr>
 		)
 	})
 
-	function updatelist() {
-		return (
-			<tr >
-				<td className="pt-3-half" ></td>
-				<td className="pt-3-half" name="location">
-					<input
-						className="form-control"
-						type="text"
-						value={updateValues.serviceLocation}
-						onChange={onUpdateChange}
-						name="serviceLocation" />
-				</td>
-				<td className="pt-3-half" name="name">
-					<input
-						className="form-control"
-						type="text"
-						value={updateValues.name}
-						onChange={onUpdateChange}
-						name="name" />
-				</td>
-				<td className="pt-3-half" name="admin">
-					<input
-						className="form-control"
-						type="text"
-						value={updateValues.admin}
-						onChange={onUpdateChange}
-						name="admin" />
-				</td>
-				<td className="pt-3-half" name="bookingDays">
-					<input
-						className="form-control"
-						type="text"
-						value={updateValues.maxBookingDays}
-						onChange={onUpdateChange}
-						name="maxBookingDays" />
-				</td>
-				<td className="pt-3-half" name="bookingLimit">
-					<input
-						className="form-control"
-						type="text"
-						value={updateValues.bookingLimit}
-						onChange={onUpdateChange}
-						name="bookingLimit" />
-				</td>
-				<td className="pt-3-half" name="contact">
-					<input
-						className="form-control"
-						type="text"
-						value={updateValues.contact}
-						onChange={onUpdateChange}
-						name="contact" />
-				</td>
-				<td>
-					<span className="table-remove">
-						<button
-							type="button"
-							className="btn btn-primary btn-rounded btn-sm my-0 mx-1"
-							onClick={submitUpdate}
-						>Update</button>
-					</span>
-				</td>
-			</tr>
-		)
-	}
+	// CHECK Create or Update and Cancle button
+	const createOrUpdateBtn = () => {
+		if (state.updateToggle)
+			return (
+				<React.Fragment>
+					<button
+						type="button"
+						className="btn btn-primary btn-rounded btn-sm my-0 mx-1"
+						onClick={submitUpdate}><MdModeEdit /></button>
 
+					<button
+						type="button"
+						className="btn btn-danger btn-rounded btn-sm my-0"
+						onClick={updateCancelHandler}><MdCancel /></button>
+				</React.Fragment>
+			)
+		else
+			return (
+				<button type="button"
+					className="btn btn-success btn-rounded my-0 mx-1"
+					onClick={addHandler}>Create</button>
+			)
+	}
 
 	return (
 
@@ -271,16 +233,15 @@ function ServiceCenter(props) {
 									onChange={onChangeHandler}
 								/>
 								</td>
-								<td><button type="button"
-									className="btn btn-success btn-rounded my-0 mx-1"
-									onClick={addHandler}>Create</button>
+								<td>
+									{/* Create or Update button based on state.updateToogle condition */}
+									{createOrUpdateBtn()}
 								</td>
 							</tr>
 
 
-							{getlist}
-
-
+							{/* If update clicked then turn off list */}
+							{state.updateToggle ? null : getlist}
 						</tbody>
 					</table>
 				</div>
@@ -288,13 +249,6 @@ function ServiceCenter(props) {
 		</div >
 	)
 }
-
-
-
-
-
-
-
 
 ServiceCenter.propTypes = {
 	serviceCenterList: PropTypes.func.isRequired,
