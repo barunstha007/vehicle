@@ -2,7 +2,8 @@ import {
     GETSERVICECENTER_SUCCESS,
     GETSERVICECENTER_FAIL,
     SERVICECENTER_ADD_SUCCESS,
-    SERVICECENTER_ADD_FAIL
+    SERVICECENTER_ADD_FAIL,
+    SERVICECENTER_DELETE_SUCCESS
 } from '../actions/types'
 
 const initialState = {
@@ -21,7 +22,20 @@ export default function (state = initialState, action) {
                 loading: false
             }
 
-        case SERVICECENTER_ADD_SUCCESS: break
+        case SERVICECENTER_ADD_SUCCESS:
+            return {
+                ...state,
+                sclist: state.sclist.concat(action.payload)
+            }
+
+        case SERVICECENTER_DELETE_SUCCESS:
+            return {
+                ...state,
+                // remove id from sclist
+                sclist: state.sclist.filter(sc => sc._id !== action.payload)
+            }
+
+
 
         default: return state
     }

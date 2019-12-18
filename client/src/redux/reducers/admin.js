@@ -1,6 +1,7 @@
 import {
     GETVACANTADMIN_SUCCESS,
-    GETVACANTADMIN_FAIL
+    GETVACANTADMIN_FAIL,
+    UPDATEVACANTADMIN_SUCCESS
 } from '../actions/types'
 
 const initialState = {
@@ -25,6 +26,15 @@ export default function (state = initialState, action) {
                 vadminlist: ['Empty'],
                 // <select> initial value
                 initialSelect: null,
+                loading: false
+            }
+
+        // Update admin list after create
+        case UPDATEVACANTADMIN_SUCCESS:
+            return {
+                ...state,
+                vadminlist: state.vadminlist.filter(admin => admin._id !== action.payload),
+                // <select> initial value
                 loading: false
             }
 

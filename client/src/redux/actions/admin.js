@@ -18,8 +18,6 @@ export const vacantAdminList = () => async dispatch => {
             payload: res.data
         })
 
-        console.log(res.data)
-
     } catch (err) {
         dispatch({
             type: GETVACANTADMIN_FAIL

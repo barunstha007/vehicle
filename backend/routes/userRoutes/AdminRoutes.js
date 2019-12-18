@@ -36,6 +36,31 @@ router.get('/', auth, async (req, res) => {
 
 })
 
+// @route   GET '/admin/:id'
+// @desc    get all admin
+// @access  Superadmin
+router.get('/:id', auth, async (req, res) => {
+
+  //   Check if User is Superadmin
+  if (req.user.role !== 1) {
+    return res.status(400).json("Not authorized");
+  }
+
+  try {
+
+    // Search admin 
+    const admin = await User.find({ role: 2, _id: req.params.id })
+
+    //If there is admin
+    res.json(admin)
+
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send('Server Error')
+  }
+
+})
+
 // @route   POST '/admin/register'
 // @desc    Register admin, role == 2
 //@access   Superadmin

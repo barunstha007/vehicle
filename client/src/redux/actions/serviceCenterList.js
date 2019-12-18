@@ -3,10 +3,14 @@ import {
     GETSERVICECENTER_SUCCESS,
     GETSERVICECENTER_FAIL,
     SERVICECENTER_ADD_SUCCESS,
-    SERVICECENTER_ADD_FAIL
+    SERVICECENTER_ADD_FAIL,
+    SERVICECENTER_DELETE_SUCCESS,
+    SERVICECENTER_DELETE_FAIL,
+    UPDATEVACANTADMIN_SUCCESS
 } from './types';
 import { setAlert } from './alert'
 
+// Get all service center
 export const serviceCenterList = () => async dispatch => {
 
     try {
@@ -32,19 +36,61 @@ export const addServiceCenter = (serviceCenterDetails) => async dispatch => {
         }
     }
 
-    // Stringify userdetails
-    const body = JSON.stringify(serviceCenterDetails)
-
     try {
+
         // POST for registration, with req.body
-        const res = await axios.post('/register', body, config)
-        console.log(res.data);
+        const res = await axios.post('/service-center', serviceCenterDetails, config)
 
         dispatch({
             type: SERVICECENTER_ADD_SUCCESS,
-            // get token from response
-            payload: res.data
+            payload: serviceCenterDetails
         })
+
+        // Update dropdown admin list
+        dispatch({
+            type: UPDATEVACANTADMIN_SUCCESS,
+            payload: serviceCenterDetails.admin
+        })
+
+        dispatch(setAlert(res.data, 'success'))
+
+    } catch (err) {
+        const errors = err.response.data.error
+        if (errors) {
+            dispatch(setAlert(errors[0].msg, 'danger'))
+
+        }
+        dispatch({
+            type: SERVICECENTER_ADD_FAIL
+        })
+    }
+}
+
+// Delete service center
+export const deleteServiceCenter = (serviceCenterID) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }
+
+    // Stringify userdetails
+    const id = serviceCenterID._id
+
+    try {
+        console.log(serviceCenterID)
+
+        // DELETE service center
+        const res = await axios.delete('/service-center/' + id)
+
+        dispatch(setAlert(res.data, 'success'))
+
+        // delete from list
+        dispatch({
+            type: SERVICECENTER_DELETE_SUCCESS,
+            payload: id
+        })
+
 
 
     } catch (err) {
@@ -55,7 +101,7 @@ export const addServiceCenter = (serviceCenterDetails) => async dispatch => {
 
         }
         dispatch({
-            type: SERVICECENTER_ADD_FAIL
+            type: SERVICECENTER_DELETE_SUCCESS
         })
     }
 }

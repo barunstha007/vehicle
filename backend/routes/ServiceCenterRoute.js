@@ -32,16 +32,21 @@ router.get("/", async (req, res) => {
 //@desc     add new / update admins servicing center
 //@access   Superadmin
 router.post("/", [auth,
-  [check("admin", "Please enter admin").not().isEmpty(),
-  check("name", "Please enter service center name")
-    .not()
-    .isEmpty(),
-  check("serviceLocation", "Please enter service center location")
-    .not()
-    .isEmpty(),
-  check("maxBookingDays", "Please enter max booking days").isNumeric(),
-  check("bookingLimit", "Please enter maximum booking limit of bikes").isNumeric(),
-  check("contact", "Please enter contact number").isNumeric()
+  [
+    check("serviceLocation", "Please enter service center location")
+      .not()
+      .isEmpty(),
+    check("serviceLocation", "Service Center Location must be alphabet")
+      .not()
+      .isNumeric(),
+    check("admin", "Please enter admin").not().isEmpty(),
+    check("name", "Please enter service center name")
+      .not()
+      .isEmpty(),
+
+    check("maxBookingDays", "Enter max booking days in number").isNumeric(),
+    check("bookingLimit", "Maximum booking limit of bikes in number").isNumeric(),
+    check("contact", "Contact Number must be a number").isNumeric()
   ]
 ],
   async (req, res) => {
@@ -90,6 +95,14 @@ router.post("/", [auth,
       // Else Create new service center
       serviceCenterProfile = new ServiceCenter(newServiceCenter);
       await serviceCenterProfile.save();
+
+      // reset admin 'assignedServiceCenter = 1' after assigning admin to serviceCenter
+      await User.findOneAndUpdate(
+        { _id: serviceCenterProfile.admin },
+        { assignedServiceCenter: 1 },
+        { new: true }
+      );
+
       return res.status(200).json("New Service Center Created");
 
     } catch (err) {
@@ -107,16 +120,30 @@ router.delete("/:id", auth, async (req, res) => {
     return res.status(400).json("Not authorized");
   }
 
-  try {
-    // If service center exists
-    let serviceCenter = await ServiceCenter.findOne({ _id: req.params.id });
 
+  try {
+    // console.log(req.params.id)
+    let id = req.params.id
+    // console.log(_id)
+
+    // If service center exists
+    let serviceCenter = await ServiceCenter.findOne({ _id: id });
+
+    console.log(serviceCenter)
     if (serviceCenter) {
-      await ServiceCenter.findByIdAndDelete({ _id: req.params.id });
+      await ServiceCenter.findByIdAndDelete({ _id: id });
+
+      // reset admin 'assignedServiceCenter = 0' after deleting serviceCenter
+      await User.findOneAndUpdate(
+        { _id: serviceCenter.admin },
+        { assignedServiceCenter: 0 },
+        { new: true }
+      );
+
 
       return res.json("Service Center deleted");
     }
-    res.json('Service Center not Found')
+    // res.json('Service Center not Found')
 
 
   } catch (err) {
@@ -124,6 +151,7 @@ router.delete("/:id", auth, async (req, res) => {
   }
 }
 );
+
 
 module.exports = router;
 
