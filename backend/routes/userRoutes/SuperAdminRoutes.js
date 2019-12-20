@@ -144,7 +144,7 @@ router.post("/register", [
 //@route    POST '/superadmin/:id'
 //@desc     Update superadmin
 //@access   Superadmin
-router.post("/:id", [auth, [
+router.post("/update/:id", [auth, [
   check("username", "Please enter username").not().isEmpty(),
   check("password", "Please enter password").not().isEmpty(),
   check("name", "Please enter name").not().isEmpty(),
@@ -193,7 +193,9 @@ router.post("/:id", [auth, [
           { new: true }
         );
 
-        return res.json("Update successful");
+        res.json("Update successful");
+        return res.json(superadminDetails);
+
       }
       res.json('User not Found')
 

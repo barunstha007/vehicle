@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { MdModeEdit, MdDelete, MdCancel } from 'react-icons/md'
 // Redux
 import { connect } from 'react-redux'
-import { serviceCenterList, addServiceCenter, deleteServiceCenter } from '../../redux/actions/serviceCenterList'
+import { serviceCenterList, addServiceCenter, deleteServiceCenter, updateServiceCenter } from '../../redux/actions/serviceCenterList'
 import { vacantAdminList, assignServiceCenter } from '../../redux/actions/admin'
 import Alert from '../../layout/Alert'
 
@@ -13,6 +13,7 @@ function ServiceCenter(props) {
 
 	// Create input change
 	const [state, setState] = useState({
+		id: "",
 		name: "",
 		serviceLocation: "",
 		admin: "",
@@ -30,7 +31,7 @@ function ServiceCenter(props) {
 
 		// render after getting intial admin select 
 		// PROPS VADMINLIST PROBLEM
-	}, [props.sclists.length, props.vadminlist])
+	}, [props.sclists.length, state])
 
 
 	// Create service center
@@ -84,6 +85,7 @@ function ServiceCenter(props) {
 
 		setState({
 			...state,
+			id: e._id,
 			name: e.name,
 			serviceLocation: e.serviceLocation,
 			admin: e.admin._id,
@@ -99,12 +101,13 @@ function ServiceCenter(props) {
 	}
 
 	// Cancle update
-	const updateCancelHandler = (e) => {
+	const updateCancelHandler = () => {
 
 		// set admin assignServiceCenter
 		props.assignServiceCenter(state.admin, 1)
 
 		setState({
+			id: "",
 			name: "",
 			serviceLocation: "",
 			admin: "",
@@ -145,6 +148,7 @@ function ServiceCenter(props) {
 	const submitUpdate = () => {
 
 		const updateServiceCenter = {
+			id: state.id,
 			name: state.name,
 			serviceLocation: state.serviceLocation,
 			admin: state.admin,
@@ -153,8 +157,9 @@ function ServiceCenter(props) {
 			bookingLimit: state.bookingLimit
 		}
 
-		// Add service center
-		props.addServiceCenter(updateServiceCenter)
+		console.log(state)
+		// Update service center
+		props.updateServiceCenter(updateServiceCenter)
 		// set admin assignServiceCenter
 		props.assignServiceCenter(state.admin, 1)
 
@@ -259,7 +264,7 @@ function ServiceCenter(props) {
 										className="form-control"
 										// style={{ width: '18em ' }}
 										onChange={e => setState({ ...state, admin: e.target.value })}>
-										<option className="bg-info text-white" selected={true}>--Select Admin--</option>
+										<option className="bg-info text-white" selected={true}>--Select Admin-- </option>
 										{vacantAdmin}
 									</select>
 
@@ -322,5 +327,5 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps,
-	{ serviceCenterList, vacantAdminList, addServiceCenter, deleteServiceCenter, assignServiceCenter })
+	{ serviceCenterList, vacantAdminList, addServiceCenter, deleteServiceCenter, assignServiceCenter, updateServiceCenter })
 	(ServiceCenter)

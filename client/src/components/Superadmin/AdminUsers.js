@@ -1,248 +1,281 @@
-import React from "react";
-import CRUDTable, {
-  Fields,
-  Field,
-  CreateForm,
-  UpdateForm,
-  DeleteForm
-} from "react-crud-table";
-import './ServiceLocation.css'
-import { MdDelete, MdEdit } from 'react-icons/md'
-import { AiOutlineUserAdd } from 'react-icons/ai'
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types';
+import { MdModeEdit, MdDelete, MdCancel, MdRemoveRedEye } from 'react-icons/md'
+import { InputGroup, FormControl, Button } from 'react-bootstrap'
+// Redux
+import { connect } from 'react-redux'
+import { getSuperadmin } from '../../redux/actions/superadmin'
+import Alert from '../../layout/Alert'
 
-const DescriptionRenderer = ({ field }) => <textarea {...field} />;
+function ServiceCenter(props) {
 
-let tasks = [
-  {
-    id: 1,
-    name: "Lokesh",
-    phone: "9818505260",
-    location: "Lazimpat",
-    email: "lokesh.bajracharya55@gmail.com",
-    username: "lokesh",
-    password: "lokesh123",
-  },
-  {
-    id: 2,
-    name: "Lokesh",
-    phone: "9818505260",
-    location: "Lazimpat",
-    email: "lokesh.bajracharya55@gmail.com",
-    username: "lokesh",
-    password: "lokesh123",
-  }
-];
+  const title = ['S.N', 'Name', 'Location', 'Phone', 'Email', 'Username', 'Password', 'Actions']
 
-const SORTERS = {
-  NUMBER_ASCENDING: mapper => (a, b) => mapper(a) - mapper(b),
-  NUMBER_DESCENDING: mapper => (a, b) => mapper(b) - mapper(a),
-  STRING_ASCENDING: mapper => (a, b) => mapper(a).localeCompare(mapper(b)),
-  STRING_DESCENDING: mapper => (a, b) => mapper(b).localeCompare(mapper(a))
-};
+  // Create input change
+  const [state, setState] = useState({
+    id: "",
+    name: "",
+    location: "",
+    phone: "",
+    email: "",
+    username: "",
+    password: "",
 
-const getSorter = data => {
-  const mapper = x => x[data.field];
-  let sorter = SORTERS.STRING_ASCENDING(mapper);
+    updateToggle: false,
+    passwordHidden: true
+  })
 
-  if (data.field === "id") {
-    sorter =
-      data.direction === "ascending"
-        ? SORTERS.NUMBER_ASCENDING(mapper)
-        : SORTERS.NUMBER_DESCENDING(mapper);
-  } else {
-    sorter =
-      data.direction === "ascending"
-        ? SORTERS.STRING_ASCENDING(mapper)
-        : SORTERS.STRING_DESCENDING(mapper);
+
+  useEffect(() => {
+    props.getSuperadmin()
+
+  }, [])
+
+  // input onchange handler
+  const onChangeHandler = (e) => {
+    setState({
+      ...state,
+      [e.target.name]: e.target.value
+    })
   }
 
-  return sorter;
-};
-
-let count = tasks.length;
-const service = {
-  fetchItems: payload => {
-    let result = Array.from(tasks);
-    result = result.sort(getSorter(payload.sort));
-    return Promise.resolve(result);
-  },
-  create: task => {
-    count += 1;
-    tasks.push({
-      ...task,
-      id: count
-    });
-    return Promise.resolve(task);
-  },
-  update: data => {
-    const task = tasks.find(t => t.id === data.id);
-    task.name = data.name;
-    task.description = data.description;
-    return Promise.resolve(task);
-  },
-  delete: data => {
-    const task = tasks.find(t => t.id === data.id);
-    tasks = tasks.filter(t => t.id !== task.id);
-    return Promise.resolve(task);
+  // password show/hide
+  const passwordShowBtn = () => {
+    setState({
+      ...state,
+      passwordHidden: state.passwordHidden ? false : true
+    })
   }
-};
 
-const styles = {
-  container: { margin: "auto", width: "fit-content" }
-};
+  const addHandler = () => {
 
-const AdminUsers = () => (
-  <div style={styles.container}>
-    {/* Super Users */}
-    <CRUDTable
-      caption="Super Users"
-      fetchItems={payload => service.fetchItems(payload)}
-    >
-      <Fields>
-        <Field name="id" label="S.N" hideInCreateForm />
-        <Field name="name" label="Name" placeholder="name" />
-        <Field name="phone" label="Phone" placeholder="name" />
-        <Field name="location" label="Location" placeholder="name" />
-        <Field name="email" label="Email" placeholder="name" />
-        <Field name="username" label="Username" placeholder="name" />
+  }
+  const updateHandler = (data, index) => {
+    setState({
+      ...state,
+      id: data._id,
+      name: data.name,
+      location: data.location,
+      phone: data.phone,
+      email: data.email,
+      username: data.username,
+      password: "",
 
-      </Fields>
-      <CreateForm
-        name="Task Creation"
-        message="Create a new service center!"
-        trigger="Add SuperUser"
-        onSubmit={task => service.create(task)}
-        submitText="Create"
-        validate={values => {
-          const errors = {};
-          if (!values.name) {
-            errors.name = "Please, provide task's name";
-          }
+      updateToggle: true
+    })
+  }
+  const updateCancelHandler = () => {
+    setState({
+      ...state,
+      id: "",
+      name: "",
+      location: "",
+      phone: "",
+      email: "",
+      username: "",
+      password: "",
 
-          if (!values.description) {
-            errors.description = "Please, provide task's description";
-          }
+      updateToggle: false
+    })
+  }
+  const deleteHandler = () => {
 
-          return errors;
-        }}
-      />
+  }
+  const submitUpdate = () => {
 
-      <UpdateForm
-        name="Task Update Process"
-        message="Update task"
-        trigger="Update"
-        onSubmit={task => service.update(task)}
-        submitText="Update"
-        validate={values => {
-          const errors = {};
+    if (state.password.trim().length > 0) {
+      const updateSuperadmin = {
+        id: state._id,
+        name: state.name,
+        location: state.location,
+        phone: state.phone,
+        email: state.email,
+        username: state.username,
+        password: state.password
+      }
+      // props.updateSuperadmin()
 
-          if (!values.id) {
-            errors.id = "Please, provide id";
-          }
+    } else {
 
-          if (!values.name) {
-            errors.name = "Please, provide task's name";
-          }
+      const updateSuperadmin = {
+        id: state._id,
+        name: state.name,
+        location: state.location,
+        phone: state.phone,
+        email: state.email,
+        username: state.username,
+      }
+      console.log(updateSuperadmin)
+    }
+  }
 
-          if (!values.description) {
-            errors.description = "Please, provide task's description";
-          }
 
-          return errors;
-        }}
-      />
+  // CHECK Create or Update and Cancle button
+  const createOrUpdateBtn = (state) => {
+    if (state.updateToggle)
+      return (
+        <React.Fragment>
+          <button
+            type="button"
+            className="btn btn-primary btn-rounded btn-sm my-0 mx-1"
+            onClick={submitUpdate}><MdModeEdit /></button>
 
-      <DeleteForm
-        name="Task Delete Process"
-        message="Are you sure you want to delete the task?"
-        trigger="Delete"
-        onSubmit={task => service.delete(task)}
-        submitText="Delete"
-        validate={values => {
-          const errors = {};
-          if (!values.id) {
-            errors.id = "Please, provide id";
-          }
-          return errors;
-        }}
-      />
-    </CRUDTable>
+          <button
+            type="button"
+            className="btn btn-danger btn-rounded btn-sm my-0"
+            onClick={updateCancelHandler}><MdCancel /></button>
+        </React.Fragment>
+      )
+    else
+      return (
+        <button type="button"
+          className="btn btn-success btn-rounded my-0 mx-1"
+          onClick={addHandler}>Create</button>
+      )
+  }
 
-    {/* Admin USers */}
-    <CRUDTable
-      caption="Admin Users"
-      fetchItems={payload => service.fetchItems(payload)}
-    >
-      <Fields>
-        <Field name="id" label="S.N" hideInCreateForm />
-        <Field name="name" label="Name" placeholder="name" />
-        <Field
-          name="description"
-          label="Location"
-          render={DescriptionRenderer}
-        />
-        <Field name="name" label="Name" placeholder="name" />
-      </Fields>
-      <CreateForm
-        name="Task Creation"
-        message="Create a new service center!"
-        trigger="Add Admin"
-        onSubmit={task => service.create(task)}
-        submitText="Create"
-        validate={values => {
-          const errors = {};
-          if (!values.name) {
-            errors.name = "Please, provide task's name";
-          }
 
-          if (!values.description) {
-            errors.description = "Please, provide task's description";
-          }
 
-          return errors;
-        }}
-      />
+  const getsuperadminlist = props.superadminlist.map((superadmin, index) => {
+    return (
+      <tr key={index}>
+        <td className="pt-3-half" >{index + 1}</td>
+        <td className="pt-3-half" name="name">{superadmin.name}</td>
+        <td className="pt-3-half" name="location">{superadmin.location}</td>
+        <td className="pt-3-half" name="phone">{superadmin.phone}</td>
+        <td className="pt-3-half" name="email">{superadmin.email}</td>
+        <td className="pt-3-half" name="username">{superadmin.username}</td>
+        <td className="pt-3-half bg-secondary text-white" ><strong>- - -</strong></td>
+        <td>
+          <span className="table-remove">
+            {/* Update */}
+            <button
+              type="button"
+              className="btn btn-primary btn-rounded btn-sm my-0 mx-1"
+              onClick={() => updateHandler(superadmin, index)}><MdModeEdit /></button>
 
-      <UpdateForm
-        name="Task Update Process"
-        message="Update task"
-        trigger="Update"
-        onSubmit={task => service.update(task)}
-        submitText="Update"
-        validate={values => {
-          const errors = {};
+            <button
+              type="button"
+              className="btn btn-danger btn-rounded btn-sm my-0"
+              onClick={() => deleteHandler(superadmin)}><MdDelete /></button>
+          </span>
+        </td>
+      </tr>
+    )
+  })
 
-          if (!values.id) {
-            errors.id = "Please, provide id";
-          }
+  return (
+    <div className="card">
+      {/* Title */}
+      <span className="badge badge-info">
+        <h3 className="card-header text-center font-weight-bold text-uppercase py-4">Superadmin</h3>
+      </span>
+      <div className="card-body">
+        <div id="table" className="table-editable">
+          <span className="table-add float-right mb-3 mr-2"><a href="#!" className="text-success"><i
+            className="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
+          <Alert />
+          <table className="table table-bordered table-responsive-md table-striped text-center">
+            {/* Table Headers */}
+            <thead>
+              <tr>
+                {title.map((title, index) => {
+                  return (
+                    <th key={index} className="text-center text-white bg-secondary">{title}</th>
+                  )
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#</td>
+                <td><input
+                  name="name"
+                  type="text"
+                  className="form-control"
+                  placeholder="Name"
+                  value={state.name}
+                  onChange={onChangeHandler} />
 
-          if (!values.name) {
-            errors.name = "Please, provide task's name";
-          }
+                </td>
+                <td><input
+                  name="location"
+                  type="text"
+                  className="form-control"
+                  placeholder="Location"
+                  value={state.location}
+                  onChange={onChangeHandler} />
+                </td>
+                <td><input
+                  name="phone"
+                  type="text"
+                  className="form-control"
+                  placeholder="Phone"
+                  value={state.phone}
+                  onChange={onChangeHandler} />
+                </td>
+                <td><input
+                  name="email"
+                  type="text"
+                  className="form-control"
+                  placeholder="Email"
+                  value={state.email}
+                  onChange={onChangeHandler}
+                />
+                </td>
+                <td><input
+                  name="username"
+                  type="text"
+                  className="form-control"
+                  placeholder="Username"
+                  value={state.username}
+                  onChange={onChangeHandler}
+                />
+                </td>
+                <td>
+                  {/* <input
+                  name="password"
+                  type="password"
+                  className="form-control"
+                  placeholder="Password"
+                  value={state.password}
+                  onChange={onChangeHandler}
+                /> */}
+                  <InputGroup className="">
+                    <FormControl
+                      type={state.passwordHidden ? "password" : "text"}
+                      placeholder="New Password"
+                    />
+                    <InputGroup.Append>
+                      <Button variant="outline-secondary" onClick={passwordShowBtn}><MdRemoveRedEye /></Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </td>
+                <td>
+                  {/* Create or Update button based on state.updateToogle condition */}
+                  {createOrUpdateBtn(state)}
+                </td>
+              </tr>
 
-          if (!values.description) {
-            errors.description = "Please, provide task's description";
-          }
+              {/* If update clicked then turn off list */}
+              {state.updateToggle ? null : getsuperadminlist}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div >
+  )
+}
 
-          return errors;
-        }}
-      />
+ServiceCenter.propTypes = {
+  getSuperadmin: PropTypes.func.isRequired,
 
-      <DeleteForm
-        name="Task Delete Process"
-        message="Are you sure you want to delete the task?"
-        trigger="Delete"
-        onSubmit={task => service.delete(task)}
-        submitText="Delete"
-        validate={values => {
-          const errors = {};
-          if (!values.id) {
-            errors.id = "Please, provide id";
-          }
-          return errors;
-        }}
-      />
-    </CRUDTable>
-  </div>
-);
-export default AdminUsers;
+}
+
+const mapStateToProps = state => ({
+  superadminlist: state.superadmin.superadminlist
+})
+
+export default connect(mapStateToProps,
+  { getSuperadmin })
+  (ServiceCenter)

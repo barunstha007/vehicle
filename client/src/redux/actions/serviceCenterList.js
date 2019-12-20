@@ -4,6 +4,8 @@ import {
     GETSERVICECENTER_FAIL,
     SERVICECENTER_ADD_SUCCESS,
     SERVICECENTER_ADD_FAIL,
+    SERVICECENTER_UPDATE_SUCCESS,
+    SERVICECENTER_UPDATE_FAIL,
     SERVICECENTER_DELETE_SUCCESS,
     SERVICECENTER_DELETE_FAIL,
     UPDATEVACANTADMIN_SUCCESS
@@ -28,7 +30,7 @@ export const serviceCenterList = () => async dispatch => {
     }
 }
 
-// Update service center
+// Add service center
 export const addServiceCenter = (serviceCenterDetails) => async dispatch => {
     const config = {
         headers: {
@@ -62,6 +64,44 @@ export const addServiceCenter = (serviceCenterDetails) => async dispatch => {
         }
         dispatch({
             type: SERVICECENTER_ADD_FAIL
+        })
+    }
+}
+
+// Update service center
+export const updateServiceCenter = (serviceCenterDetails) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }
+
+    try {
+
+        // POST for registration, with req.body
+        const res = await axios.post('/service-center/update', serviceCenterDetails, config)
+
+        dispatch({
+            type: SERVICECENTER_UPDATE_SUCCESS,
+            payload: serviceCenterDetails
+        })
+
+        // Update dropdown admin list
+        dispatch({
+            type: UPDATEVACANTADMIN_SUCCESS,
+            payload: serviceCenterDetails.admin
+        })
+
+        dispatch(setAlert(res.data, 'success'))
+
+    } catch (err) {
+        const errors = err.response.data.error
+        if (errors) {
+            dispatch(setAlert(errors[0].msg, 'danger'))
+
+        }
+        dispatch({
+            type: SERVICECENTER_UPDATE_FAIL
         })
     }
 }

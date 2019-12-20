@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
 
 
 //@router   POST /service-center/
-//@desc     add new / update admins servicing center
+//@desc     add new servicing center
 //@access   Superadmin
 router.post("/", [auth,
   [
@@ -82,15 +82,7 @@ router.post("/", [auth,
 
       // Check if user service center exists of admin
       if (serviceCenterProfile) {
-        // If service center found, update
-        serviceCenterProfile = await ServiceCenter.findOneAndUpdate(
-          // Update profile in this admin
-          { admin: req.body.admin },
-          { $set: newServiceCenter },
-          { new: true }
-        );
-
-        return res.status(200).json("Service center updated");
+        return res.status(400).json("This admin already has service center");
       }
       // Else Create new service center
       serviceCenterProfile = new ServiceCenter(newServiceCenter);
@@ -102,6 +94,89 @@ router.post("/", [auth,
         { assignedServiceCenter: 1 },
         { new: true }
       );
+
+      return res.status(200).json("New Service Center Created");
+
+    } catch (err) {
+      return res.status(500).json("Server Error");
+    }
+  }
+);
+
+//@router   POST /service-center/update
+//@desc     update servicing center
+//@access   Superadmin
+router.post("/update", [auth,
+  [
+    check("serviceLocation", "Please enter service center location")
+      .not()
+      .isEmpty(),
+    check("serviceLocation", "Service Center Location must be alphabet")
+      .not()
+      .isNumeric(),
+    check("admin", "Please enter admin").not().isEmpty(),
+    check("name", "Please enter service center name")
+      .not()
+      .isEmpty(),
+
+    check("maxBookingDays", "Enter max booking days in number").isNumeric(),
+    check("bookingLimit", "Maximum booking limit of bikes in number").isNumeric(),
+    check("contact", "Contact Number must be a number").isNumeric()
+  ]
+],
+  async (req, res) => {
+    // If customer, exit from route
+    if (req.user.role !== 1) {
+      return res.json("Know your limits!");
+    }
+
+    // check input validation
+    const error = validationResult(req);
+    // If validation errors
+    if (!error.isEmpty()) {
+      return res.status(400).json({ error: error.array() });
+    }
+
+    try {
+      // if Superadmin, can create and update any service center
+      let serviceCenterProfile;
+      const newServiceCenter = {};
+
+      // set other details from request
+      if (req.body.admin) newServiceCenter.admin = req.body.admin;
+      if (req.body.name) newServiceCenter.name = req.body.name;
+      if (req.body.serviceLocation) newServiceCenter.serviceLocation = req.body.serviceLocation;
+      if (req.body.maxBookingDays) newServiceCenter.maxBookingDays = req.body.maxBookingDays;
+      if (req.body.bookingLimit) newServiceCenter.bookingLimit = req.body.bookingLimit;
+      if (req.body.contact) newServiceCenter.contact = req.body.contact;
+
+      // edit service center for given admin
+      serviceCenterProfile = await ServiceCenter.findOne({
+        _id: req.body.id
+      });
+
+      // Check if user service center exists
+      if (serviceCenterProfile) {
+        // If service center found, update
+        serviceCenterProfile = await ServiceCenter.findOneAndUpdate(
+          // Update profile in this sc id
+          { _id: req.body.id },
+          { $set: newServiceCenter },
+          { new: true }
+        );
+
+        // reset admin 'assignedServiceCenter = 1' after assigning admin to serviceCenter
+        await User.findOneAndUpdate(
+          { _id: serviceCenterProfile.admin },
+          { assignedServiceCenter: 1 },
+          { new: true }
+        );
+
+        return res.status(200).json("Service center updated");
+      }
+      res.status(200).json("Service doesnot exist");
+
+
 
       return res.status(200).json("New Service Center Created");
 

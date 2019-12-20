@@ -3,6 +3,8 @@ import {
     GETSERVICECENTER_FAIL,
     SERVICECENTER_ADD_SUCCESS,
     SERVICECENTER_ADD_FAIL,
+    SERVICECENTER_UPDATE_SUCCESS,
+    SERVICECENTER_UPDATE_FAIL,
     SERVICECENTER_DELETE_SUCCESS
 } from '../actions/types'
 
@@ -18,7 +20,7 @@ export default function (state = initialState, action) {
                 ...state,
                 sclist: [...action.payload],
                 // <select> initial value
-                initialSelect: action.payload[0]._id,
+                // initialSelect: action.payload[0]._id,
                 loading: false
             }
 
@@ -27,12 +29,25 @@ export default function (state = initialState, action) {
                 ...state,
                 sclist: state.sclist.concat(action.payload)
             }
+        case SERVICECENTER_UPDATE_SUCCESS:
+            // var updateDetails = state.sclist.filter(action.payload._id)
+            var updateDetails = state.sclist.map(sc => {
+                if (sc._id === action.payload._id) {
+                    return {
+                        ...state,
+                        sclist: action.payload
+                    }
+                }
+            })
+
+
 
         case SERVICECENTER_DELETE_SUCCESS:
             return {
                 ...state,
                 // remove id from sclist
                 sclist: state.sclist.filter(sc => sc._id !== action.payload)
+
             }
 
 
