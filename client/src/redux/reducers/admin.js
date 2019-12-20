@@ -16,7 +16,7 @@ export default function (state = initialState, action) {
                 ...state,
                 vadminlist: [...action.payload],
                 // <select> initial value
-                initialSelect: action.payload[0]._id,
+                // initialSelect: action.payload[0]._id,
                 loading: false
             }
 

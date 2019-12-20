@@ -5,6 +5,8 @@ import {
 
     GETVACANTADMIN_SUCCESS,
     GETVACANTADMIN_FAIL,
+    ASSIGNSERVICECENTER_SUCCESS,
+    ASSIGNSERVICECENTER_FAIL
 } from './types';
 import { setAlert } from './alert'
 
@@ -21,6 +23,29 @@ export const vacantAdminList = () => async dispatch => {
     } catch (err) {
         dispatch({
             type: GETVACANTADMIN_FAIL
+        })
+    }
+}
+
+export const assignServiceCenter = (id, assignedServiceCenter) => async dispatch => {
+
+    const body = { id, assignedServiceCenter }
+
+    try {
+        const res = await axios.post('/admin/assignServiceCenter', body)
+
+        dispatch({
+            type: ASSIGNSERVICECENTER_SUCCESS,
+            payload: res.data
+        })
+
+        console.log('Action=> AssignServiceCenterSuccess')
+        console.log(res.data)
+
+    } catch (err) {
+        console.log(err)
+        dispatch({
+            type: ASSIGNSERVICECENTER_FAIL
         })
     }
 }

@@ -4,26 +4,12 @@ import { MdModeEdit, MdDelete, MdCancel } from 'react-icons/md'
 // Redux
 import { connect } from 'react-redux'
 import { serviceCenterList, addServiceCenter, deleteServiceCenter } from '../../redux/actions/serviceCenterList'
-import { vacantAdminList } from '../../redux/actions/admin'
+import { vacantAdminList, assignServiceCenter } from '../../redux/actions/admin'
 import Alert from '../../layout/Alert'
 
 function ServiceCenter(props) {
 
 	const title = ['S.N', 'Location', 'Service Center Name', 'Admin', 'Booking Days', 'Booking Limit', 'Contact', 'Actions']
-
-	useEffect(() => {
-
-		props.serviceCenterList()
-		props.vacantAdminList()
-
-		// Set initial select value from reducer (renders only after props.initialSelect)
-		setState({
-			...state,
-			admin: props.initialSelect
-		})
-
-		// render after getting intial admin select 
-	}, [props.initialSelect, props.sclists.length])
 
 	// Create input change
 	const [state, setState] = useState({
@@ -31,11 +17,21 @@ function ServiceCenter(props) {
 		serviceLocation: "",
 		admin: "",
 		maxBookingDays: "",
-		contact: "",
 		bookingLimit: "",
+		contact: "",
 
 		updateToggle: false
 	})
+
+
+	useEffect(() => {
+		props.serviceCenterList()
+		props.vacantAdminList()
+
+		// render after getting intial admin select 
+		// PROPS VADMINLIST PROBLEM
+	}, [props.sclists.length, props.vadminlist])
+
 
 	// Create service center
 	const addHandler = async e => {
@@ -49,7 +45,7 @@ function ServiceCenter(props) {
 			bookingLimit: state.bookingLimit
 		}
 
-		// console.log(createServiceCenter)
+		// Add service center
 		props.addServiceCenter(createServiceCenter)
 
 		setState({
@@ -83,6 +79,8 @@ function ServiceCenter(props) {
 
 	//  set update chose fields to inputs
 	const updateHandler = e => {
+		// set admin assignServiceCenter
+		props.assignServiceCenter(e.admin._id, 0)
 
 		setState({
 			...state,
@@ -96,29 +94,26 @@ function ServiceCenter(props) {
 			updateToggle: true
 		})
 
-		// Add current admin to admin dropdown at the top of admin array
-		props.vadminlist.unshift(e.admin);
+		// props.vacantAdminList()
+
 	}
 
 	// Cancle update
-	const updateCancelHandler = () => {
+	const updateCancelHandler = (e) => {
+
+		// set admin assignServiceCenter
+		props.assignServiceCenter(state.admin, 1)
+
 		setState({
 			name: "",
 			serviceLocation: "",
-			admin: props.initialSelect,
+			admin: "",
 			maxBookingDays: "",
 			contact: "",
 			bookingLimit: "",
 
 			updateToggle: false
 		})
-		// Remove 'selected for update' admin from list 
-		props.vadminlist.shift()
-	}
-
-	// updatelist submit update
-	const submitUpdate = () => {
-		console.log(state)
 	}
 
 
@@ -146,8 +141,37 @@ function ServiceCenter(props) {
 			)
 	}
 
+	// updatelist submit update
+	const submitUpdate = () => {
+
+		const updateServiceCenter = {
+			name: state.name,
+			serviceLocation: state.serviceLocation,
+			admin: state.admin,
+			maxBookingDays: state.maxBookingDays,
+			contact: state.contact,
+			bookingLimit: state.bookingLimit
+		}
+
+		// Add service center
+		props.addServiceCenter(updateServiceCenter)
+		// set admin assignServiceCenter
+		props.assignServiceCenter(state.admin, 1)
 
 
+
+		// reset state
+		setState({
+			name: "",
+			serviceLocation: "",
+			admin: "",
+			maxBookingDays: "",
+			contact: "",
+			bookingLimit: "",
+
+			updateToggle: false
+		})
+	}
 
 
 	const getlist = props.sclists.map((sclist, index) => {
@@ -181,12 +205,13 @@ function ServiceCenter(props) {
 	// map vacant admin to select options
 	const vacantAdmin = props.vadminlist.map((al, index) => {
 		return (
-			<option key={index} value={al._id}>{al.name}</option>
+			<React.Fragment>
+				<option key={index} value={al._id}>{al.name}</option>
+			</React.Fragment>
 		)
 	})
 
 	return (
-
 		<div className="card">
 			{/* Title */}
 			<span className="badge badge-info">
@@ -234,6 +259,7 @@ function ServiceCenter(props) {
 										className="form-control"
 										// style={{ width: '18em ' }}
 										onChange={e => setState({ ...state, admin: e.target.value })}>
+										<option className="bg-info text-white" selected={true}>--Select Admin--</option>
 										{vacantAdmin}
 									</select>
 
@@ -267,10 +293,9 @@ function ServiceCenter(props) {
 								</td>
 								<td>
 									{/* Create or Update button based on state.updateToogle condition */}
-									{createOrUpdateBtn()}
+									{createOrUpdateBtn(state)}
 								</td>
 							</tr>
-
 
 							{/* If update clicked then turn off list */}
 							{state.updateToggle ? null : getlist}
@@ -286,14 +311,16 @@ ServiceCenter.propTypes = {
 	serviceCenterList: PropTypes.func.isRequired,
 	vacantAdminList: PropTypes.func.isRequired,
 	addServiceCenter: PropTypes.func.isRequired,
-	deleteServiceCenter: PropTypes.func.isRequired
+	deleteServiceCenter: PropTypes.func.isRequired,
+	assignServiceCenter: PropTypes.func
 }
 
 const mapStateToProps = state => ({
 	sclists: state.serviceCenterList.sclist,
 	vadminlist: state.admin.vadminlist,
-	initialSelect: state.admin.initialSelect,
 	loading: state.admin.loading
 })
 
-export default connect(mapStateToProps, { serviceCenterList, vacantAdminList, addServiceCenter, deleteServiceCenter })(ServiceCenter)
+export default connect(mapStateToProps,
+	{ serviceCenterList, vacantAdminList, addServiceCenter, deleteServiceCenter, assignServiceCenter })
+	(ServiceCenter)
