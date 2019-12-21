@@ -9,7 +9,7 @@ import Alert from '../../layout/Alert'
 
 function AdminUsers(props) {
 
-    const title = ['S.N', 'Name', 'Location', 'Phone', 'Email', 'Username', 'Password', 'Actions']
+    const title = ['S.N', 'Name', 'Location', 'Phone', 'Email', 'Assigned Service Center', 'Username', 'Password', 'Actions']
 
     // Create input change
     const [state, setState] = useState({
@@ -172,6 +172,7 @@ function AdminUsers(props) {
                 <td className="pt-3-half" name="location">{admin.location}</td>
                 <td className="pt-3-half" name="phone">{admin.phone}</td>
                 <td className="pt-3-half" name="email">{admin.email}</td>
+                <td className="pt-3-half" name="email">{admin.assignedServiceCenter}</td>
                 <td className="pt-3-half" name="username">{admin.username}</td>
                 <td className="pt-3-half " style={{ background: "#cfcccc" }} ></td>
                 <td>
@@ -242,6 +243,15 @@ function AdminUsers(props) {
                                     placeholder="Phone"
                                     value={state.phone}
                                     onChange={onChangeHandler} />
+                                </td>
+                                <td><input
+                                    name="email"
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Email"
+                                    value={state.email}
+                                    onChange={onChangeHandler}
+                                />
                                 </td>
                                 <td><input
                                     name="email"
