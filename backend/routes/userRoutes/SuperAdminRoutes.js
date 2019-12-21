@@ -128,7 +128,7 @@ router.post("/register", [
         { expiresIn: 36000 },
         (err, token) => {
           if (err) res.json({ err });
-          res.json({ token });
+          res.json(user);
           console.log("Token Generate SUCCESFULL");
         }
       );
@@ -145,20 +145,15 @@ router.post("/register", [
 //@desc     Update superadmin
 //@access   Superadmin
 router.post("/update/:id", [auth, [
-  check("username", "Please enter username").not().isEmpty(),
-  check("password", "Please enter password").not().isEmpty(),
-  check("name", "Please enter name").not().isEmpty(),
-  check("email", "Please enter email").isEmail(),
-  check("phone", "Please enter a phone number").isNumeric(),
-  check("location", "Please Enter location").not().isEmpty(),
+  check("superadmin", "Superadmin missing").not().isEmpty()
 ]],
+  // async (req, res) => { res.json(req.params.id, req.body) }
   async (req, res) => {
     //   Check if User is Superadmin
     if (req.user.role !== 1) {
       return res.status(400).json("Not authorized");
     }
     const error = validationResult(req);
-    // If validation errors
 
     if (!error.isEmpty()) {
       return (
@@ -168,19 +163,25 @@ router.post("/update/:id", [auth, [
     // Initialise new Object and set properties from request
     const superadmin = {};
 
-
-    if (req.body.username) superadmin.username = req.body.username;
-    if (req.body.password) superadmin.password = req.body.password;
-    if (req.body.name) superadmin.name = req.body.name;
-    if (req.body.email) superadmin.email = req.body.email;
-    if (req.body.phone) superadmin.phone = req.body.phone;
-    if (req.body.location) superadmin.location = req.body.location;
+    if (req.body.superadmin.username) superadmin.username = req.body.superadmin.username;
+    if (req.body.superadmin.password) superadmin.password = req.body.superadmin.password;
+    if (req.body.superadmin.name) superadmin.name = req.body.superadmin.name;
+    if (req.body.superadmin.email) superadmin.email = req.body.superadmin.email;
+    if (req.body.superadmin.phone) superadmin.phone = req.body.superadmin.phone;
+    if (req.body.superadmin.location) superadmin.location = req.body.superadmin.location;
     superadmin.role = 1;
 
     // Encrypt password
-    const salt = await bcrypt.genSalt(10);
-    superadmin.password = await bcrypt.hash(req.body.password, salt);
+    if (req.body.superadmin.password) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        superadmin.password = await bcrypt.hash(req.body.superadmin.password, salt);
+      } catch (err) {
+        return res.json(err)
+      }
+    }
 
+    // res.json('superadmin')
     try {
       // If superadmin exists, Update 
       let superadminDetails = await User.findOne({ _id: req.params.id, role: 1 });
@@ -193,7 +194,6 @@ router.post("/update/:id", [auth, [
           { new: true }
         );
 
-        res.json("Update successful");
         return res.json(superadminDetails);
 
       }
@@ -201,7 +201,7 @@ router.post("/update/:id", [auth, [
 
 
     } catch (err) {
-      res.status(500).send(err.message);
+      return res.status(500).send(err.message);
     }
   }
 );

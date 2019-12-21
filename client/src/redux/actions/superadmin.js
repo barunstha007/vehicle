@@ -2,8 +2,12 @@ import axios from "axios";
 import {
     GETSUPERADMIN_SUCCESS,
     GETSUPERADMIN_FAIL,
+    SUPERADMIN_ADD_SUCCESS,
     UPDATESUPERADMIN_SUCCESS,
-    UPDATESUPERADMIN_FAIL
+    UPDATESUPERADMIN_FAIL,
+    SUPERADMIN_ADD_FAIL,
+    SUPERADMIN_DELETE_SUCCESS,
+    SUPERADMIN_DELETE_FAIL
 } from './types';
 import { setAlert } from './alert'
 
@@ -30,86 +34,104 @@ export const getSuperadmin = () => async dispatch => {
     }
 }
 
-export const updateSuperadmin = (id, assignedServiceCenter) => async dispatch => {
+export const updateSuperadmin = (superadmin) => async dispatch => {
 
-    const body = { id, assignedServiceCenter }
 
     try {
-        const res = await axios.post('/update/' + id, body)
+        const id = superadmin.id
+        const body = { id, superadmin }
+        const res = await axios.post('/superadmin/update/' + id, body)
 
-        // dispatch({
-        //     type: UPDATESUPERADMIN_SUCCESS,
-        //     payload: res.data
-        // })
-
-        console.log(res.data)
+        dispatch({
+            type: UPDATESUPERADMIN_SUCCESS,
+            payload: res.data
+        })
+        // console.log(res.data)
+        dispatch(setAlert('Superadmin Updated successfully', 'success'))
 
     } catch (err) {
-        console.log(err)
+        // console.log(err)
+        const errors = err.response.data.error
+        if (errors) {
+            dispatch(setAlert(errors[0].msg, 'danger'))
+
+        }
         dispatch({
-            type: UPDATESUPERADMIN_SUCCESS
+            type: UPDATESUPERADMIN_FAIL
         })
     }
 }
 
-// Add service center
-// export const addSuperadmin = (serviceCenterDetails) => async dispatch => {
-//     const config = {
-//         headers: {
-//             'Content-type': 'application/json'
-//         }
-//     }
 
-//     // Stringify admindetails
-//     const body = JSON.stringify(serviceCenterDetails)
+export const addSuperadmin = (superadminDetails) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }
 
-//     try {
-//         // POST for registration, with req.body
-//         const res = await axios.post('/register', body, config)
-//         console.log(res.data);
+    // Stringify admindetails
+    const body = JSON.stringify(superadminDetails)
 
-//         dispatch({
-//             type: SUPERADMIN_ADD_SUCCESS,
-//             // get token from response
-//             payload: res.data
-//         })
+    try {
+        // POST for registration, with req.body
+        const res = await axios.post('/superadmin/register', body, config)
 
-
-//     } catch (err) {
-//         const errors = err.response.data.error
-//         console.log(errors)
-//         if (errors) {
-//             dispatch(setAlert(errors[0].msg, 'danger'))
-
-//         }
-//         dispatch({
-//             type: SUPERADMIN_ADD_FAIL
-//         })
-//     }
-// }
+        dispatch({
+            type: SUPERADMIN_ADD_SUCCESS,
+            // get token from response
+            payload: res.data
+        })
+        dispatch(setAlert('New Superadmin created', 'success'))
 
 
-// export const deleteSuperadmin = (id, assignedServiceCenter) => async dispatch => {
+    } catch (err) {
+        const errors = err.response.data.error
+        console.log(errors)
+        if (errors) {
+            dispatch(setAlert(errors[0].msg, 'danger'))
 
-//     const body = { id, assignedServiceCenter }
+        }
+        dispatch({
+            type: SUPERADMIN_ADD_FAIL
+        })
+    }
+}
 
-//     try {
-//         const res = await axios.post('/admin/assignServiceCenter', body)
+export const deleteSuperadmin = (superadminID) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }
 
-//         dispatch({
-//             type: ASSIGNSERVICECENTER_SUCCESS,
-//             payload: res.data
-//         })
+    // Stringify userdetails
+    const id = superadminID._id
 
-//         console.log('Action=> AssignServiceCenterSuccess')
-//         console.log(res.data)
+    try {
 
-//     } catch (err) {
-//         console.log(err)
-//         dispatch({
-//             type: ASSIGNSERVICECENTER_FAIL
-//         })
-//     }
-// }
+        // DELETE service center
+        const res = await axios.delete('/superadmin/' + id)
+
+        dispatch(setAlert(res.data, 'success'))
+
+        // delete from list
+        dispatch({
+            type: SUPERADMIN_DELETE_SUCCESS,
+            payload: id
+        })
 
 
+
+    } catch (err) {
+        const errors = err.response.data.error
+        console.log(errors)
+        if (errors) {
+            dispatch(setAlert(errors[0].msg, 'danger'))
+
+        }
+        dispatch({
+            type: SUPERADMIN_DELETE_FAIL
+        })
+    }
+}

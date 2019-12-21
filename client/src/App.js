@@ -14,6 +14,7 @@ import AdminHome from './components/Admin/AdminHome'
 
 // Super Users
 import ServiceCenter from './components/Superadmin/ServiceCenter'
+import SuperAdminUsers from './components/Superadmin/SuperAdminUsers'
 import AdminUsers from './components/Superadmin/AdminUsers'
 
 // Redux
@@ -64,7 +65,10 @@ const App = () => {
             <Route path="/service-centers">
               <ServiceCenter />
             </Route>
-            <Route path="/admin-users">
+            <Route path="/superadminlists">
+              <SuperAdminUsers />
+            </Route>
+            <Route path="/adminlists">
               <AdminUsers />
             </Route>
             <Route path="/config">

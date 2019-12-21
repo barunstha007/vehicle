@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 // Redux
 import { connect } from 'react-redux'
@@ -31,7 +31,11 @@ function Navigation(props) {
                     <Nav.Link href="/config">BookingConfig</Nav.Link>
 
                     <Nav.Link href="/service-centers">Service Centers</Nav.Link>
-                    <Nav.Link href="/admin-users">Power Users</Nav.Link>
+                    {/* <Nav.Link href="/admin-users">Power Users</Nav.Link> */}
+                    <NavDropdown title="Power Users" id="basic-nav-dropdown">
+                        <NavDropdown.Item href="/superadminlists">Superadmin</NavDropdown.Item>
+                        <NavDropdown.Item href="/adminlists">Admin</NavDropdown.Item>
+                    </NavDropdown>
                 </Nav>
                 {props.auth.isAuthenticated ? authLinks : guestLinks}
 

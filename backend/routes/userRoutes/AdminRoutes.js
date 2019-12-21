@@ -32,10 +32,10 @@ router.get('/', auth, async (req, res) => {
 
 })
 
-// @route   GET '/admin/:id'
+// @route   GET '/admin/all'
 // @desc    get all admin
 // @access  Superadmin
-router.get('/:id', auth, async (req, res) => {
+router.get('/all', auth, async (req, res) => {
 
   //   Check if User is Superadmin
   if (req.user.role !== 1) {
@@ -45,7 +45,7 @@ router.get('/:id', auth, async (req, res) => {
   try {
 
     // Search admin 
-    const admin = await User.find({ role: 2, _id: req.params.id })
+    const admin = await User.find({ role: 2 })
 
     //If there is admin
     res.json(admin)
