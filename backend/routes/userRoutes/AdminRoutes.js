@@ -96,7 +96,7 @@ router.post("/register", [
     }
 
     try {
-      // Search for superadmin by username, email or phone
+      // Search for admin by username, email or phone
       let username = await User.findOne({ username: req.body.username });
       let email = await User.findOne({ email: req.body.email });
       let phone = await User.findOne({ phone: req.body.phone });
@@ -149,7 +149,7 @@ router.post("/register", [
         { expiresIn: 36000 },
         (err, token) => {
           if (err) res.json({ err });
-          res.json({ token });
+          res.json(user);
           console.log("Token Generate SUCCESFULL");
         }
       );
@@ -162,72 +162,78 @@ router.post("/register", [
   }
 );
 
-//@route    POST '/admin/:id'
-//@desc     Update admin
-//@access   Superadmin, Same Admin
-// router.post("/:id", [auth, [
-//   check("username", "Please enter username").not().isEmpty(),
-//   check("password", "Please enter password").not().isEmpty(),
-//   check("name", "Please enter name").not().isEmpty(),
-//   check("email", "Please enter email").isEmail(),
-//   check("phone", "Please enter a phone number").isNumeric(),
-//   check("location", "Please enter location").not().isEmpty(),
-// ]],
-//   async (req, res) => {
-//     //   Check if User is not Superadmin or Admin
-//     if (req.user.role > 2) {
-//       return res.status(400).json("Not authorized");
-//     }
-//     //   Check if User is Admin, must be same Admin
-//     if (req.user.role == 2 && req.user.id !== req.params.id) {
-//       return res.status(400).json("Not authorized");
-//     }
+// @route    POST '/admin/update/:id'
+// @desc     Update admin
+// @access   Superadmin, Same Admin
+router.post("/update/:id", [auth, [
+  check("admin.username", "Please enter username").not().isEmpty(),
+  check("admin.name", "Please enter name").not().isEmpty(),
+  check("admin.email", "Please enter email").isEmail(),
+  check("admin.phone", "Please enter a phone number").isNumeric(),
+  check("admin.location", "Please enter location").not().isEmpty(),
+]],
+  async (req, res) => {
+    //   Check if User is not Superadmin or Admin
+    if (req.user.role > 2) {
+      return res.status(400).json("Not authorized");
+    }
+    //   Check if User is Admin, must be same Admin
+    if (req.user.role == 2 && req.user.id !== req.params.id) {
+      return res.status(400).json("Not authorized");
+    }
 
-//     const error = validationResult(req);
-//     // If validation errors
+    const error = validationResult(req);
+    // If validation errors
 
-//     if (!error.isEmpty()) {
-//       return (
-//         res.status(400).json({ error: error.array() })
-//       );
-//     }
+    if (!error.isEmpty()) {
+      return (
+        res.status(400).json({ error: error.array() })
+      );
+    }
 
-//     // Initialise new Object and set properties from request
-//     const admin = {};
+    // Initialise new Object and set properties from request
+    const admin = {};
 
-//     if (req.body.username) admin.username = req.body.username;
-//     if (req.body.password) admin.password = req.body.password;
-//     if (req.body.name) admin.name = req.body.name;
-//     if (req.body.email) admin.email = req.body.email;
-//     if (req.body.phone) admin.phone = req.body.phone;
-//     if (req.body.location) admin.location = req.body.location;
-//     admin.role = 2;
+    if (req.body.admin.username) admin.username = req.body.admin.username;
+    if (req.body.admin.password) admin.password = req.body.admin.password;
+    if (req.body.admin.name) admin.name = req.body.admin.name;
+    if (req.body.admin.email) admin.email = req.body.admin.email;
+    if (req.body.admin.phone) admin.phone = req.body.admin.phone;
+    if (req.body.admin.location) admin.location = req.body.admin.location;
+    admin.role = 2;
 
-//     // Encrypt password
-//     const salt = await bcrypt.genSalt(10);
-//     admin.password = await bcrypt.hash(req.body.password, salt);
-
-//     try {
-//       let adminDetails = await User.findOne({ _id: req.params.id, role: 2 });
-
-//       // If admin exists, Update 
-//       if (adminDetails) {
-//         adminDetails = await User.findOneAndUpdate(
-//           { _id: req.params.id },
-//           { $set: admin },
-//           { new: true }
-//         );
-
-//         return res.json("Update successful");
-//       }
-//       res.json('User not Found')
+    // Encrypt password
+    if (req.body.admin.password) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        admin.password = await bcrypt.hash(req.body.admin.password, salt);
+      } catch (err) {
+        return res.json(err)
+      }
+    }
 
 
-//     } catch (err) {
-//       res.status(500).send(err.message);
-//     }
-//   }
-// );
+    try {
+      let adminDetails = await User.findOne({ _id: req.params.id, role: 2 });
+
+      // If admin exists, Update 
+      if (adminDetails) {
+        adminDetails = await User.findOneAndUpdate(
+          { _id: req.params.id },
+          { $set: admin },
+          { new: true }
+        );
+
+        return res.json(adminDetails);
+      }
+      res.json('User not Found')
+
+
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  }
+);
 
 //@route    DELETE /admin/:id
 //@desc     delete admin

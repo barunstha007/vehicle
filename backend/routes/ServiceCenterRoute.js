@@ -95,7 +95,7 @@ router.post("/", [auth,
         { new: true }
       );
 
-      return res.status(200).json("New Service Center Created");
+      return res.status(200).json(newServiceCenter);
 
     } catch (err) {
       return res.status(500).json("Server Error");
@@ -204,7 +204,6 @@ router.delete("/:id", auth, async (req, res) => {
     // If service center exists
     let serviceCenter = await ServiceCenter.findOne({ _id: id });
 
-    console.log(serviceCenter)
     if (serviceCenter) {
       await ServiceCenter.findByIdAndDelete({ _id: id });
 
