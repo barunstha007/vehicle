@@ -45,11 +45,11 @@ function ServiceCenterBook(props) {
         <form className="form-group row container" onSubmit={bookHandler}>
             <select
                 className="form-control"
-                style={{ width: '18em ' }}
+                style={{ width: '17em ' }}
                 onChange={e => setState({ ...state, selectedValue: e.target.value })}>
                 {serviceLocation}
             </select>
-            <button className="btn btn-primary mx-1" type="submit" >Book</button>
+            <button className="btn btn-primary mt-2" type="submit" >Book</button>
         </form>
     )
 }

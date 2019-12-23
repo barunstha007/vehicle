@@ -2,8 +2,15 @@ import {
     GETVACANTADMIN_SUCCESS,
     GETVACANTADMIN_FAIL,
     UPDATEVACANTADMIN_SUCCESS,
+    UPDATE_ASSIGNED_ADMIN_SUCCESS,
     // POWER USERS
-    GETADMIN_SUCCESS
+    GETADMIN_SUCCESS,
+    ADMIN_ADD_SUCCESS,
+    ADMIN_ADD_FAIL,
+    ADMIN_DELETE_SUCCESS,
+    ADMIN_DELETE_FAIL,
+    UPDATEADMIN_SUCCESS,
+    UPDATEADMIN_FAIL
 } from '../actions/types'
 
 const initialState = {
@@ -32,7 +39,7 @@ export default function (state = initialState, action) {
                 loading: false
             }
 
-        // Update admin list after create
+        // remove vacant admin from list after create service center
         case UPDATEVACANTADMIN_SUCCESS:
             return {
                 ...state,
@@ -40,6 +47,17 @@ export default function (state = initialState, action) {
                 // <select> initial value
                 loading: false
             }
+
+        // add vacant admin to list after delete service center
+        case UPDATE_ASSIGNED_ADMIN_SUCCESS:
+            return {
+                ...state,
+                vadminlist: [...state.vadminlist, action.payload],
+                // <select> initial value
+                loading: false
+            }
+
+
 
 
 
@@ -53,35 +71,36 @@ export default function (state = initialState, action) {
                 loading: false
             }
 
-        // case UPDATEADMIN_SUCCESS:
+        case ADMIN_ADD_SUCCESS:
+            return {
+                ...state,
+                adminlist: [...state.adminlist, action.payload],
+                loading: false
+            }
 
-        //     // find index of given id in list
-        //     const index = state.superadminlist.findIndex(sc => {
-        //         return sc._id == action.payload._id
-        //     })
+        case ADMIN_DELETE_SUCCESS:
+            return {
+                ...state,
+                // remove id from sclist
+                adminlist: state.adminlist.filter(admin => admin._id !== action.payload)
 
-        //     // array, index to replace, item to replace
-        //     const newArray = Object.assign([], state.superadminlist, { [index]: action.payload });
+            }
 
-        //     return {
-        //         ...state,
-        //         superadminlist: newArray
-        //     }
+        case UPDATEADMIN_SUCCESS:
 
-        // case ADMIN_ADD_SUCCESS:
-        //     return {
-        //         ...state,
-        //         superadminlist: [...state.superadminlist, action.payload],
-        //         loading: false
-        //     }
+            // find index of given id in list
+            const index = state.adminlist.findIndex(admin => {
+                return admin._id == action.payload._id
+            })
 
-        // case ADMIN_DELETE_SUCCESS:
-        //     return {
-        //         ...state,
-        //         // remove id from sclist
-        //         superadminlist: state.superadminlist.filter(su => su._id !== action.payload)
+            // array, index to replace, item to replace
+            const newArray = Object.assign([], state.adminlist, { [index]: action.payload });
 
-        //     }
+            return {
+                ...state,
+                adminlist: newArray
+            }
+
 
         default: return state
     }

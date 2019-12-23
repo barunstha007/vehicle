@@ -4,7 +4,7 @@ import { MdModeEdit, MdDelete, MdCancel, MdRemoveRedEye } from 'react-icons/md'
 import { InputGroup, FormControl, Button } from 'react-bootstrap'
 // Redux
 import { connect } from 'react-redux'
-import { getAdmin } from '../../redux/actions/admin'
+import { getAdmin, addAdmin, deleteAdmin, updateAdmin } from '../../redux/actions/admin'
 import Alert from '../../layout/Alert'
 
 function AdminUsers(props) {
@@ -28,7 +28,6 @@ function AdminUsers(props) {
 
     useEffect(() => {
         props.getAdmin()
-        console.log(props.adminlist)
 
     }, [])
 
@@ -59,6 +58,7 @@ function AdminUsers(props) {
             password: state.password,
         }
 
+        console.log(state)
         // Create Admin
         props.addAdmin(createAdmin)
 
@@ -101,11 +101,11 @@ function AdminUsers(props) {
             updateToggle: false,
         })
     }
-    const deleteHandler = suID => {
-        // console.log(suID)
+    const deleteHandler = adminID => {
+        // console.log(adminID)
         var confirm = window.confirm('Are you sure you want to delete this Admin? This deletion is irriversible')
         if (confirm) {
-            return props.deleteAdmin(suID)
+            return props.deleteAdmin(adminID)
         }
     }
     const submitUpdate = () => {
@@ -120,9 +120,9 @@ function AdminUsers(props) {
             password: state.password
         }
 
-        props.updateAdmin(adminDetails, state.index)
+        props.updateAdmin(adminDetails)
 
-        console.log(props.adminlist)
+        console.log(adminDetails)
         // reset state
         setState({
 
@@ -137,8 +137,6 @@ function AdminUsers(props) {
             updateToggle: false
         })
     }
-
-
 
     // CHECK Create or Update and Cancle button
     const createOrUpdateBtn = (state) => {
@@ -204,6 +202,15 @@ function AdminUsers(props) {
                     <span className="table-add float-right mb-3 mr-2"><a href="#!" className="text-success"><i
                         className="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
                     <Alert />
+                    {/* <span >
+                        <input
+                            name="name"
+                            type="text"
+                            className="form-control col-sm-2"
+                            placeholder="Search admin"
+                            value={state.name}
+                            onChange={onChangeHandler} />
+                    </span><br /> */}
                     <table className="table table-bordered table-responsive-md table-striped text-center">
                         {/* Table Headers */}
                         <thead>
@@ -254,12 +261,10 @@ function AdminUsers(props) {
                                 />
                                 </td>
                                 <td><input
-                                    name="email"
+                                    name="assignedServiceCenter"
                                     type="text"
+                                    disabled={true}
                                     className="form-control"
-                                    placeholder="Email"
-                                    value={state.email}
-                                    onChange={onChangeHandler}
                                 />
                                 </td>
                                 <td><input
@@ -303,7 +308,9 @@ function AdminUsers(props) {
 
 AdminUsers.propTypes = {
     getAdmin: PropTypes.func.isRequired,
-    // updateAdmin: PropTypes.func.isRequired
+    addAdmin: PropTypes.func.isRequired,
+    deleteAdmin: PropTypes.func.isRequired,
+    updateAdmin: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -311,5 +318,5 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps,
-    { getAdmin })
+    { getAdmin, addAdmin, deleteAdmin, updateAdmin })
     (AdminUsers)

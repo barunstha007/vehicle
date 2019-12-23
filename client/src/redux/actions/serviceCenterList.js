@@ -8,7 +8,8 @@ import {
     SERVICECENTER_UPDATE_FAIL,
     SERVICECENTER_DELETE_SUCCESS,
     SERVICECENTER_DELETE_FAIL,
-    UPDATEVACANTADMIN_SUCCESS
+    UPDATEVACANTADMIN_SUCCESS,
+    UPDATE_ASSIGNED_ADMIN_SUCCESS
 } from './types';
 import { setAlert } from './alert'
 
@@ -45,26 +46,19 @@ export const addServiceCenter = (serviceCenterDetails) => async dispatch => {
 
         dispatch({
             type: SERVICECENTER_ADD_SUCCESS,
-            payload: serviceCenterDetails
+            payload: res.data
         })
 
         // Update dropdown admin list
         dispatch({
             type: UPDATEVACANTADMIN_SUCCESS,
-            payload: serviceCenterDetails.admin
+            payload: res.data.admin
         })
 
-        dispatch(setAlert(res.data, 'success'))
+        dispatch(setAlert('Service Center Added Successfully', 'success'))
 
     } catch (err) {
-        const errors = err.response.data.error
-        if (errors) {
-            dispatch(setAlert(errors[0].msg, 'danger'))
-
-        }
-        dispatch({
-            type: SERVICECENTER_ADD_FAIL
-        })
+        dispatch(setAlert('Some error adding service center', 'danger'))
     }
 }
 
@@ -118,7 +112,6 @@ export const deleteServiceCenter = (serviceCenterID) => async dispatch => {
     const id = serviceCenterID._id
 
     try {
-        console.log(serviceCenterID)
 
         // DELETE service center
         const res = await axios.delete('/service-center/' + id)
@@ -131,17 +124,16 @@ export const deleteServiceCenter = (serviceCenterID) => async dispatch => {
             payload: id
         })
 
+        dispatch({
+            type: UPDATE_ASSIGNED_ADMIN_SUCCESS,
+            payload: serviceCenterID.admin
+        })
+
+
 
 
     } catch (err) {
-        const errors = err.response.data.error
-        console.log(errors)
-        if (errors) {
-            dispatch(setAlert(errors[0].msg, 'danger'))
+        dispatch(setAlert(err, 'danger'))
 
-        }
-        dispatch({
-            type: SERVICECENTER_DELETE_SUCCESS
-        })
     }
 }

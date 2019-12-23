@@ -29,6 +29,7 @@ export default function (state = initialState, action) {
             const index = state.superadminlist.findIndex(sc => {
                 return sc._id == action.payload._id
             })
+            console.log(index)
 
             // array, index to replace, item to replace
             const newArray = Object.assign([], state.superadminlist, { [index]: action.payload });

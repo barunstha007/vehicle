@@ -4,23 +4,37 @@ import { IoIosTime } from 'react-icons/io';
 import "react-datepicker/dist/react-datepicker.css";
 import './Home.css'
 import ServiceCenterBook from '../layout/ServiceCenterBook';
+import Banner from '../assets/parts-banner.jpg'
 
 export default function Home() {
 
     return (
         <React.Fragment>
-            <div className="jumbotron img-container">
-                <h3 className="display-4">Book Servicing <br /> Remotely</h3>
-                <p className="text-success"><strong>Available Servicing Locations:</strong></p>
-                {/* Smart Component */}
-                <ServiceCenterBook />
+            <section class="py-5 img-container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card shadow" style={{ background: 'rgba(0,0,0,0.7)' }}>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12 ">
+                                            <h3 className="text-white">Available Service Centers</h3>
+                                            <hr />
+                                            <ServiceCenterBook />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            </div>
-
+            {/* Card views */}
             <div className="container">
-                <div className="row h-10">
-                    <div className="col-lg-4 col-md-12 h-auto">
-                        <div className="box-part text-center ">
+                <div className="row mt-4">
+                    <div className="col-lg-4 col-md-12 h-auto ">
+                        <div className="box-part text-center shadow " style={{ height: '17rem' }}>
                             <FaCalendarCheck size='30' color='red' />
                             <div className="card-title title">
                                 <h4>Book Servicing Remotely</h4>
@@ -35,7 +49,7 @@ export default function Home() {
                     </div>
 
                     <div className="col-lg-4 col-md-12">
-                        <div className="box-part text-center">
+                        <div className="box-part text-center shadow" style={{ height: '17rem' }}>
                             <IoIosTime size='30' color='blue' />
                             <div className="card-title title">
                                 <h4>Get Queued Up</h4>
@@ -50,7 +64,7 @@ export default function Home() {
                     </div>
 
                     <div className="col-lg-4 col-md-12 h-25">
-                        <div className="box-part text-center">
+                        <div className="box-part text-center shadow" style={{ height: '17rem' }}>
 
                             <FaFlagCheckered size='30' color='green' />
                             <div className="card-title title">

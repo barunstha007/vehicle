@@ -30,6 +30,18 @@ export default function (state = initialState, action) {
                 sclist: state.sclist.concat(action.payload)
             }
         case SERVICECENTER_UPDATE_SUCCESS:
+            // find index of given id in list
+            const index = state.sclist.findIndex(sc => {
+                return sc._id == action.payload.id
+            })
+
+            // array, index to replace, item to replace
+            const newArray = Object.assign([], state.sclist, { [index]: action.payload });
+
+            return {
+                ...state,
+                sclist: newArray
+            }
             // var updateDetails = state.sclist.filter(action.payload._id)
             var updateDetails = state.sclist.map(sc => {
                 if (sc._id === action.payload._id) {

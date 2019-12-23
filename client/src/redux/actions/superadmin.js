@@ -99,11 +99,11 @@ export const addSuperadmin = (superadminDetails) => async dispatch => {
 }
 
 export const deleteSuperadmin = (superadminID) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    }
+    // const config = {
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     }
+    // }
 
     // Stringify userdetails
     const id = superadminID._id

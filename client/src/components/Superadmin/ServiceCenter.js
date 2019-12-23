@@ -29,9 +29,7 @@ function ServiceCenter(props) {
 		props.serviceCenterList()
 		props.vacantAdminList()
 
-		// render after getting intial admin select 
-		// PROPS VADMINLIST PROBLEM
-	}, [props.sclists.length, state])
+	}, [props.sclists.length, props.vadminlist.length])
 
 
 	// Create service center
@@ -95,8 +93,6 @@ function ServiceCenter(props) {
 
 			updateToggle: true
 		})
-
-		// props.vacantAdminList()
 
 	}
 
@@ -163,8 +159,6 @@ function ServiceCenter(props) {
 		// set admin assignServiceCenter
 		props.assignServiceCenter(state.admin, 1)
 
-
-
 		// reset state
 		setState({
 			name: "",
@@ -185,7 +179,7 @@ function ServiceCenter(props) {
 				<td className="pt-3-half" >{index + 1}</td>
 				<td className="pt-3-half" name="location">{sclist.serviceLocation}</td>
 				<td className="pt-3-half" name="name">{sclist.name}</td>
-				<td className="pt-3-half" name="admin">{sclist.admin.name}</td>
+				<td className="pt-3-half" name="admin" className={sclist.admin == null ? 'bg-danger text-white' : ''}>{sclist.admin == null ? sclist.admin = 'NO ADMIN SELECTED' : sclist.admin.name}</td>
 				<td className="pt-3-half" name="bookingDays">{sclist.maxBookingDays}</td>
 				<td className="pt-3-half" name="bookingLimit">{sclist.bookingLimit}</td>
 				<td className="pt-3-half" name="contact">{sclist.contact}</td>
@@ -263,8 +257,9 @@ function ServiceCenter(props) {
 									<select
 										className="form-control"
 										// style={{ width: '18em ' }}
-										onChange={e => setState({ ...state, admin: e.target.value })}>
-										<option className="bg-info text-white" selected={true}>--Select Admin-- </option>
+										onChange={e => setState({ ...state, admin: e.target.value })}
+										defaultValue={'DEFAULT'}>
+										<option className="bg-info text-white" value='DEFAULT'>--Select Admin-- </option>
 										{vacantAdmin}
 									</select>
 

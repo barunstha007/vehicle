@@ -22,7 +22,7 @@ function Navigation(props) {
 
     return (
         <Navbar bg="light" expand="sm">
-            <Navbar.Brand href="/">KTM Service Booking</Navbar.Brand>
+            <Navbar.Brand href="/"> Service Booking</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" expand={768} />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
@@ -32,10 +32,11 @@ function Navigation(props) {
 
                     <Nav.Link href="/service-centers">Service Centers</Nav.Link>
                     {/* <Nav.Link href="/admin-users">Power Users</Nav.Link> */}
-                    <NavDropdown title="Power Users" id="basic-nav-dropdown">
+                    <NavDropdown title="Users" id="basic-nav-dropdown">
                         <NavDropdown.Item href="/superadminlists">Superadmin</NavDropdown.Item>
                         <NavDropdown.Item href="/adminlists">Admin</NavDropdown.Item>
                     </NavDropdown>
+                    <Nav.Link href="/profile">Profile</Nav.Link>
                 </Nav>
                 {props.auth.isAuthenticated ? authLinks : guestLinks}
 

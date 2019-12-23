@@ -119,7 +119,7 @@ function SuperAdminUsers(props) {
       password: state.password
     }
 
-    props.updateSuperadmin(superadminDetails, state.index)
+    props.updateSuperadmin(superadminDetails)
 
     console.log(props.superadminlist)
     // reset state

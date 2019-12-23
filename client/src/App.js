@@ -22,6 +22,7 @@ import { Provider } from 'react-redux';
 import store from './redux/store'
 import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './redux/actions/auth'
+import Profile from './components/Profile';
 
 // If localstorage has token, set token
 if (localStorage.token) {
@@ -76,6 +77,9 @@ const App = () => {
             </Route>
             <Route path="/list">
               <Inqueue />
+            </Route>
+            <Route path="/profile">
+              <Profile />
             </Route>
           </Switch>
         </Router>
