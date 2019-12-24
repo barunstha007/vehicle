@@ -95,7 +95,7 @@ router.post("/update/:id", [
             if (req.body.email) userUpdate.email = req.body.email;
             if (req.body.phone) userUpdate.phone = req.body.phone;
             if (req.body.location) userUpdate.location = req.body.location;
-            userUpdate.role = 3;
+
             userUpdate.avatar = avatar
 
             // // Encrypt password
