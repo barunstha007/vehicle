@@ -10,18 +10,16 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <section class="py-5 img-container">
+            <section class="img-container">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card shadow" style={{ background: 'rgba(0,0,0,0.7)' }}>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-12 ">
-                                            <h3 className="text-white">Available Service Centers</h3>
-                                            <hr />
-                                            <ServiceCenterBook />
-                                        </div>
+                    <div class="row" style={{ top: '20%', position: 'absolute' }}>
+                        <div class="card shadow" style={{ background: 'rgba(0,0,0,0.7)', height: '30vh ' }}>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 ">
+                                        <h3 className="text-white">Available Service Centers</h3>
+                                        <hr />
+                                        <ServiceCenterBook />
                                     </div>
                                 </div>
                             </div>

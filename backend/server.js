@@ -30,8 +30,8 @@ const superadminRoute = require("./routes/userRoutes/SuperAdminRoutes");
 const adminRoute = require("./routes/userRoutes/AdminRoutes");
 const serviceCenterRoute = require("./routes/ServiceCenterRoute");
 const bikeRoute = require("./routes/bikeRoute");
+const profileRoute = require("./routes/profileRoute");
 // const bookingRoute = require("./routes/bookingRoute");
-// const profile = require("./routes/profile");
 
 app.use("/auth", login);
 app.use("/register", userRegisterRoute);
@@ -39,7 +39,7 @@ app.use("/superadmin", superadminRoute);
 app.use("/admin", adminRoute);
 app.use("/service-center", serviceCenterRoute);
 app.use("/bike", bikeRoute);
-// app.use("/booking", bookingRoute);
+app.use("/profile", profileRoute);
 
 // listen to port
 app.listen(port, () => {

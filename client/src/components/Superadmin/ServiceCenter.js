@@ -73,7 +73,6 @@ function ServiceCenter(props) {
 			...state,
 			[e.target.name]: e.target.value
 		})
-		// console.log(state)
 	}
 
 	//  set update chose fields to inputs

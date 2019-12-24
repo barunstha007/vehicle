@@ -21,7 +21,7 @@ router.get('/', auth, async (req, res) => {
 
   try {
     // Search superadmin 
-    const superadminList = await User.find({ role: 1 })
+    const superadminList = await User.find({ role: 1 }).select("-password")
     // If no superadmin
     if (!superadminList) {
       return res.json("There are no superadmin")

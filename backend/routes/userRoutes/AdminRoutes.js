@@ -20,7 +20,7 @@ router.get('/', auth, async (req, res) => {
 
   try {
     // Search admin 
-    const adminList = await User.find({ role: 2, assignedServiceCenter: 0 })
+    const adminList = await User.find({ role: 2, assignedServiceCenter: 0 }).select("-password")
 
     //Return admin
     res.json(adminList)
@@ -45,7 +45,7 @@ router.get('/all', auth, async (req, res) => {
   try {
 
     // Search admin 
-    const admin = await User.find({ role: 2 })
+    const admin = await User.find({ role: 2 }).select("-password")
 
     //If there is admin
     res.json(admin)

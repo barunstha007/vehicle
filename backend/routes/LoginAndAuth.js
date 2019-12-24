@@ -39,7 +39,6 @@ router.post("/login", [
     if (!error.isEmpty()) {
       return (
         // return Bad Request
-
         res.status(400).json({ error: error.array() })
       );
     }
