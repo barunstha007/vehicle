@@ -456,7 +456,6 @@ function Profile(props) {
 
 Profile.propTypes = {
     getProfile: PropTypes.func.isRequired,
-    setAlert: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({

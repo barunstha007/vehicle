@@ -3,6 +3,8 @@ const auth = require("../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const User = require("../models/UserDetails.model");
 const gravatar = require("gravatar");
+const bcrypt = require("bcryptjs");
+
 
 // @route   GET '/profile'
 // @desc    get current user profile
@@ -47,7 +49,7 @@ router.post("/update/:id", [
         }
 
         try {
-            // pass IFF unique fields are of requested user and is not taken by another user
+            // search requested user
             let userID = await User.findOne({ _id: req.params.id });
 
             // pass is username is same as in db else check for username availability
@@ -86,17 +88,20 @@ router.post("/update/:id", [
                 d: "mm"
             });
 
-            userUpdate = {}
+
+            const userUpdate = {}
             if (req.body.username) userUpdate.username = req.body.username;
             if (req.body.name) userUpdate.name = req.body.name;
             if (req.body.email) userUpdate.email = req.body.email;
             if (req.body.phone) userUpdate.phone = req.body.phone;
             if (req.body.location) userUpdate.location = req.body.location;
-            userUpdate.role = 3,
-                userUpdate.avatar = avatar
-            // Encrypt password
+            userUpdate.role = 3;
+            userUpdate.avatar = avatar
+
+            // // Encrypt password
             if (req.body.password) {
                 try {
+                    // if (req.body.password < 6) return res.json({ error: "Password must be more than 4 character" })
                     const salt = await bcrypt.genSalt(10);
                     userUpdate.password = await bcrypt.hash(req.body.password, salt);
                 } catch (err) {

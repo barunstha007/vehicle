@@ -21,7 +21,7 @@ export default function (state = initialState, action) {
             // update object
             return {
                 ...state,
-                userProfile: action.payload
+                userProfile: action.payload,
             }
 
         default: return state

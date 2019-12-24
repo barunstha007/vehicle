@@ -35,6 +35,7 @@ export const updateProfile = (profileDetails) => async dispatch => {
 
     try {
         const res = await axios.post('/profile/update/' + profileDetails.id, profileDetails)
+        console.log(res.data)
 
         dispatch({
             type: UPDATEPROFILE_SUCCESS,
