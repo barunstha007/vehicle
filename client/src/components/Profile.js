@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import "./Profile.css"
-import ProfileSecondTab from './ProfileSecondTab'
-import { InputGroup, FormControl, Button } from 'react-bootstrap'
+import { InputGroup, Button } from 'react-bootstrap'
 import { MdRemoveRedEye } from 'react-icons/md'
 
 //Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
-import { getProfile } from '../redux/actions/profile'
-import { setAlert } from '../redux/actions/alert'
+import { getProfile, updateProfile } from '../redux/actions/profile'
+import Alert from '../layout/Alert'
 
 function Profile(props) {
 
@@ -71,7 +70,31 @@ function Profile(props) {
 
     // Submit Edit Profile
     const editProfileSubmit = (e) => {
-        console.log(state)
+
+        const editDetails = {
+            id: state.id,
+            username: state.username,
+            name: state.name,
+            email: state.email,
+            phone: state.phone,
+            location: state.location,
+            password: state.password
+        }
+        props.updateProfile(editDetails)
+
+        setState({
+            ...state,
+            editToggle: false,
+
+            id: "",
+            username: "",
+            name: "",
+            email: "",
+            phone: "",
+            location: "",
+            password: "",
+            avatar: ""
+        })
 
     }
 
@@ -111,6 +134,7 @@ function Profile(props) {
         return (
             <React.Fragment>
                 <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
+
                     {editorSubmitEditbtn()}
                     <br />
                     {/* Title and value */}
@@ -120,7 +144,7 @@ function Profile(props) {
                     </div>
                     <div className="row">
                         <div className="col-6 p-1"><label>Name</label></div>
-                        <div className="col-6 p-1"><p>{props.userProfile.username}</p></div>
+                        <div className="col-6 p-1"><p>{props.userProfile.name}</p></div>
                     </div>
                     <div className="row">
                         <div className="col-6 p-1"><label>Email</label></div>
@@ -293,10 +317,10 @@ function Profile(props) {
                             <label>Password</label>
                         </div>
                         <div className="col-6 p-1">
-                            <InputGroup className="">
-                                <FormControl
+                            <InputGroup>
+                                <input
                                     name="password"
-                                    value={state.password}
+                                    className="form-control"
                                     onChange={inputChangeHandler}
                                     type={state.passwordHidden ? "text" : "password"}
                                     placeholder="New Password"
@@ -379,6 +403,7 @@ function Profile(props) {
 
     return (
         <div className="container emp-profile shadow">
+
             <form method="post">
                 {/* upload photo and Title Row */}
                 <div className="row">
@@ -398,9 +423,7 @@ function Profile(props) {
                             <h5 style={{ textTransform: 'uppercase' }}>
                                 {props.userProfile.name}
                             </h5>
-                            {/* <h6>
-                            Web Developer and Designer
-                                </h6> */}
+
                             <p className="proile-rating">BOOKING RANKINGS : <span>8/40</span></p>
                             <ul className="nav nav-tabs" id="myTab" role="tablist">
                                 <li className="nav-item">
@@ -419,11 +442,12 @@ function Profile(props) {
                     <div className="col-md-4">
                     </div>
                     <div className="col-md-8">
+                        <Alert />
                         <div className="tab-content profile-tab ml-3" id="myTabContent">
-
                             {state.editToggle ? editUserDetails() : userDetails()}
-
-                        </div></div></div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
 
@@ -441,4 +465,4 @@ const mapStateToProps = state => ({
     authStatus: state.auth.authStatus
 })
 
-export default connect(mapStateToProps, { getProfile, setAlert })(Profile)
+export default connect(mapStateToProps, { getProfile, updateProfile })(Profile)

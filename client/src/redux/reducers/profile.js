@@ -1,5 +1,6 @@
 import {
-    GETPROFILE_SUCCESS
+    GETPROFILE_SUCCESS,
+    UPDATEPROFILE_SUCCESS
 } from '../actions/types'
 
 const initialState = {
@@ -14,6 +15,14 @@ export default function (state = initialState, action) {
             return Object.assign({}, state, {
                 userProfile: action.payload
             })
+
+
+        case UPDATEPROFILE_SUCCESS:
+            // update object
+            return {
+                ...state,
+                userProfile: action.payload
+            }
 
         default: return state
     }

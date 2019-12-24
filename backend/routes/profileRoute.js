@@ -2,6 +2,7 @@ const router = require("express").Router();
 const auth = require("../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const User = require("../models/UserDetails.model");
+const gravatar = require("gravatar");
 
 // @route   GET '/profile'
 // @desc    get current user profile
@@ -23,25 +24,19 @@ router.get('/', auth, async (req, res) => {
 
 })
 
-// @route   POST '/profile/update'
+// @route   POST '/profile/update/:id'
 // @desc    Update requested user profile
 // @access  Private
-router.post("/", [
+router.post("/update/:id", [
     // express validator
-    check("username", "Username must be atleast 4 characters").isLength({
-        min: 4
-    }),
+    check("username", "Username must be atleast 4 characters").isLength({ min: 4 }),
     check("name", "Name must be minimum of 3 characters").isLength({ min: 3 }),
     check("email", "Please include a valid email").isEmail(),
     check("phone", "Phone number must be of minimum of 7 length ").isLength({ min: 7 }),
-    check("location", "Location must be of minimum 4 characters").isLength({ min: 4 }),
-    check("password", "Password must be atleast 5 characters").isLength({
-        min: 5
-    })
+    check("location", "Location must be of minimum 4 characters").isLength({ min: 4 })
 ],
     // async await function
     async (req, res) => {
-
         const error = validationResult(req);
         // if error is not empty || if there is error
         if (!error.isEmpty()) {
@@ -52,24 +47,36 @@ router.post("/", [
         }
 
         try {
-            // See if user exists
-            // find in db the value of  req.body.email
-            let username = await User.findOne({ username: req.body.username });
-            let email = await User.findOne({ email: req.body.email });
-            let phone = await User.findOne({ phone: req.body.phone });
+            // pass IFF unique fields are of requested user and is not taken by another user
+            let userID = await User.findOne({ _id: req.params.id });
 
-            if (username) {
-                return res
-                    .status(400)
-                    .json({ error: [{ msg: "The username already exists" }] });
-            } else if (email) {
-                return res
-                    .status(400)
-                    .json({ error: [{ msg: "The email already exists" }] });
-            } else if (phone) {
-                return res
-                    .status(400)
-                    .json({ error: [{ msg: "The phone number already exists" }] });
+            // pass is username is same as in db else check for username availability
+            if (req.body.username === userID.username) { }
+            else {
+                let username = await User.findOne({ username: req.body.username });
+                if (username) {
+                    return res
+                        .status(400)
+                        .json({ error: "The username is taken" });
+                }
+            }
+            if (req.body.phone === userID.phone) { }
+            else {
+                let phone = await User.findOne({ phone: req.body.phone });
+                if (phone) {
+                    return res
+                        .status(400)
+                        .json({ error: "The phone number is taken" });
+                }
+            }
+            if (req.body.email === userID.email) { }
+            else {
+                let email = await User.findOne({ email: req.body.email });
+                if (email) {
+                    return res
+                        .status(400)
+                        .json({ error: "The email already exists" });
+                }
             }
 
             //Get user Gravatar from the email in request body
@@ -79,48 +86,38 @@ router.post("/", [
                 d: "mm"
             });
 
-            // saving details from req.body
-            user = new User({
-                name: req.body.name,
-                phone: req.body.phone,
-                location: req.body.location,
-                email: req.body.email,
-                username: req.body.username,
-                password: req.body.password,
-                role: 3,
-                avatar
-            });
-
+            userUpdate = {}
+            if (req.body.username) userUpdate.username = req.body.username;
+            if (req.body.name) userUpdate.name = req.body.name;
+            if (req.body.email) userUpdate.email = req.body.email;
+            if (req.body.phone) userUpdate.phone = req.body.phone;
+            if (req.body.location) userUpdate.location = req.body.location;
+            userUpdate.role = 3,
+                userUpdate.avatar = avatar
             // Encrypt password
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(req.body.password, salt);
-
-            // save to database
-            await user.save();
-
-            // Return JsonWebToken
-            const payload = {
-                user: {
-                    id: user.id,
-                    role: user.role
+            if (req.body.password) {
+                try {
+                    const salt = await bcrypt.genSalt(10);
+                    userUpdate.password = await bcrypt.hash(req.body.password, salt);
+                } catch (err) {
+                    return res.json(err)
                 }
-            };
+            }
 
-            jwt.sign(
-                payload,
-                config.get("jwtSecret"),
-                { expiresIn: 36000 },
-                (err, token) => {
-                    if (err) res.json({ err });
-                    // Send token and user role in json
-                    const role = payload.user.role
-                    res.json({ token, role });
+            if (userID) {
+                userID = await User.findOneAndUpdate(
+                    { _id: req.params.id },
+                    { $set: userUpdate },
+                    { new: true }
+                );
 
-                    console.log("Register Token Generate SUCCESFULL");
-                }
-            );
+                return res.json(userID);
 
-            // res.send('User registered')
+            }
+
+
+            res.send('User Not Found')
+
         } catch (err) {
             console.error(err.message);
             res.status(500).send("Server Error");
