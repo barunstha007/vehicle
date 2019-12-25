@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import { Form } from 'react-bootstrap'
+import { TextField, Button, FormControl, InputLabel, Select } from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
@@ -13,28 +13,30 @@ import PropTypes from 'prop-types';
 import { login } from '../redux/actions/auth'
 import Alert from "../layout/Alert";
 
-function LoginForm(props) {
+function BikeForm(props) {
     // Custom functions
     const [state, setstate] = useState({
-        username: "",
-        password: ""
+        bikeModel: "",
+        bikeNumber: "",
+        odo: "",
 
     });
 
     const onSubmitHandler = e => {
         e.preventDefault()
 
-        const loginDetails = {
-            username: state.username,
-            password: state.password
+        const bikeDetails = {
+            bikeModel: state.bikeModel,
+            bikeNumber: state.bikeNumber,
+            odo: state.odo,
         }
 
 
-        props.login(loginDetails)
+        props.login(bikeDetails)
     }
 
-    // IF AUTHENTICATED
-    if (props.isAuthenticated) return <Redirect to="profile" />
+    // // IF AUTHENTICATED
+    // if (props.isAuthenticated) return <Redirect to="profile" />
 
     const onChangeHandler = e => {
         // Spread operator because hooks replace the whole object
@@ -43,10 +45,42 @@ function LoginForm(props) {
     };
 
 
+    // MATERIAL UI
+    const inputLabel = React.useRef(null);
+    const [labelWidth, setLabelWidth] = React.useState(100);
+
     return (
         <React.Fragment>
             <Alert />
             <form onSubmit={onSubmitHandler}>
+                {/* Dropdown */}
+                <FormControl variant="outlined"
+                    className={props.classes.form}
+                >
+                    <InputLabel
+                        ref={inputLabel}
+                        htmlFor="outlined-age-native-simple">
+                        Age
+        </InputLabel>
+                    <Select
+                        native
+                        value={state.age}
+                        // onChange={handleChange('age')}
+                        labelWidth={labelWidth}
+                        inputProps={{
+                            name: 'age',
+                            id: 'outlined-age-native-simple',
+                        }}
+                        defaultValue="DEFAULT"
+                    >
+                        <option value="DEFAULT" disabled>--Select Model--</option>
+                        <option value={10}>Ten</option>
+                        <option value={20}>Twenty</option>
+                        <option value={30}>Thirty</option>
+                    </Select>
+                </FormControl>
+
+                {/* Text */}
                 <TextField
                     variant="outlined"
                     margin="normal"
@@ -83,12 +117,12 @@ function LoginForm(props) {
                     className={props.classes.submit}
                 >
                     Sign In
-          </Button>
+      </Button>
                 <Grid container>
                     <Grid item xs>
                         <Link href="#" variant="body2">
                             Forgot password?
-              </Link>
+          </Link>
                     </Grid>
                     <Grid item>
                         <Link href="/register" variant="body2">
@@ -96,12 +130,15 @@ function LoginForm(props) {
                         </Link>
                     </Grid>
                 </Grid>
-            </form>
-        </React.Fragment>
+            </form >
+        </React.Fragment >
+
+
+
     )
 }
 
-LoginForm.propTypes = {
+BikeForm.propTypes = {
     login: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool
 }
@@ -110,4 +147,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
     authStatus: state.auth.authStatus
 })
-export default connect(mapStateToProps, { login })(LoginForm)
+export default connect(mapStateToProps, { login })(BikeForm)

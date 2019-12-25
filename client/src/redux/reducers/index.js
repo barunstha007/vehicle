@@ -5,6 +5,7 @@ import serviceCenterList from './serviceCenterList'
 import admin from './admin'
 import superadmin from './superadmin'
 import profile from './profile'
+import bikeModel from './bikeModel'
 
 export default combineReducers({
     alert,
@@ -12,5 +13,6 @@ export default combineReducers({
     serviceCenterList,
     admin,
     superadmin,
-    profile
+    profile,
+    bikeModel
 })

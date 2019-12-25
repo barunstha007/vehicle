@@ -29,6 +29,7 @@ const userRegisterRoute = require("./routes/userRoutes/userRegister");
 const superadminRoute = require("./routes/userRoutes/SuperAdminRoutes");
 const adminRoute = require("./routes/userRoutes/AdminRoutes");
 const serviceCenterRoute = require("./routes/ServiceCenterRoute");
+const bikeModelRoute = require("./routes/bikeRoutes/bikeModelRoute");
 const bikeRoute = require("./routes/bikeRoute");
 const profileRoute = require("./routes/profileRoute");
 // const bookingRoute = require("./routes/bookingRoute");
@@ -39,6 +40,7 @@ app.use("/superadmin", superadminRoute);
 app.use("/admin", adminRoute);
 app.use("/service-center", serviceCenterRoute);
 app.use("/bike", bikeRoute);
+app.use("/bikemodel", bikeModelRoute);
 app.use("/profile", profileRoute);
 
 // listen to port

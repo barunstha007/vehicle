@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import UserRegistration from './components/UserRegistration';
 import Login from './components/Login'
 import Navigation from './components/Navigation';
+import Bike from './components/Bike';
+
 // Admin
 import CurrentBooking from './components/Admin/CurrentBooking';
 import Home from './components/Home';
@@ -16,6 +18,8 @@ import AdminHome from './components/Admin/AdminHome'
 import ServiceCenter from './components/Superadmin/ServiceCenter'
 import SuperAdminUsers from './components/Superadmin/SuperAdminUsers'
 import AdminUsers from './components/Superadmin/AdminUsers'
+import BikeModelList from './components/Superadmin/BikeModelList'
+
 
 // Redux
 import { Provider } from 'react-redux';
@@ -80,6 +84,12 @@ const App = () => {
             </Route>
             <Route path="/profile">
               <Profile />
+            </Route>
+            <Route path="/bike">
+              <Bike />
+            </Route>
+            <Route path="/bikemodel-list">
+              <BikeModelList />
             </Route>
           </Switch>
         </Router>

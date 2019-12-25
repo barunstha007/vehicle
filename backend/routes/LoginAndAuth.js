@@ -68,7 +68,7 @@ router.post("/login", [
       if (!isMatch) {
         return res
           .status(400)
-          .json({ error: [{ msg: "Invalid credentials" }] });
+          .json({ errors: [{ msg: "Invalid credentials" }] });
       }
 
       // Return JsonWebToken

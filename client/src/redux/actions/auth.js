@@ -11,6 +11,7 @@ import {
 } from './types'
 import { setAlert } from './alert'
 import setAuthToken from "../../utils/setAuthToken";
+import { Redirect } from 'react-router-dom';
 
 // Load User
 export const loadUser = () => async dispatch => {
@@ -47,7 +48,6 @@ export const register = (userDetails) => async dispatch => {
     try {
         // POST for registration, with req.body
         const res = await axios.post('/register', body, config)
-        console.log(res.data);
 
         dispatch({
             type: REGISTER_SUCCESS,
@@ -58,13 +58,10 @@ export const register = (userDetails) => async dispatch => {
         // load user after login
         dispatch(loadUser())
 
-    } catch (err) {
-        const errors = err.response.data.error
-        console.log(errors)
-        if (errors) {
-            dispatch(setAlert(errors[0].msg, 'danger'))
 
-        }
+    } catch (err) {
+        dispatch(setAlert(err, 'danger'))
+
         dispatch({
             type: REGISTER_FAIL
         })
@@ -98,7 +95,6 @@ export const login = (loginDetails) => async dispatch => {
 
     } catch (err) {
         const errors = err.response.data.errors
-        console.log(errors)
         if (errors) {
             dispatch(setAlert(errors[0].msg, 'danger'))
 

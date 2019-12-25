@@ -29,7 +29,7 @@ function Navigation(props) {
                     <Nav.Link href="/current">Servicing</Nav.Link>
                     <Nav.Link href="/inqueue">Queue</Nav.Link>
                     <Nav.Link href="/config">BookingConfig</Nav.Link>
-
+                    <Nav.Link href="/bikemodel-list">Bike Models</Nav.Link>
                     <Nav.Link href="/service-centers">Service Centers</Nav.Link>
                     {/* <Nav.Link href="/admin-users">Power Users</Nav.Link> */}
                     <NavDropdown title="Users" id="basic-nav-dropdown">

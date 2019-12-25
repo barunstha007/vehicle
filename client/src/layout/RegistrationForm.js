@@ -13,13 +13,13 @@ import { register } from '../redux/actions/auth'
 function RegistrationForm(props) {
 
     const [state, setstate] = useState({
-        name: 'lokesh',
-        phone: '9810017096',
-        email: 'lokesh@gmail.com',
-        location: 'lazimpat',
-        username: 'asura1',
-        password: 'asura123',
-        cpassword: 'asura123',
+        name: 'test',
+        phone: '12312312',
+        email: 'asdfasdf@gmail.com',
+        location: 'asdfasdf',
+        username: 'username1',
+        password: 'username123',
+        cpassword: 'username123',
     })
 
     const onChangeHandler = e => {
@@ -28,7 +28,7 @@ function RegistrationForm(props) {
         })
     }
 
-    const onSubmitHandler = async e => {
+    const onSubmitHandler = e => {
         e.preventDefault()
 
         const register = {
@@ -43,18 +43,17 @@ function RegistrationForm(props) {
 
         if (register.password !== register.cpassword) {
             props.setAlert('Passwords do not match !', 'danger')
-        } else {
-            // send data to register action
-            props.register(register)
-            console.log('Register Success')
         }
-
-        if (props.isAuthenticated) return <Redirect to="profile" />
-
-        // setstate({
-        //     name: '', phone: '', email: '', location: '', username: '', password: '', cpassword: ''
-        // })
+        // send data to register action
+        props.register(register)
+        // console.log('Register Success')
     }
+
+    if (props.isAuthenticated) return <Redirect to="/bike" />
+
+    // else console.log('Not Authenticated')
+    // return <Redirect to="profile" />
+
 
 
     return (
