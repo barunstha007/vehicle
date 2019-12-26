@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Redirect, browserHistory } from 'react-router-dom'
 import { Form } from 'react-bootstrap'
 import { TextField, Button, FormControl, InputLabel, Select } from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -10,17 +10,23 @@ import Link from "@material-ui/core/Link";
 // Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
-import { login } from '../redux/actions/auth'
+import { getBikeModellist } from '../redux/actions/bikeModel'
+import { addOrUpdatebike } from '../redux/actions/userBike'
 import Alert from "../layout/Alert";
+import setAuthToken from "../utils/setAuthToken";
 
 function BikeForm(props) {
-    // Custom functions
+
     const [state, setstate] = useState({
         bikeModel: "",
         bikeNumber: "",
-        odo: "",
-
+        odometer: "",
     });
+
+    useEffect(() => {
+        props.getBikeModellist()
+
+    }, [])
 
     const onSubmitHandler = e => {
         e.preventDefault()
@@ -28,26 +34,34 @@ function BikeForm(props) {
         const bikeDetails = {
             bikeModel: state.bikeModel,
             bikeNumber: state.bikeNumber,
-            odo: state.odo,
+            odometer: state.odometer,
         }
 
-
-        props.login(bikeDetails)
+        // console.log(bikeDetails)
+        props.addOrUpdatebike(bikeDetails)
+        console.log(props.requestedStatus)
+        if (props.requestedStatus) return window.location.href = '/profile'
     }
 
-    // // IF AUTHENTICATED
-    // if (props.isAuthenticated) return <Redirect to="profile" />
-
     const onChangeHandler = e => {
-        // Spread operator because hooks replace the whole object
-        // so copying the old object
-        setstate({ ...state, [e.target.id]: e.target.value });
+        setstate({
+            ...state,
+            [e.target.name]: e.target.value
+        });
     };
 
+    const bikeModelList = props.bikeModellist.map((bike, index) => {
+        return (
+            <option key={index} value={bike._id}>{bike.bikeModel}</option>
+        )
+    })
 
-    // MATERIAL UI
-    const inputLabel = React.useRef(null);
-    const [labelWidth, setLabelWidth] = React.useState(100);
+    // // IF not AUTHENTICATED
+    // if (!props.isAuthenticated) return (<Redirect to="/login" />)
+
+
+    if (props.isAuthenticated) { }
+    else { return <Redirect to="/register" /> }
 
     return (
         <React.Fragment>
@@ -55,42 +69,28 @@ function BikeForm(props) {
             <form onSubmit={onSubmitHandler}>
                 {/* Dropdown */}
                 <FormControl variant="outlined"
-                    className={props.classes.form}
-                >
-                    <InputLabel
-                        ref={inputLabel}
-                        htmlFor="outlined-age-native-simple">
-                        Age
-        </InputLabel>
+                    className={props.classes.form}>
+
                     <Select
                         native
-                        value={state.age}
-                        // onChange={handleChange('age')}
-                        labelWidth={labelWidth}
-                        inputProps={{
-                            name: 'age',
-                            id: 'outlined-age-native-simple',
-                        }}
-                        defaultValue="DEFAULT"
-                    >
-                        <option value="DEFAULT" disabled>--Select Model--</option>
-                        <option value={10}>Ten</option>
-                        <option value={20}>Twenty</option>
-                        <option value={30}>Thirty</option>
+                        // value={state.bikeModel}
+                        onChange={e => setstate({ ...state, bikeModel: e.target.value })}
+                        defaultValue={'DEFAULT'}>
+                        <option value='DEFAULT'>--Bike Model--</option>
+                        {bikeModelList}
                     </Select>
                 </FormControl>
 
-                {/* Text */}
+                {/* Bike Number */}
                 <TextField
                     variant="outlined"
                     margin="normal"
-
                     fullWidth
-                    id="username"
-                    label="Username"
-                    autoComplete="username"
+                    name="bikeNumber"
+                    label="Bike Number (Ba 66 pa 3080)"
+                    autoComplete="bikeNumber"
                     autoFocus
-                    value={state.username}
+                    value={state.bikeNumber}
                     onChange={onChangeHandler}
                 />
                 <TextField
@@ -98,16 +98,11 @@ function BikeForm(props) {
                     margin="normal"
 
                     fullWidth
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                    value={state.password}
+                    label="Odometer (km)"
+                    type="number"
+                    name="odometer"
+                    value={state.odometer}
                     onChange={onChangeHandler}
-                />
-                <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
                 />
                 <Button
                     type="submit"
@@ -116,35 +111,24 @@ function BikeForm(props) {
                     color="primary"
                     className={props.classes.submit}
                 >
-                    Sign In
-      </Button>
-                <Grid container>
-                    <Grid item xs>
-                        <Link href="#" variant="body2">
-                            Forgot password?
-          </Link>
-                    </Grid>
-                    <Grid item>
-                        <Link href="/register" variant="body2">
-                            {"Don't have an account? Sign Up"}
-                        </Link>
-                    </Grid>
-                </Grid>
+                    Submit
+                </Button>
+
             </form >
         </React.Fragment >
-
-
-
     )
 }
 
 BikeForm.propTypes = {
-    login: PropTypes.func.isRequired,
-    isAuthenticated: PropTypes.bool
+    getBikeModellist: PropTypes.func.isRequired,
+    addOrUpdatebike: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool,
+    requestedStatus: PropTypes.bool
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated,
-    authStatus: state.auth.authStatus
+    bikeModellist: state.bikeModel.bikeModellist,
+    requestedStatus: state.userBike.requestedStatus,
+    isAuthenticated: state.auth.isAuthenticated
 })
-export default connect(mapStateToProps, { login })(BikeForm)
+export default connect(mapStateToProps, { getBikeModellist, addOrUpdatebike })(BikeForm)

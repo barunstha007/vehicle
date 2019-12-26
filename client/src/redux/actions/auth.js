@@ -16,12 +16,14 @@ import { Redirect } from 'react-router-dom';
 // Load User
 export const loadUser = () => async dispatch => {
 
-    // if localstorage has token, put token in global header
+    // if localstorage has token
     if (localStorage.token) {
+        // put token in global header
         setAuthToken(localStorage.token)
     }
 
     try {
+        // returns user object
         const res = await axios.get('/auth')
         dispatch({
             type: USER_LOADED,

@@ -6,6 +6,7 @@ import admin from './admin'
 import superadmin from './superadmin'
 import profile from './profile'
 import bikeModel from './bikeModel'
+import userBike from './userBike'
 
 export default combineReducers({
     alert,
@@ -14,5 +15,6 @@ export default combineReducers({
     admin,
     superadmin,
     profile,
-    bikeModel
+    bikeModel,
+    userBike
 })

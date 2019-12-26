@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react'
 import "./Profile.css"
 import { InputGroup, Button } from 'react-bootstrap'
 import { MdRemoveRedEye } from 'react-icons/md'
-
+import ServiceCenterBook from '../layout/ServiceCenterBook'
 //Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { getProfile, updateProfile } from '../redux/actions/profile'
 import Alert from '../layout/Alert'
+import { Redirect } from 'react-router-dom'
 
 function Profile(props) {
+
 
     useEffect(() => {
         props.getProfile()
@@ -19,6 +21,7 @@ function Profile(props) {
     const [state, setState] = useState({
         editToggle: false,
         passwordHidden: false,
+        bookingStatus: false,
 
         id: "",
         username: "",
@@ -31,6 +34,7 @@ function Profile(props) {
 
     })
 
+    if (!props.isAuthenticated) return (<Redirect to="/login" />)
     // Input state onChange
     const inputChangeHandler = e => {
         setState({
@@ -133,93 +137,34 @@ function Profile(props) {
     function userDetails() {
         return (
             <React.Fragment>
-                <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
+                {/* <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab"> */}
 
-                    {editorSubmitEditbtn()}
-                    <br />
-                    {/* Title and value */}
-                    <div className="row">
-                        <div className="col-6 p-1"><label>Username</label></div>
-                        <div className="col-6 p-1"><p>{props.userProfile.username}</p></div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1"><label>Name</label></div>
-                        <div className="col-6 p-1"><p>{props.userProfile.name}</p></div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1"><label>Email</label></div>
-                        <div className="col-6 p-1"><p>{props.userProfile.email}</p></div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1"><label>Phone</label></div>
-                        <div className="col-6 p-1"><p>{props.userProfile.phone}</p></div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1"><label>Location</label></div>
-                        <div className="col-6 p-1"><p>{props.userProfile.location}</p></div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1"><label>Last Booking Date</label></div>
-                        <div className="col-6 p-1"><p>12 Dec 2019</p></div>
-                    </div>
+                {editorSubmitEditbtn()}
+                <br />
+                {/* Title and value */}
+                <div className="row">
+                    <div className="col-6 p-1"><label>Username</label></div>
+                    <div className="col-6 p-1"><p>{props.userProfile.username}</p></div>
                 </div>
-
-                {/* Booking Tab */}
-                <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    {/* Cancle Button */}
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label></label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p ><span className="btn btn-danger text-white">Cancel Booking</span></p>
-                        </div>
-                    </div>
-                    <div className="row mb-4">
-
-                    </div>
-                    <div className="row">
-
-                        <div className="col-6 p-1">
-                            <label>Booking Status</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p ><span className="text-success">Accepted</span></p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Booking Date</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p>12 Dec 2019, 1:00PM</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Total Online Servicing Booked Till Date</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p>11</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Vehicle</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p>Vespa SXL MATTE 125</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Bike Status</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p><span className=" text-warning p-2">Good</span></p>
-                        </div>
-                    </div>
-
+                <div className="row">
+                    <div className="col-6 p-1"><label>Name</label></div>
+                    <div className="col-6 p-1"><p>{props.userProfile.name}</p></div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1"><label>Email</label></div>
+                    <div className="col-6 p-1"><p>{props.userProfile.email}</p></div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1"><label>Phone</label></div>
+                    <div className="col-6 p-1"><p>{props.userProfile.phone}</p></div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1"><label>Location</label></div>
+                    <div className="col-6 p-1"><p>{props.userProfile.location}</p></div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1"><label>Last Booking Date</label></div>
+                    <div className="col-6 p-1"><p>12 Dec 2019</p></div>
                 </div>
             </React.Fragment>
 
@@ -230,174 +175,245 @@ function Profile(props) {
     function editUserDetails() {
         return (
             <React.Fragment>
-                <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
-                    {/* edit button type */}
-                    {editorSubmitEditbtn()}
-                    <br />
+                {/* edit button type */}
+                {editorSubmitEditbtn()}
+                <br />
 
-                    {/* Title and value */}
-                    {/* Username */}
-                    <div className="row">
-                        <div className="col-6 p-1"><label>Username</label></div>
-                        <div className="col-6 p-1">
+                {/* Title and value */}
+                {/* Username */}
+                <div className="row">
+                    <div className="col-6 p-1"><label>Username</label></div>
+                    <div className="col-6 p-1">
 
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="username"
-                                value={state.username}
-                                onChange={inputChangeHandler}
-                            />
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="username"
+                            value={state.username}
+                            onChange={inputChangeHandler}
+                        />
 
-                        </div>
-                    </div>
-                    {/* Name */}
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Name</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="name"
-                                value={state.name}
-                                onChange={inputChangeHandler}
-                            />
-                        </div>
-                    </div>
-                    {/* Email */}
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Email</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="email"
-                                value={state.email}
-                                onChange={inputChangeHandler}
-                            />
-                        </div>
-                    </div>
-                    {/* Phone */}
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Phone</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="phone"
-                                value={state.phone}
-                                onChange={inputChangeHandler}
-                            />
-                        </div>
-                    </div>
-                    {/* Location */}
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Location</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <input
-                                type="text"
-                                className="form-control"
-                                name="location"
-                                value={state.location}
-                                onChange={inputChangeHandler}
-                            />
-                        </div>
-                    </div>
-                    {/* Password */}
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Password</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <InputGroup>
-                                <input
-                                    name="password"
-                                    className="form-control"
-                                    onChange={inputChangeHandler}
-                                    type={state.passwordHidden ? "text" : "password"}
-                                    placeholder="New Password"
-                                />
-                                <InputGroup.Append>
-                                    <Button variant="outline-secondary" onClick={passwordShowBtn}><MdRemoveRedEye /></Button>
-                                </InputGroup.Append>
-                            </InputGroup>
-
-                        </div>
-                    </div>
-                    {/* Last Booking Date */}
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Last Booking Date</label></div>
-                        <div className="col-6 p-1"><p>12 Dec 2019</p></div>
                     </div>
                 </div>
+                {/* Name */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Name</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="name"
+                            value={state.name}
+                            onChange={inputChangeHandler}
+                        />
+                    </div>
+                </div>
+                {/* Email */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Email</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="email"
+                            value={state.email}
+                            onChange={inputChangeHandler}
+                        />
+                    </div>
+                </div>
+                {/* Phone */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Phone</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="phone"
+                            value={state.phone}
+                            onChange={inputChangeHandler}
+                        />
+                    </div>
+                </div>
+                {/* Location */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Location</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="location"
+                            value={state.location}
+                            onChange={inputChangeHandler}
+                        />
+                    </div>
+                </div>
+                {/* Password */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Password</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <InputGroup>
+                            <input
+                                name="password"
+                                className="form-control"
+                                onChange={inputChangeHandler}
+                                type={state.passwordHidden ? "text" : "password"}
+                                placeholder="New Password"
+                            />
+                            <InputGroup.Append>
+                                <Button variant="outline-secondary" onClick={passwordShowBtn}><MdRemoveRedEye /></Button>
+                            </InputGroup.Append>
+                        </InputGroup>
 
-                {/* Booking Status */}
-                <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                    {/* Cancle Button */}
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label></label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p ><span className="btn btn-danger text-white">Cancel Booking</span></p>
-                        </div>
                     </div>
-                    <div className="row mb-4">
-
-                    </div>
-                    <div className="row">
-
-                        <div className="col-6 p-1">
-                            <label>Booking Status</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p ><span className="text-success">Accepted</span></p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Booking Date</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p>12 Dec 2019, 1:00PM</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Total Online Servicing Booked Till Date</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p>11</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Vehicle</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p>Vespa SXL MATTE 125</p>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-6 p-1">
-                            <label>Bike Status</label>
-                        </div>
-                        <div className="col-6 p-1">
-                            <p><span className=" text-warning p-2">Good</span></p>
-                        </div>
-                    </div>
+                </div>
+                {/* Last Booking Date */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Last Booking Date</label></div>
+                    <div className="col-6 p-1"><p>12 Dec 2019</p></div>
                 </div>
             </React.Fragment>
 
+        )
+    }
+
+    function bookingStatus() {
+        return (
+            <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                {/* Cancle Button */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label></label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p ><span className="btn btn-danger text-white">Cancel Booking</span></p>
+                    </div>
+                </div>
+                <div className="row mb-4">
+
+                </div>
+                <div className="row">
+
+                    <div className="col-6 p-1">
+                        <label>Booking Status</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p ><span className="text-success">Accepted</span></p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Booking Date</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p>12 Dec 2019, 1:00PM</p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Total Online Servicing Booked Till Date</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p>11</p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Vehicle</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p>Vespa SXL MATTE 125</p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Bike Status</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p><span className=" text-warning p-2">Good</span></p>
+                    </div>
+                </div>
+
+            </div>
+        )
+    }
+
+    function bookServicing() {
+        return (
+            <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                {/* Cancle Button */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <ServiceCenterBook />
+                    </div>
+                    <div className="col-6 p-1">
+                        <p ><span className="btn btn-secondary text-white">Edit Bike</span></p>
+                    </div>
+                </div>
+                <div className="row mb-4">
+
+                </div>
+                <div className="row">
+
+                    <div className="col-6 p-1">
+                        <label>Booking Status</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p ><span className="text-secondary">Not Booked</span></p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Bike Number</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p>Ba 66 Pa 3080</p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Total Online Servicing Booked Till Date</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p>11</p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Vehicle</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p>Vespa SXL MATTE 125</p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Odometer (K.M run)</label>
+                    </div>
+                    <div className="col-6 p-1 text-info">
+                        <p className="text-info">15700</p>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Bike Status</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p><span className=" text-warning">Good</span></p>
+                    </div>
+                </div>
+
+            </div>
         )
     }
 
@@ -444,7 +460,13 @@ function Profile(props) {
                     <div className="col-md-8">
                         <Alert />
                         <div className="tab-content profile-tab ml-3" id="myTabContent">
-                            {state.editToggle ? editUserDetails() : userDetails()}
+                            <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
+
+                                {state.editToggle ? editUserDetails() : userDetails()}
+                            </div>
+
+
+                            {state.bookingStatus ? bookingStatus() : bookServicing()}
                         </div>
                     </div>
                 </div>

@@ -7,18 +7,16 @@ const User = require("../models/UserDetails.model");
 //@route    POST /bike
 //@desc     add user bike
 //@access   User
-router.post("/", [auth, [
-  check("number", "Please enter your bike number")
+router.post("/addorupdate", [auth, [
+  check("bikeModel", "Please select a bike model")
     .not()
     .isEmpty(),
-  check("number", "bike number must be a number").isNumeric(),
-  check("model", "Please select a bike model")
-    .not()
-    .isEmpty()
+  check("bikeNumber", "Please nter your bike number eg: Ba 66 pa 3080").not().isEmpty(),
+
 ]],
   async (req, res) => {
     if (req.user.role !== 3) {
-      return res.status(400).json('Create Customer account!')
+      return res.status(400).json({ error: [{ 'msg': 'Create Customer account!' }] })
     }
     const error = validationResult(req);
     // If validation errors
@@ -29,8 +27,9 @@ router.post("/", [auth, [
     // Initialise new Object and set properties from request
     const bike = {};
     bike.user = req.user.id;
-    if (req.body.number) bike.number = req.body.number;
-    if (req.body.model) bike.model = req.body.model;
+    if (req.body.bikeModel) bike.bikeModel = req.body.bikeModel;
+    if (req.body.bikeNumber) bike.bikeNumber = req.body.bikeNumber;
+    if (req.body.odometer) bike.odometer = req.body.odometer
 
     try {
       // If user exists, Update else Create new
@@ -43,15 +42,14 @@ router.post("/", [auth, [
           { $set: bike },
           { new: true }
         );
-        return res.json("Update successful");
+        return res.json(bikeDetails);
       }
 
       // Create new
       bikeDetails = new Bike(bike);
-      console.log(bikeDetails.user);
       await bikeDetails.save();
 
-      res.json("New Bike profile Created");
+      res.json(bikeDetails);
     } catch (err) {
       res.status(500).send(err.message);
     }

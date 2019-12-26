@@ -7,13 +7,17 @@ const bikeSchema = new Schema({
         ref: 'UserDetails',
         required: true
     },
-    number: {
+    bikeModel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'BikeModel',
+        required: true
+    },
+    bikeNumber: {
         type: String,
         required: true
     },
-    model: {
-        type: String,
-        required: true
+    odometer: {
+        type: Number,
     }
 }, {
     timestamps: true

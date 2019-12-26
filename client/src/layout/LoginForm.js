@@ -108,6 +108,6 @@ LoginForm.propTypes = {
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
-    authStatus: state.auth.authStatus
+    //  authStatus: state.auth.authStatus
 })
 export default connect(mapStateToProps, { login })(LoginForm)

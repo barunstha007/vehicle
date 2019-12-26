@@ -31,6 +31,8 @@ function Navigation(props) {
                     <Nav.Link href="/config">BookingConfig</Nav.Link>
                     <Nav.Link href="/bikemodel-list">Bike Models</Nav.Link>
                     <Nav.Link href="/service-centers">Service Centers</Nav.Link>
+                    <Nav.Link href="/bike">Bike</Nav.Link>
+
                     {/* <Nav.Link href="/admin-users">Power Users</Nav.Link> */}
                     <NavDropdown title="Users" id="basic-nav-dropdown">
                         <NavDropdown.Item href="/superadminlists">Superadmin</NavDropdown.Item>

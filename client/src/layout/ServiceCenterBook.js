@@ -49,7 +49,7 @@ function ServiceCenterBook(props) {
                 onChange={e => setState({ ...state, selectedValue: e.target.value })}>
                 {serviceLocation}
             </select>
-            <button className="btn btn-primary mt-2" type="submit" >Book</button>
+            <button className="btn btn-primary" type="submit" >Book</button>
         </form>
     )
 }
