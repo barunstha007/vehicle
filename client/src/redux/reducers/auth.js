@@ -24,9 +24,8 @@ export default function (state = inititalState, action) {
                 ...state,
                 isAuthenticated: true,
                 authStatus: action.payload.role,
-                loading: false,
-                user: action.payload
-
+                user: action.payload,
+                loading: false
             }
 
         // REGISTER USER

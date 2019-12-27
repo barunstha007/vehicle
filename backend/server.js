@@ -39,7 +39,7 @@ app.use("/register", userRegisterRoute);
 app.use("/superadmin", superadminRoute);
 app.use("/admin", adminRoute);
 app.use("/service-center", serviceCenterRoute);
-app.use("/bike", bikeRoute);
+app.use("/mybike", bikeRoute);
 app.use("/bikemodel", bikeModelRoute);
 app.use("/profile", profileRoute);
 

@@ -6,11 +6,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { logout } from '../redux/actions/auth'
 
-function Navigation(props) {
+function Navigation({ auth: { isAuthenticated, loading }, logout }) {
 
     const authLinks = (
         <Navbar.Text>
-            <a onClick={props.logout} href="#!">logout</a>
+            <a onClick={logout} href="#!">logout</a>
         </Navbar.Text>
     )
 
@@ -31,7 +31,7 @@ function Navigation(props) {
                     <Nav.Link href="/config">BookingConfig</Nav.Link>
                     <Nav.Link href="/bikemodel-list">Bike Models</Nav.Link>
                     <Nav.Link href="/service-centers">Service Centers</Nav.Link>
-                    <Nav.Link href="/bike">Bike</Nav.Link>
+                    {/* <Nav.Link href="/bike">Bike</Nav.Link> */}
 
                     {/* <Nav.Link href="/admin-users">Power Users</Nav.Link> */}
                     <NavDropdown title="Users" id="basic-nav-dropdown">
@@ -40,8 +40,7 @@ function Navigation(props) {
                     </NavDropdown>
                     <Nav.Link href="/profile">Profile</Nav.Link>
                 </Nav>
-                {props.auth.isAuthenticated ? authLinks : guestLinks}
-
+                {!loading && (<React.Fragment>{isAuthenticated ? authLinks : guestLinks}</React.Fragment>)}
             </Navbar.Collapse>
         </Navbar >
     )

@@ -27,6 +27,7 @@ import store from './redux/store'
 import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './redux/actions/auth'
 import Profile from './components/Profile';
+import { getUserBike } from './redux/actions/userBike';
 
 // If localstorage has token, set token
 if (localStorage.token) {

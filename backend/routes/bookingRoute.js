@@ -56,38 +56,34 @@ router.get('/', auth, async (req, res) => {
 
 router.post('/', auth, async (req, res) => {
 
-    // If not admin or customer
-    // if (req.user.role == 2 || req.user.role == 3) return res.status(400).json('Not Eligible')
-
-    // check input validation
-    const error = validationResult(req);
-    // If validation errors
-    if (!error.isEmpty()) {
-        return res.status(400).json({ error: error.array() });
-    }
     // If request from customer
-    if (req.user.role == 3) {
+    if (req.user.role !== 3) return res.status(400).json({ error: [{ 'msg': 'Create Customer account!' }] })
 
-        // Find bike of user
-        const bike = await Bike.findOne({ user: req.user.id })
-        if (!bike) return res.status(404).json('Booking without bike Details is not possible')
+    // Find bike of user
+    const bike = await Bike.findOne({ user: req.user.id })
+    if (!bike) return res.status(404).json({ error: [{ 'msg': 'Booking without bike Details is not possible' }] })
 
-        // Find service center location from body
-        const serviceCenter = await ServiceCenter.findOne({ serviceLocation: req.body.serviceLocation })
+    // Find service center location from body
+    // const serviceCenter = await ServiceCenter.findOne({ serviceLocation: req.body.serviceLocation })
 
-        const booking = {}
-        booking.bike = bike._id
-        booking.serviceCenter = serviceCenter._id
-        booking.bookingDate = new Date()
-        // check null for first time booking
-        if (booking.bookingStatus == null || booking.bookingStatus == 0)
-            booking.bookingStatus = 1
-        // if (booking.bookingStatus == 3) booking.bookingStatus = 2
+    // const booking = {}
+    // booking.bike = bike._id
+    // booking.serviceCenter = serviceCenter._id
+    // booking.bookingDate = new Date()
+    // // check null for first time booking
+    // if (booking.bookingStatus == null || booking.bookingStatus == 0)
+    //     booking.bookingStatus = 1
+    // // if (booking.bookingStatus == 3) booking.bookingStatus = 2
 
-        // ------THE END----------- HERE
-        res.json(booking)
-    }
+    // res.json(booking)
 
+
+
+
+
+
+
+    // ------THE END----------- HERE
     // const booking = {}
     // booking.bike = bikebooking.id
     // booking.bookingStatus = true

@@ -5,23 +5,20 @@ import { Redirect } from 'react-router-dom'
 // Redux
 import { connect } from 'react-redux'
 import { serviceCenterList } from '../redux/actions/serviceCenterList'
+import { getUserBike } from '../redux/actions/userBike'
+
 
 function ServiceCenterBook(props) {
 
     const [state, setState] = useState({
-        selectedValue: null
+        selectedServiceCenter: null,
     })
 
     useEffect(() => {
-        // get servicecenters (in action)
         props.serviceCenterList()
+        props.getUserBike()
 
-        // Set initial select value from reducer
-        setState({
-            selectedValue: props.initialSelect
-        })
-
-    }, [props.sclists.length])
+    }, [])
 
 
     // map state to select options
@@ -32,13 +29,10 @@ function ServiceCenterBook(props) {
     })
 
     const bookHandler = e => {
-
         e.preventDefault()
-        console.log(state.selectedValue)
-        // if (props.isAuthenticated)
-        // else
-        //     return <Redirect to='register' />
+        console.log(state.selectedServiceCenter, props.userBike)
 
+        props.bookServicing(state.selectedServiceCenter, props.userBike)
     }
 
     return (
@@ -46,23 +40,27 @@ function ServiceCenterBook(props) {
             <select
                 className="form-control"
                 style={{ width: '17em ' }}
-                onChange={e => setState({ ...state, selectedValue: e.target.value })}>
+                defaultValue={'DEFAULT'}
+                onChange={e => setState({ ...state, selectedServiceCenter: e.target.value })}>
+                <option value="DEFAULT" className="bg-secondary text-whit   userBike: nulle">--Book Servicing--</option>
                 {serviceLocation}
             </select>
-            <button className="btn btn-primary" type="submit" >Book</button>
+            <button className="btn btn-primary ml-1" type="submit" >Book</button>
         </form>
     )
 }
 
 ServiceCenterBook.propTypes = {
-    serviceCenterList: PropTypes.func.isRequired
+    serviceCenterList: PropTypes.func.isRequired,
+    getUserBike: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
     sclists: state.serviceCenterList.sclist,
-    initialSelect: state.serviceCenterList.initialSelect,
+    userBike: state.userBike.userBike,
+
     isAuthenticated: state.auth.isAuthenticated
 })
 
 
-export default connect(mapStateToProps, { serviceCenterList })(ServiceCenterBook)
+export default connect(mapStateToProps, { serviceCenterList, getUserBike })(ServiceCenterBook)

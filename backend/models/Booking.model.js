@@ -16,14 +16,9 @@ const bookingSchema = new Schema({
 
     bookingDate: {
         type: Date,
-        default: Date.now,
-        required: true,
         trim: true
     },
     servicingDate: Date,
-    checkOutDate: Date,
-
-    //user books
 
     bookingStatus: {
         type: Number,

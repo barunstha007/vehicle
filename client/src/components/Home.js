@@ -14,7 +14,7 @@ export default function Home() {
                 <div class="container">
                     <div class="row" style={{ top: '20%', position: 'absolute' }}>
                         <div class="card shadow" style={{ background: 'rgba(0,0,0,0.7)', height: '30vh ' }}>
-                            <div class="card-body">
+                            <div class="card-body" style={{ width: '26rem' }}>
                                 <div class="row">
                                     <div class="col-md-12 ">
                                         <h3 className="text-white">Available Service Centers</h3>

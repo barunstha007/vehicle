@@ -7,6 +7,7 @@ import ServiceCenterBook from '../layout/ServiceCenterBook'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { getProfile, updateProfile } from '../redux/actions/profile'
+import { getUserBike } from '../redux/actions/userBike'
 import Alert from '../layout/Alert'
 import { Redirect } from 'react-router-dom'
 
@@ -15,7 +16,7 @@ function Profile(props) {
 
     useEffect(() => {
         props.getProfile()
-
+        props.getUserBike()
     }, [])
 
     const [state, setState] = useState({
@@ -34,7 +35,7 @@ function Profile(props) {
 
     })
 
-    if (!props.isAuthenticated) return (<Redirect to="/login" />)
+    if (!props.loading && !props.isAuthenticated) return (<Redirect to="/login" />)
     // Input state onChange
     const inputChangeHandler = e => {
         setState({
@@ -352,17 +353,18 @@ function Profile(props) {
         return (
             <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 {/* Cancle Button */}
+                <ServiceCenterBook />
                 <div className="row">
                     <div className="col-6 p-1">
-                        <ServiceCenterBook />
                     </div>
                     <div className="col-6 p-1">
-                        <p ><span className="btn btn-secondary text-white">Edit Bike</span></p>
+                        <p ><a href="/bike" className="btn btn-secondary text-white">Edit Bike</a></p>
                     </div>
                 </div>
                 <div className="row mb-4">
 
                 </div>
+                {/* Booking Status */}
                 <div className="row">
 
                     <div className="col-6 p-1">
@@ -372,36 +374,40 @@ function Profile(props) {
                         <p ><span className="text-secondary">Not Booked</span></p>
                     </div>
                 </div>
+                {/* Bike Number */}
                 <div className="row">
                     <div className="col-6 p-1">
                         <label>Bike Number</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p>Ba 66 Pa 3080</p>
+                        <p>{props.userBike.bikeNumber}</p>
                     </div>
                 </div>
+                {/* Bike Model */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Bike Model</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <p>{props.bikeModelName}</p>
+                    </div>
+                </div>
+                {/* Odometer */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Odometer (K.M run)</label>
+                    </div>
+                    <div className="col-6 p-1 text-info">
+                        <p className="text-info">{props.userBike.odometer}</p>
+                    </div>
+                </div>
+
                 <div className="row">
                     <div className="col-6 p-1">
                         <label>Total Online Servicing Booked Till Date</label>
                     </div>
                     <div className="col-6 p-1">
                         <p>11</p>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-6 p-1">
-                        <label>Vehicle</label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p>Vespa SXL MATTE 125</p>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-6 p-1">
-                        <label>Odometer (K.M run)</label>
-                    </div>
-                    <div className="col-6 p-1 text-info">
-                        <p className="text-info">15700</p>
                     </div>
                 </div>
                 <div className="row">
@@ -482,8 +488,11 @@ Profile.propTypes = {
 
 const mapStateToProps = state => ({
     userProfile: state.profile.userProfile,
+    userBike: state.userBike.userBike,
+    bikeModelName: state.userBike.bikeModelName,
     isAuthenticated: state.auth.isAuthenticated,
+    loading: state.auth.loading,
     authStatus: state.auth.authStatus
 })
 
-export default connect(mapStateToProps, { getProfile, updateProfile })(Profile)
+export default connect(mapStateToProps, { getUserBike, getProfile, updateProfile })(Profile)

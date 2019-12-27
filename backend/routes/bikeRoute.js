@@ -4,7 +4,29 @@ const Bike = require("../models/Bike.model");
 const { check, validationResult } = require("express-validator");
 const User = require("../models/UserDetails.model");
 
-//@route    POST /bike
+// @route   GET '/mybike'
+// @desc    get user bike
+// @access  Private
+router.get('/', auth, async (req, res) => {
+
+  try {
+    // Search admin 
+    const userBike = await Bike.findOne({ user: req.user.id }).populate('bikeModel', 'bikeModel')
+
+    //Return user bike
+    if (userBike) { return res.json(userBike) }
+
+    return res.json('No Bike found for current user')
+
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send('Server Error')
+  }
+
+})
+
+
+//@route    POST /mybike
 //@desc     add user bike
 //@access   User
 router.post("/addorupdate", [auth, [

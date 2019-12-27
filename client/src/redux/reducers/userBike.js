@@ -1,4 +1,5 @@
 import {
+    GETBIKE_SUCCESS,
     BIKE_ADDORUPDATE_SUCCESS,
     BIKE_ADDORUPDATE_FAIL
 } from '../actions/types'
@@ -12,6 +13,13 @@ const initialState = {
 export default function (state = initialState, action) {
     switch (action.type) {
 
+        case GETBIKE_SUCCESS:
+            return {
+                userBike: action.payload,
+                bikeModelName: action.payload.bikeModel.bikeModel,
+                loading: false
+            }
+
         case BIKE_ADDORUPDATE_SUCCESS:
             // update object
             return {
@@ -20,6 +28,8 @@ export default function (state = initialState, action) {
                 requestedStatus: true,
                 loading: false
             }
+
+
 
         default: return state
     }

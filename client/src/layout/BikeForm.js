@@ -11,20 +11,24 @@ import Link from "@material-ui/core/Link";
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { getBikeModellist } from '../redux/actions/bikeModel'
-import { addOrUpdatebike } from '../redux/actions/userBike'
+import { getUserBike, addOrUpdatebike } from '../redux/actions/userBike'
 import Alert from "../layout/Alert";
 import setAuthToken from "../utils/setAuthToken";
 
 function BikeForm(props) {
 
-    const [state, setstate] = useState({
-        bikeModel: "",
-        bikeNumber: "",
-        odometer: "",
-    });
+    const [state, setstate] = useState(props.userBike);
 
     useEffect(() => {
         props.getBikeModellist()
+        props.getUserBike()
+
+        // setstate({
+        //     ...state,
+        //     bikeModel: props.userBike.bikeModel,
+        //     bikeNumber: props.userBike.bikeNumber,
+        //     odometer: props.userBike.odometer,
+        // })
 
     }, [])
 
@@ -39,7 +43,7 @@ function BikeForm(props) {
 
         // console.log(bikeDetails)
         props.addOrUpdatebike(bikeDetails)
-        console.log(props.requestedStatus)
+
         if (props.requestedStatus) return window.location.href = '/profile'
     }
 
@@ -121,6 +125,7 @@ function BikeForm(props) {
 
 BikeForm.propTypes = {
     getBikeModellist: PropTypes.func.isRequired,
+    getUserBike: PropTypes.func.isRequired,
     addOrUpdatebike: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool,
     requestedStatus: PropTypes.bool
@@ -128,7 +133,12 @@ BikeForm.propTypes = {
 
 const mapStateToProps = state => ({
     bikeModellist: state.bikeModel.bikeModellist,
+    userBike: state.userBike.userBike,
     requestedStatus: state.userBike.requestedStatus,
     isAuthenticated: state.auth.isAuthenticated
 })
-export default connect(mapStateToProps, { getBikeModellist, addOrUpdatebike })(BikeForm)
+export default connect(mapStateToProps, {
+    getBikeModellist,
+    getUserBike, addOrUpdatebike
+})
+    (BikeForm)
