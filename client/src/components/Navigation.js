@@ -28,7 +28,7 @@ function Navigation({ auth: { isAuthenticated, loading }, logout }) {
                 <Nav className="mr-auto">
                     <Nav.Link href="/current">Servicing</Nav.Link>
                     <Nav.Link href="/inqueue">Queue</Nav.Link>
-                    <Nav.Link href="/config">BookingConfig</Nav.Link>
+                    <Nav.Link href="/dashboard">Dashboard</Nav.Link>
                     <Nav.Link href="/bikemodel-list">Bike Models</Nav.Link>
                     <Nav.Link href="/service-centers">Service Centers</Nav.Link>
                     {/* <Nav.Link href="/bike">Bike</Nav.Link> */}

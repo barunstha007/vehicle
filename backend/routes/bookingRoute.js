@@ -54,17 +54,36 @@ router.get('/', auth, async (req, res) => {
 //@desc add booking for bike
 //@access Customer, Admin
 
-router.post('/', auth, async (req, res) => {
+router.post('/', [auth, [
+    check("bikeDetails", "Please enter your bike")
+        .not()
+        .isEmpty(),
+    check("serviceCenter", "Please select a service center to book").not().isEmpty(),
 
-    // If request from customer
+]], async (req, res) => {
+
+    // check if request from customer
     if (req.user.role !== 3) return res.status(400).json({ error: [{ 'msg': 'Create Customer account!' }] })
 
-    // Find bike of user
-    const bike = await Bike.findOne({ user: req.user.id })
-    if (!bike) return res.status(404).json({ error: [{ 'msg': 'Booking without bike Details is not possible' }] })
+    const error = validationResult(req);
+    // If validation errors
+    if (!error.isEmpty()) {
+        return res.status(400).json({ error: error.array() });
+    }
 
-    // Find service center location from body
-    // const serviceCenter = await ServiceCenter.findOne({ serviceLocation: req.body.serviceLocation })
+    // Find bike of user
+    const bike = await Bike.findOne({ _id: req.body.bikeDetails })
+    if (!bike)
+        return res.status(404).json({ error: [{ 'msg': "User Bike is not registered" }] })
+
+    // Find selected service center of user
+    const serviceCenter = await ServiceCenter.findOne({ _id: req.body.serviceCenter })
+    if (!serviceCenter)
+        return res.status(404).json({ error: [{ 'msg': "Service Center doesnot exist" }] })
+
+
+    //booking
+    // const booking = await Booking.findOne({ serviceLocation: req.body.serviceLocation })
 
     // const booking = {}
     // booking.bike = bike._id
@@ -75,7 +94,7 @@ router.post('/', auth, async (req, res) => {
     //     booking.bookingStatus = 1
     // // if (booking.bookingStatus == 3) booking.bookingStatus = 2
 
-    // res.json(booking)
+    res.json(booking)
 
 
 

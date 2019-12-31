@@ -7,7 +7,7 @@ import superadmin from './superadmin'
 import profile from './profile'
 import bikeModel from './bikeModel'
 import userBike from './userBike'
-
+import dashboard from './dashboard'
 export default combineReducers({
     alert,
     auth,
@@ -16,5 +16,6 @@ export default combineReducers({
     superadmin,
     profile,
     bikeModel,
-    userBike
+    userBike,
+    dashboard,
 })

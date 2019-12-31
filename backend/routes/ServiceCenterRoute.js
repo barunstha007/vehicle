@@ -27,6 +27,27 @@ router.get("/", async (req, res) => {
   }
 });
 
+// @route   GET /service-center/:id
+// @desc    get service Center by requested admin id
+// @access  Private
+router.get("/admin", auth, async (req, res) => {
+  try {
+
+    // Check service center for params admin
+    const serviceCenterProfile = await ServiceCenter.findOne({ admin: req.user.id }).populate('admin', 'name');
+    // If no service center
+    if (!serviceCenterProfile) {
+      return res.json("No service center assigned to this admin");
+    }
+    //If there is service center
+    return res.status(200).json(serviceCenterProfile);
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 
 //@router   POST /service-center/
 //@desc     add new servicing center

@@ -11,7 +11,7 @@ import Bike from './components/Bike';
 import CurrentBooking from './components/Admin/CurrentBooking';
 import Home from './components/Home';
 import Inqueue from './components/Admin/InQueue';
-import Config from './components/Admin/Config';
+import Dashboard from './components/Admin/Dashboard';
 import AdminHome from './components/Admin/AdminHome'
 
 // Super Users
@@ -77,8 +77,8 @@ const App = () => {
             <Route path="/adminlists">
               <AdminUsers />
             </Route>
-            <Route path="/config">
-              <Config />
+            <Route path="/dashboard">
+              <Dashboard />
             </Route>
             <Route path="/list">
               <Inqueue />

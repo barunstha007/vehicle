@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { serviceCenterList } from '../redux/actions/serviceCenterList'
 import { getUserBike } from '../redux/actions/userBike'
+import { bookServicing } from '../redux/actions/booking'
 
 
 function ServiceCenterBook(props) {
@@ -30,9 +31,9 @@ function ServiceCenterBook(props) {
 
     const bookHandler = e => {
         e.preventDefault()
-        console.log(state.selectedServiceCenter, props.userBike)
+        // console.log(state.selectedServiceCenter, props.userBike)
 
-        props.bookServicing(state.selectedServiceCenter, props.userBike)
+        props.bookServicing(state.selectedServiceCenter, props.userBike._id, 1)
     }
 
     return (
@@ -52,7 +53,8 @@ function ServiceCenterBook(props) {
 
 ServiceCenterBook.propTypes = {
     serviceCenterList: PropTypes.func.isRequired,
-    getUserBike: PropTypes.func.isRequired
+    getUserBike: PropTypes.func.isRequired,
+    bookServicing: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -63,4 +65,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, { serviceCenterList, getUserBike })(ServiceCenterBook)
+export default connect(mapStateToProps, { serviceCenterList, getUserBike, bookServicing })(ServiceCenterBook)

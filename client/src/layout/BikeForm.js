@@ -23,12 +23,12 @@ function BikeForm(props) {
         props.getBikeModellist()
         props.getUserBike()
 
-        // setstate({
-        //     ...state,
-        //     bikeModel: props.userBike.bikeModel,
-        //     bikeNumber: props.userBike.bikeNumber,
-        //     odometer: props.userBike.odometer,
-        // })
+        !props.bikeloading && setstate({
+            ...state,
+            bikeModel: props.userBike.bikeModel,
+            bikeNumber: props.userBike.bikeNumber,
+            odometer: props.userBike.odometer,
+        })
 
     }, [])
 
@@ -44,7 +44,6 @@ function BikeForm(props) {
         // console.log(bikeDetails)
         props.addOrUpdatebike(bikeDetails)
 
-        if (props.requestedStatus) return window.location.href = '/profile'
     }
 
     const onChangeHandler = e => {
@@ -61,11 +60,8 @@ function BikeForm(props) {
     })
 
     // // IF not AUTHENTICATED
-    // if (!props.isAuthenticated) return (<Redirect to="/login" />)
+    if (!props.authloading && !props.isAuthenticated) return (<Redirect to="/login" />)
 
-
-    if (props.isAuthenticated) { }
-    else { return <Redirect to="/register" /> }
 
     return (
         <React.Fragment>
@@ -135,7 +131,9 @@ const mapStateToProps = state => ({
     bikeModellist: state.bikeModel.bikeModellist,
     userBike: state.userBike.userBike,
     requestedStatus: state.userBike.requestedStatus,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    authloading: state.auth.loading,
+    bikeloading: state.userBike.loading
 })
 export default connect(mapStateToProps, {
     getBikeModellist,

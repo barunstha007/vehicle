@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from 'react'
-import "./Profile.css"
+import "../Profile.css"
 import { InputGroup, Button } from 'react-bootstrap'
 import { MdRemoveRedEye } from 'react-icons/md'
-import ServiceCenterBook from '../layout/ServiceCenterBook'
 //Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
-import { getProfile, updateProfile } from '../redux/actions/profile'
-import { getUserBike } from '../redux/actions/userBike'
-import Alert from '../layout/Alert'
+import { getProfile, updateProfile } from '../../redux/actions/profile'
+import { getServiceCenter } from '../../redux/actions/dashboard'
+import Alert from '../../layout/Alert'
 import { Redirect } from 'react-router-dom'
 
-function Profile(props) {
-
+function Dashboard(props) {
 
     useEffect(() => {
         props.getProfile()
-        props.getUserBike()
+        props.getServiceCenter()
+
     }, [])
 
+    // Admin profile details
     const [state, setState] = useState({
-        editToggle: false,
+        editUserToggle: false,
+        editSCToggle: false,
         passwordHidden: false,
-        bookingStatus: false,
+        // bookingStatus: false,
 
         id: "",
         username: "",
@@ -35,16 +36,6 @@ function Profile(props) {
 
     })
 
-    // return to login if not authenticated
-    if (!props.loading && !props.isAuthenticated) return (<Redirect to="/login" />)
-    // Input state onChange
-    const inputChangeHandler = e => {
-        setState({
-            ...state,
-            [e.target.name]: e.target.value,
-        })
-    }
-
     // password show/hide
     const passwordShowBtn = () => {
         setState({
@@ -53,8 +44,16 @@ function Profile(props) {
         })
     }
 
-    // on Edit Profile
-    const editProfileHandler = () => {
+    // Input admin profile onChange
+    const inputChangeHandler = e => {
+        setState({
+            ...state,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    // on Edit set profile props to local state
+    const editDashboardHandler = () => {
         setState({
             id: props.userProfile._id,
             name: props.userProfile.name,
@@ -63,80 +62,20 @@ function Profile(props) {
             phone: props.userProfile.phone,
             location: props.userProfile.location,
 
-            editToggle: true
+            editUserToggle: true
         })
     }
 
-    // Edit cancel
-    const editProfileCancel = () => {
+    // Edit cancel, toggle off
+    const editDashboardCancel = () => {
         setState({
-            editToggle: false
+            editUserToggle: false
         })
-    }
-
-    // Submit Edit Profile
-    const editProfileSubmit = (e) => {
-
-        const editDetails = {
-            id: state.id,
-            username: state.username,
-            name: state.name,
-            email: state.email,
-            phone: state.phone,
-            location: state.location,
-            password: state.password
-        }
-        props.updateProfile(editDetails)
-
-        setState({
-            ...state,
-            editToggle: false,
-
-            id: "",
-            username: "",
-            name: "",
-            email: "",
-            phone: "",
-            location: "",
-            password: "",
-            avatar: ""
-        })
-
-    }
-
-    function editorSubmitEditbtn() {
-        if (state.editToggle) {
-            return (
-                <div className="row">
-                    <div className="col-6 p-1"><label /></div>
-                    <div className="col-3 p-1"><p>
-                        <span className="btn btn-success text-white" onClick={editProfileSubmit}>&#10004;</span>
-                    </p>
-                    </div>
-                    <div className="col-3 "><p >
-                        <span className="btn btn-danger text-white" onClick={editProfileCancel}>&#10005;</span>
-                    </p>
-                    </div>
-
-                </div>
-            )
-        } else
-            return (
-                <div className="row">
-                    {/* Edit profile */}
-                    <div className="col-6 p-1"><label /></div>
-                    <div className="col-6 p-1">
-                        <p>
-                            <span className="btn btn-secondary text-white" onClick={editProfileHandler}>Edit Profile</span>
-                        </p>
-                    </div>
-                </div>
-
-            )
     }
 
     // Initial Render
     function userDetails() {
+
         return (
             <React.Fragment>
                 {/* <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab"> */}
@@ -289,140 +228,338 @@ function Profile(props) {
         )
     }
 
-    function bookingStatus() {
+    function editorSubmitEditbtn() {
+        if (state.editUserToggle) {
+            return (
+                <div className="row">
+                    <div className="col-6 p-1"><label /></div>
+                    <div className="col-3 p-1"><p>
+                        <span className="btn btn-success text-white" onClick={editDashboardSubmit}>&#10004;</span>
+                    </p>
+                    </div>
+                    <div className="col-3 "><p >
+                        <span className="btn btn-danger text-white" onClick={editDashboardCancel}>&#10005;</span>
+                    </p>
+                    </div>
+
+                </div>
+            )
+        } else
+            return (
+                <div className="row">
+                    {/* Edit profile */}
+                    <div className="col-6 p-1"><label /></div>
+                    <div className="col-6 p-1">
+                        <p>
+                            <span className="btn btn-secondary text-white" onClick={editDashboardHandler}>Edit Profile</span>
+                        </p>
+                    </div>
+                </div>
+
+            )
+    }
+
+    // Submit Edit Profile
+    const editDashboardSubmit = (e) => {
+
+        const editDetails = {
+            id: state.id,
+            username: state.username,
+            name: state.name,
+            email: state.email,
+            phone: state.phone,
+            location: state.location,
+            password: state.password
+        }
+        props.updateProfile(editDetails)
+
+        setState({
+            ...state,
+            editUserToggle: false,
+
+            id: "",
+            username: "",
+            name: "",
+            email: "",
+            phone: "",
+            location: "",
+            password: "",
+            avatar: ""
+        })
+
+    }
+
+    // -----------------------------SERVICE CENTER ---------------------------------------------
+
+    // service center profile details
+    const [serviceCenterState, setServiceCenterState] = useState({
+        editSCToggle: false,
+
+        id: "",
+        name: "",
+        contact: "",
+        serviceLocation: "",
+        maxBookingDays: "",
+        bookingLimit: "",
+
+    })
+
+    // Input service center onChange
+    const scinputChangeHandler = e => {
+        setServiceCenterState({
+            ...serviceCenterState,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    // on Edit sc
+    const sceditDashboardHandler = () => {
+        setServiceCenterState({
+            id: props.serviceCenter._id,
+            name: props.serviceCenter.name,
+            serviceLocation: props.serviceCenter.serviceLocation,
+            maxBookingDays: props.serviceCenter.maxBookingDays,
+            bookingLimit: props.serviceCenter.bookingLimit,
+            contact: props.serviceCenter.contact,
+
+            editSCToggle: true
+        })
+    }
+
+    // Edit cancel
+    const sceditDashboardCancel = () => {
+        setServiceCenterState({
+            editSCToggle: false
+        })
+    }
+
+    // Submit Edit Profile
+    const sceditDashboardSubmit = (e) => {
+
+        const editDetails = {
+            id: state.id,
+            name: serviceCenterState.name,
+            serviceLocation: serviceCenterState.serviceLocation,
+            maxBookingDays: serviceCenterState.maxBookingDays,
+            bookingLimit: serviceCenterState.bookingLimit,
+            contact: serviceCenterState.contact,
+        }
+
+        props.updateServiceCenter(editDetails)
+
+        serviceCenterState({
+            ...serviceCenterState,
+            editSCToggle: false,
+
+            id: "",
+            name: "",
+            serviceLocation: "",
+            maxBookingLimit: "",
+            bookingLimit: "",
+            contact: "",
+        })
+
+    }
+
+
+    // function sceditorSubmitEditbtn() {
+    //     if (serviceCenterState.editSCToggle) {
+    //         return (
+    //             <div className="row">
+    //                 <div className="col-6 p-1"><label /></div>
+    //                 <div className="col-3 p-1"><p>
+    //                     <span className="btn btn-success text-white" onClick={sceditDashboardSubmit}>&#10004;</span>
+    //                 </p>
+    //                 </div>
+    //                 <div className="col-3 "><p >
+    //                     <span className="btn btn-danger text-white" onClick={sceditDashboardCancel}>&#10005;</span>
+    //                 </p>
+    //                 </div>
+
+    //             </div>
+    //         )
+    //     } else
+    //         return (
+    //             <div className="row">
+    //                 {/* Edit service center */}
+    //                 <div className="col-6 p-1"><label /></div>
+    //                 <div className="col-6 p-1">
+    //                     <p>
+    //                         <span className="btn btn-secondary text-white" onClick={sceditDashboardHandler}>Edit Service Center</span>
+    //                     </p>
+    //                 </div>
+    //             </div>
+
+    //         )
+    // }
+
+
+    // Initial SC Render
+    function serviceCenter() {
         return (
             <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                {/* Cancle Button */}
-                <div className="row">
-                    <div className="col-6 p-1">
-                        <label></label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p ><span className="btn btn-danger text-white">Cancel Booking</span></p>
-                    </div>
-                </div>
-                <div className="row mb-4">
+                {/* <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab"> */}
 
+                {sceditorSubmitEditbtn()}
+                <br />
+                {/* Title and value */}
+                <div className="row">
+                    <div className="col-6 p-1"><label>Service Center Name</label></div>
+                    <div className="col-6 p-1"><p>{props.serviceCenter.name}</p></div>
                 </div>
                 <div className="row">
-
-                    <div className="col-6 p-1">
-                        <label>Booking Status</label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p ><span className="text-success">Accepted</span></p>
-                    </div>
+                    <div className="col-6 p-1"><label>Location</label></div>
+                    <div className="col-6 p-1"><p>{props.serviceCenter.serviceLocation}</p></div>
                 </div>
                 <div className="row">
-                    <div className="col-6 p-1">
-                        <label>Booking Date</label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p>12 Dec 2019, 1:00PM</p>
-                    </div>
+                    <div className="col-6 p-1"><label>Max Booking Days</label></div>
+                    <div className="col-6 p-1"><p>{props.serviceCenter.maxBookingDays}</p></div>
                 </div>
                 <div className="row">
-                    <div className="col-6 p-1">
-                        <label>Total Online Servicing Booked Till Date</label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p>11</p>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-6 p-1">
-                        <label>Vehicle</label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p>Vespa SXL MATTE 125</p>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-6 p-1">
-                        <label>Bike Status</label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p><span className=" text-warning p-2">Good</span></p>
-                    </div>
+                    <div className="col-6 p-1"><label>Booking Limit</label></div>
+                    <div className="col-6 p-1"><p>{props.serviceCenter.bookingLimit}</p></div>
                 </div>
 
+                <div className="row">
+                    <div className="col-6 p-1"><label>Contact</label></div>
+                    <div className="col-6 p-1"><p>{props.serviceCenter.contact}</p></div>
+                </div>
             </div>
         )
     }
 
-    function bookServicing() {
+    // on edit toggle
+    function editServiceCenter() {
+
         return (
             <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                {/* Cancle Button */}
-                <ServiceCenterBook />
-                <div className="row">
-                    <div className="col-6 p-1">
-                    </div>
-                    <div className="col-6 p-1">
-                        <p ><a href="/bike" className="btn btn-secondary text-white">Edit Bike</a></p>
-                    </div>
-                </div>
-                <div className="row mb-4">
 
-                </div>
-                {/* Booking Status */}
-                <div className="row">
+                {/* edit button type */}
+                {sceditorSubmitEditbtn()}
+                <br />
 
-                    <div className="col-6 p-1">
-                        <label>Booking Status</label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p ><span className="text-secondary">Not Booked</span></p>
-                    </div>
+                <div className="row">
                 </div>
-                {/* Bike Number */}
+                {/* SC Name */}
                 <div className="row">
                     <div className="col-6 p-1">
-                        <label>Bike Number</label>
+                        <label>Service Center Name</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p>{props.userBike.bikeNumber}</p>
-                    </div>
-                </div>
-                {/* Bike Model */}
-                <div className="row">
-                    <div className="col-6 p-1">
-                        <label>Bike Model</label>
-                    </div>
-                    <div className="col-6 p-1">
-                        <p>{props.bikeModelName}</p>
-                    </div>
-                </div>
-                {/* Odometer */}
-                <div className="row">
-                    <div className="col-6 p-1">
-                        <label>Odometer (K.M run)</label>
-                    </div>
-                    <div className="col-6 p-1 text-info">
-                        <p className="text-info">{props.userBike.odometer}</p>
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="name"
+                            value={serviceCenterState.name}
+                            onChange={scinputChangeHandler}
+                        />
                     </div>
                 </div>
 
+                {/* Location */}
                 <div className="row">
                     <div className="col-6 p-1">
-                        <label>Total Online Servicing Booked Till Date</label>
+                        <label>Location</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p>11</p>
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="serviceLocation"
+                            value={serviceCenterState.serviceLocation}
+                            onChange={scinputChangeHandler}
+                        />
                     </div>
                 </div>
+                {/* Max Booking Days */}
                 <div className="row">
                     <div className="col-6 p-1">
-                        <label>Bike Status</label>
+                        <label>Max Booking Days</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p><span className=" text-warning">Good</span></p>
+                        <input
+                            type="number"
+                            className="form-control"
+                            name="maxBookingDays"
+                            value={serviceCenterState.maxBookingDays}
+                            onChange={scinputChangeHandler}
+                        />
                     </div>
                 </div>
+                {/* Booking Limit */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Booking Limit</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <input
+                            type="number"
+                            className="form-control"
+                            name="bookingLimit"
+                            value={serviceCenterState.bookingLimit}
+                            onChange={scinputChangeHandler}
+                        />
+                    </div>
+                </div>
+
+                {/* Contact */}
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Contact</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="contact"
+                            value={serviceCenterState.contact}
+                            onChange={scinputChangeHandler}
+                        />
+                    </div>
+                </div>
+
+
 
             </div>
+
         )
     }
+
+    function sceditorSubmitEditbtn() {
+        if (serviceCenterState.editSCToggle) {
+            return (
+                <div className="row">
+                    <div className="col-6 p-1"><label /></div>
+                    <div className="col-3 p-1"><p>
+                        <span className="btn btn-success text-white" onClick={sceditDashboardSubmit}>&#10004;</span>
+                    </p>
+                    </div>
+                    <div className="col-3 "><p >
+                        <span className="btn btn-danger text-white" onClick={sceditDashboardCancel}>&#10005;</span>
+                    </p>
+                    </div>
+
+                </div>
+            )
+        } else
+            return (
+                <div className="row">
+                    {/* Edit profile */}
+                    <div className="col-6 p-1"><label /></div>
+                    <div className="col-6 p-1">
+                        <p>
+                            <span className="btn btn-secondary text-white" onClick={sceditDashboardHandler}>Edit Service Center</span>
+                        </p>
+                    </div>
+                </div>
+
+            )
+    }
+
+    // ------------------- RENDER ---------------------------------------------
+
+    // return to login if not authenticated
+    if (!props.loading && !props.isAuthenticated) return (<Redirect to="/login" />)
 
     return (
         <div className="container emp-profile shadow">
@@ -436,7 +573,7 @@ function Profile(props) {
                             <img src={props.userProfile.avatar} alt="" style={{ maxHeight: '20vh', maxWidth: '20vh' }} />
                             <div className="file btn btn-lg btn-primary">
                                 Upload Photo
-                            <input type="file" name="file" />
+                        <input type="file" name="file" />
                             </div>
                         </div>
                     </div>
@@ -453,7 +590,7 @@ function Profile(props) {
                                     <a className="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Booking Status</a>
+                                    <a className="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Service Center</a>
                                 </li>
                             </ul>
                         </div>
@@ -469,10 +606,11 @@ function Profile(props) {
                         <div className="tab-content profile-tab ml-3" id="myTabContent">
                             <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                                {state.editToggle ? editUserDetails() : userDetails()}
+                                {state.editUserToggle ? editUserDetails() : userDetails()}
                             </div>
 
-                            {state.bookingStatus ? bookingStatus() : bookServicing()}
+
+                            {serviceCenterState.editSCToggle ? editServiceCenter() : serviceCenter()}
                         </div>
                     </div>
                 </div>
@@ -482,17 +620,17 @@ function Profile(props) {
     )
 }
 
-Profile.propTypes = {
+Dashboard.propTypes = {
     getProfile: PropTypes.func.isRequired,
+    getServiceCenter: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
     userProfile: state.profile.userProfile,
-    userBike: state.userBike.userBike,
-    bikeModelName: state.userBike.bikeModelName,
+    serviceCenter: state.dashboard.serviceCenter,
     isAuthenticated: state.auth.isAuthenticated,
     loading: state.auth.loading,
     authStatus: state.auth.authStatus
 })
 
-export default connect(mapStateToProps, { getUserBike, getProfile, updateProfile })(Profile)
+export default connect(mapStateToProps, { getProfile, updateProfile, getServiceCenter })(Dashboard)

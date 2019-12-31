@@ -32,7 +32,7 @@ const serviceCenterRoute = require("./routes/ServiceCenterRoute");
 const bikeModelRoute = require("./routes/bikeRoutes/bikeModelRoute");
 const bikeRoute = require("./routes/bikeRoute");
 const profileRoute = require("./routes/profileRoute");
-// const bookingRoute = require("./routes/bookingRoute");
+const bookingRoute = require("./routes/bookingRoute");
 
 app.use("/auth", login);
 app.use("/register", userRegisterRoute);
@@ -42,6 +42,7 @@ app.use("/service-center", serviceCenterRoute);
 app.use("/mybike", bikeRoute);
 app.use("/bikemodel", bikeModelRoute);
 app.use("/profile", profileRoute);
+app.use("/booking", bookingRoute);
 
 // listen to port
 app.listen(port, () => {

@@ -5,35 +5,37 @@ import {
 } from './types';
 import { setAlert } from './alert'
 
-export const getBooking = () => async dispatch => {
+// export const getBooking = () => async dispatch => {
 
+//     try {
+//         const res = await axios.get('/booking')
+//         // console.log(res.data)
+
+//         dispatch({
+//             type: GETBOOKING_SUCCESS,
+//             payload: res.data
+//         })
+
+
+//     } catch (err) {
+//         const errors = err.response.data.error
+//         console.log(errors)
+//         if (errors) {
+//             dispatch(setAlert(errors[0].msg, 'danger'))
+
+//         }
+//         dispatch({
+//             type: GETBOOKING_FAIL
+//         })
+//     }
+// }
+
+export const bookServicing = (serviceCenter, bikeDetails, bookStatus) => async dispatch => {
+
+    const body = { serviceCenter, bikeDetails, bookStatus }
+    // console.log(body)
     try {
-        const res = await axios.get('/booking')
-        // console.log(res.data)
-
-        dispatch({
-            type: GETBOOKING_SUCCESS,
-            payload: res.data
-        })
-
-
-    } catch (err) {
-        const errors = err.response.data.error
-        console.log(errors)
-        if (errors) {
-            dispatch(setAlert(errors[0].msg, 'danger'))
-
-        }
-        dispatch({
-            type: GETBOOKING_FAIL
-        })
-    }
-}
-
-export const applyBooking = (bookingDetails) => async dispatch => {
-
-    try {
-        const res = await axios.post('/booking/' + bookingDetails)
+        const res = await axios.post('/booking/', body)
         console.log(res.data)
 
         // dispatch({
@@ -51,8 +53,8 @@ export const applyBooking = (bookingDetails) => async dispatch => {
             dispatch(setAlert(errors, 'danger'))
 
         }
-        dispatch({
-            type: GETPROFILE_FAIL
-        })
+        // dispatch({
+        //     type: GETPROFILE_FAIL
+        // })
     }
 }
