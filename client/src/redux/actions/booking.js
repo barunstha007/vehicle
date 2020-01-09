@@ -30,12 +30,12 @@ import { setAlert } from './alert'
 //     }
 // }
 
-export const bookServicing = (serviceCenter, bikeDetails, bookStatus) => async dispatch => {
+export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => async dispatch => {
 
-    const body = { serviceCenter, bikeDetails, bookStatus }
+    const body = { serviceCenter, bikeDetails, bookingStatus }
     // console.log(body)
     try {
-        const res = await axios.post('/booking/', body)
+        const res = await axios.post('/booking/request', body)
         console.log(res.data)
 
         // dispatch({

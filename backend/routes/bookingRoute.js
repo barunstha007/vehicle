@@ -1,8 +1,8 @@
 const router = require('express').Router()
 const auth = require('../middleware/auth')
-const Booking = require('../models/Booking.model')
 const Bike = require('../models/Bike.model')
 const ServiceCenter = require('../models/ServiceCenter.model')
+const Booking = require('../models/Booking.model')
 const mongoose = require('mongoose')
 const { check, validationResult } = require('express-validator')
 //const user = require('../models/User.model')
@@ -54,7 +54,7 @@ router.get('/', auth, async (req, res) => {
 //@desc add booking for bike
 //@access Customer, Admin
 
-router.post('/', [auth, [
+router.post('/request', [auth, [
     check("bikeDetails", "Please enter your bike")
         .not()
         .isEmpty(),
@@ -67,38 +67,42 @@ router.post('/', [auth, [
 
     const error = validationResult(req);
     // If validation errors
-    if (!error.isEmpty()) {
-        return res.status(400).json({ error: error.array() });
-    }
+    if (!error.isEmpty()) return res.status(400).json({ error: error.array() });
 
-    // Find bike of user
-    const bike = await Bike.findOne({ _id: req.body.bikeDetails })
-    if (!bike)
-        return res.status(404).json({ error: [{ 'msg': "User Bike is not registered" }] })
-
-    // Find selected service center of user
-    const serviceCenter = await ServiceCenter.findOne({ _id: req.body.serviceCenter })
-    if (!serviceCenter)
-        return res.status(404).json({ error: [{ 'msg': "Service Center doesnot exist" }] })
-
-
-    //booking
-    // const booking = await Booking.findOne({ serviceLocation: req.body.serviceLocation })
-
-    // const booking = {}
-    // booking.bike = bike._id
-    // booking.serviceCenter = serviceCenter._id
-    // booking.bookingDate = new Date()
-    // // check null for first time booking
-    // if (booking.bookingStatus == null || booking.bookingStatus == 0)
-    //     booking.bookingStatus = 1
-    // // if (booking.bookingStatus == 3) booking.bookingStatus = 2
-
-    res.json(booking)
+    // Find requested bike
+    const requestedBike = await Bike.findOne({ _id: req.body.bikeDetails })
+    if (!requestedBike) return res.status(404).json({ error: [{ 'msg': "User Bike is not registered" }] })
+    // Find requested service center
+    const requestedServiceCenter = await ServiceCenter.findOne({ _id: req.body.serviceCenter })
+    if (!requestedServiceCenter) return res.status(404).json({ error: [{ 'msg': "Service Center doesnot exist" }] })
 
 
 
+    // Check if userbike is in queue
+    const checkUserQueue = await Booking.findOne({ bike: req.body.bikeDetails, bookingStatus: 1 })
+    if (checkUserQueue)
+        return res.status(400).json({ error: [{ 'msg': "You are already queued in" + checkUserQueue.serviceCenter }] })
 
+    // Check if userbike is in booking
+    const checkUserQueue = await Booking.findOne({ bike: req.body.bikeDetails, bookingStatus: 2 })
+    if (checkUserQueue)
+        return res.status(400).json({ error: [{ 'msg': "You are already in booking state in" + checkUserQueue.serviceCenter }] })
+
+
+    // If service center booking limit is packed
+    if (requestedServiceCenter.bookingCount === requestedServiceCenter.bookingLimit) return res.json('Booking not available')
+
+    // increase booking count of booking request service center
+    await ServiceCenter.findOneAndUpdate(
+        { _id: requestedServiceCenter._id },
+        { bookingCount: requestedServiceCenter.bookingCount + 1 },
+        { new: true }
+    );
+
+    //   Add to queue
+
+
+    res.json(serviceCenter)
 
 
 

@@ -29,6 +29,30 @@ export const getServiceCenter = () => async dispatch => {
     }
 }
 
+export const updateServiceCenter = (serviceCenterDetails) => async dispatch => {
+
+    try {
+        const res = await axios.post('/service-center/admin')
+        console.log(res)
+
+        dispatch({
+            type: GETSERVICECENTERBYID_SUCCESS,
+            payload: res.data
+        })
+
+    } catch (err) {
+        const errors = err.response.data.error
+        console.log(errors)
+        if (errors) {
+            dispatch(setAlert(errors[0].msg, 'danger'))
+
+        }
+        dispatch({
+            type: GETSERVICECENTERBYID_FAIL
+        })
+    }
+}
+
 // export const addAdmin = (adminDetails) => async dispatch => {
 //     const config = {
 //         headers: {

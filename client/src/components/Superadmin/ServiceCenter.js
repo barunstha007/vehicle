@@ -198,6 +198,7 @@ function ServiceCenter(props) {
 				</td>
 			</tr>
 		)
+
 	})
 
 	// map vacant admin to select options

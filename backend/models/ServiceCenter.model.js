@@ -24,6 +24,10 @@ const serviceCenterSchema = new Schema(
       type: Number,
       required: true
     },
+    bookingCount: {
+      type: Number,
+      default: 0
+    },
     contact: Number
   },
   {

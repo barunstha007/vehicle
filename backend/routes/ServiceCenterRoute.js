@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
 });
 
 // @route   GET /service-center/:id
-// @desc    get service Center by requested admin id
+// @desc    get service Center by admin id
 // @access  Private
 router.get("/admin", auth, async (req, res) => {
   try {
@@ -50,7 +50,7 @@ router.get("/admin", auth, async (req, res) => {
 
 
 //@router   POST /service-center/
-//@desc     add new servicing center
+//@desc     create new servicing center
 //@access   Superadmin
 router.post("/", [auth,
   [
@@ -129,16 +129,13 @@ router.post("/", [auth,
 //@access   Superadmin
 router.post("/update", [auth,
   [
-    check("serviceLocation", "Please enter service center location")
+    check("admin", "Please enter admin").not().isEmpty(),
+    check("name", "Please enter service center name")
       .not()
       .isEmpty(),
     check("serviceLocation", "Service Center Location must be alphabet")
       .not()
       .isNumeric(),
-    check("admin", "Please enter admin").not().isEmpty(),
-    check("name", "Please enter service center name")
-      .not()
-      .isEmpty(),
 
     check("maxBookingDays", "Enter max booking days in number").isNumeric(),
     check("bookingLimit", "Maximum booking limit of bikes in number").isNumeric(),
@@ -147,7 +144,7 @@ router.post("/update", [auth,
 ],
   async (req, res) => {
     // If customer, exit from route
-    if (req.user.role !== 1) {
+    if (req.user.role == 3) {
       return res.json("Know your limits!");
     }
 
@@ -247,49 +244,4 @@ router.delete("/:id", auth, async (req, res) => {
 }
 );
 
-
 module.exports = router;
-
-
-
-// @route   GET /service-center/
-// @desc    get Service Center
-// @access  Admin- only admins, Superadmin - all
-// router.get("/", auth, async (req, res) => {
-//   try {
-//     // if CUSTOMER
-//     if (req.user.role >= 3) {
-//       return res.status(400).json("Know your limits!");
-//     }
-
-//     //if ADMIN, get admin's profile only
-//     if (req.user.role == 2) {
-//       // Check service center of current admin
-//       serviceCenterProfile = await ServiceCenter.findOne({
-//         admin: req.user.id
-//       }).populate("admin", "name");
-//       // If no service center for admin
-//       if (!serviceCenterProfile) {
-//         return res.json("There is no service center for this user");
-//       }
-//       //If there is service center
-//       return res.json(serviceCenterProfile);
-//     }
-//     //if SUPERADMIN, get all service center
-//     if (req.user.role == 1) {
-//       // Check service center for params admin
-//       const serviceCenterProfile = await ServiceCenter.find(
-//         {}
-//       ).populate("admin", ["name", "avatar"]);
-//       // If no service center
-//       if (serviceCenterProfile.length == 0) {
-//         return res.json("No service center found");
-//       }
-//       //If there is service center
-//       return res.status(200).json(serviceCenterProfile);
-//     }
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server Error");
-//   }
-// });

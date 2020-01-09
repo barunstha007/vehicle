@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { getProfile, updateProfile } from '../../redux/actions/profile'
 import { getServiceCenter } from '../../redux/actions/dashboard'
+import { updateServiceCenter } from '../../redux/actions/serviceCenterList'
 import Alert from '../../layout/Alert'
 import { Redirect } from 'react-router-dom'
 
@@ -296,12 +297,12 @@ function Dashboard(props) {
         editSCToggle: false,
 
         id: "",
+        admin: "",
         name: "",
-        contact: "",
         serviceLocation: "",
         maxBookingDays: "",
         bookingLimit: "",
-
+        contact: ""
     })
 
     // Input service center onChange
@@ -332,67 +333,6 @@ function Dashboard(props) {
             editSCToggle: false
         })
     }
-
-    // Submit Edit Profile
-    const sceditDashboardSubmit = (e) => {
-
-        const editDetails = {
-            id: state.id,
-            name: serviceCenterState.name,
-            serviceLocation: serviceCenterState.serviceLocation,
-            maxBookingDays: serviceCenterState.maxBookingDays,
-            bookingLimit: serviceCenterState.bookingLimit,
-            contact: serviceCenterState.contact,
-        }
-
-        props.updateServiceCenter(editDetails)
-
-        serviceCenterState({
-            ...serviceCenterState,
-            editSCToggle: false,
-
-            id: "",
-            name: "",
-            serviceLocation: "",
-            maxBookingLimit: "",
-            bookingLimit: "",
-            contact: "",
-        })
-
-    }
-
-
-    // function sceditorSubmitEditbtn() {
-    //     if (serviceCenterState.editSCToggle) {
-    //         return (
-    //             <div className="row">
-    //                 <div className="col-6 p-1"><label /></div>
-    //                 <div className="col-3 p-1"><p>
-    //                     <span className="btn btn-success text-white" onClick={sceditDashboardSubmit}>&#10004;</span>
-    //                 </p>
-    //                 </div>
-    //                 <div className="col-3 "><p >
-    //                     <span className="btn btn-danger text-white" onClick={sceditDashboardCancel}>&#10005;</span>
-    //                 </p>
-    //                 </div>
-
-    //             </div>
-    //         )
-    //     } else
-    //         return (
-    //             <div className="row">
-    //                 {/* Edit service center */}
-    //                 <div className="col-6 p-1"><label /></div>
-    //                 <div className="col-6 p-1">
-    //                     <p>
-    //                         <span className="btn btn-secondary text-white" onClick={sceditDashboardHandler}>Edit Service Center</span>
-    //                     </p>
-    //                 </div>
-    //             </div>
-
-    //         )
-    // }
-
 
     // Initial SC Render
     function serviceCenter() {
@@ -556,6 +496,36 @@ function Dashboard(props) {
             )
     }
 
+    // Submit Edit service center
+    const sceditDashboardSubmit = (e) => {
+
+        const editDetails = {
+            id: serviceCenterState.id,
+            admin: props.userProfile._id,
+            name: serviceCenterState.name,
+            serviceLocation: serviceCenterState.serviceLocation,
+            maxBookingDays: serviceCenterState.maxBookingDays,
+            bookingLimit: serviceCenterState.bookingLimit,
+            contact: serviceCenterState.contact,
+        }
+
+        // Update admins service center
+        props.updateServiceCenter(editDetails)
+
+        setServiceCenterState({
+            ...serviceCenterState,
+            editSCToggle: false,
+
+            id: "",
+            name: "",
+            serviceLocation: "",
+            maxBookingLimit: "",
+            bookingLimit: "",
+            contact: "",
+        })
+
+    }
+
     // ------------------- RENDER ---------------------------------------------
 
     // return to login if not authenticated
@@ -633,4 +603,8 @@ const mapStateToProps = state => ({
     authStatus: state.auth.authStatus
 })
 
-export default connect(mapStateToProps, { getProfile, updateProfile, getServiceCenter })(Dashboard)
+export default connect(mapStateToProps,
+    {
+        getProfile, updateProfile,
+        getServiceCenter, updateServiceCenter
+    })(Dashboard)
