@@ -3,26 +3,28 @@ import "./Profile.css"
 import { InputGroup, Button } from 'react-bootstrap'
 import { MdRemoveRedEye } from 'react-icons/md'
 import ServiceCenterBook from '../layout/ServiceCenterBook'
+import Moment from 'react-moment'
 //Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { getProfile, updateProfile } from '../redux/actions/profile'
 import { getUserBike } from '../redux/actions/userBike'
+import { getBooking } from '../redux/actions/booking'
 import Alert from '../layout/Alert'
 import { Redirect } from 'react-router-dom'
 
 function Profile(props) {
 
-
     useEffect(() => {
         props.getProfile()
         props.getUserBike()
+        props.getBooking()
+
     }, [])
 
     const [state, setState] = useState({
         editToggle: false,
         passwordHidden: false,
-        bookingStatus: false,
 
         id: "",
         username: "",
@@ -310,7 +312,14 @@ function Profile(props) {
                         <label>Booking Status</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p ><span className="text-success">Accepted</span></p>
+                        {/* Color code based on booking status from props */}
+                        <p ><span className={
+                            props.bookingDetails.bookingStatus == 1 ? 'text-warning' :
+                                (props.bookingDetails.bookingStatus == 2 ? 'text-success' : 'text-secondary')}>
+                            {
+                                props.bookingDetails.bookingStatus == 1 ? 'In Queue' :
+                                    (props.bookingDetails.bookingStatus == 2 ? 'Accepted' : 'No Booking')}
+                        </span></p>
                     </div>
                 </div>
                 <div className="row">
@@ -318,7 +327,7 @@ function Profile(props) {
                         <label>Booking Date</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p>12 Dec 2019, 1:00PM</p>
+                        <p><Moment format="MM/D/YYYY, HH:mm">{props.bookingDetails.bookingDate}</Moment></p>
                     </div>
                 </div>
                 <div className="row">
@@ -334,7 +343,7 @@ function Profile(props) {
                         <label>Vehicle</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p>Vespa SXL MATTE 125</p>
+                        <p>{props.bikeModelName}, {props.userBike.bikeNumber}</p>
                     </div>
                 </div>
                 <div className="row">
@@ -472,7 +481,7 @@ function Profile(props) {
                                 {state.editToggle ? editUserDetails() : userDetails()}
                             </div>
 
-                            {state.bookingStatus ? bookingStatus() : bookServicing()}
+                            {props.bookingDetails.bookingStatus !== 0 ? bookingStatus() : bookServicing()}
                         </div>
                     </div>
                 </div>
@@ -484,6 +493,8 @@ function Profile(props) {
 
 Profile.propTypes = {
     getProfile: PropTypes.func.isRequired,
+    getUserBike: PropTypes.func.isRequired,
+    getBooking: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -492,7 +503,9 @@ const mapStateToProps = state => ({
     bikeModelName: state.userBike.bikeModelName,
     isAuthenticated: state.auth.isAuthenticated,
     loading: state.auth.loading,
-    authStatus: state.auth.authStatus
+    authStatus: state.auth.authStatus,
+
+    bookingDetails: state.booking.bookingDetails
 })
 
-export default connect(mapStateToProps, { getUserBike, getProfile, updateProfile })(Profile)
+export default connect(mapStateToProps, { getUserBike, getProfile, getBooking, updateProfile })(Profile)

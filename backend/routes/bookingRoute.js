@@ -5,43 +5,67 @@ const ServiceCenter = require('../models/ServiceCenter.model')
 const Booking = require('../models/Booking.model')
 const mongoose = require('mongoose')
 const { check, validationResult } = require('express-validator')
-//const user = require('../models/User.model')
 
-// @route   GET /booking/
-// @desc    get current users booking
-// @access  Customer, Admin
-router.get('/', auth, async (req, res) => {
+// @route   GET /booking/queue
+// @desc    get queued bikes
+// @access  Admin
+router.get('/queue', auth, async (req, res) => {
+    if (req.user.role !== 2) return res.json('Not authorized')
 
     try {
-        // If user is customer
-        if (req.user.role == 3) {
-            // Check bike for current user
-            const bikeDetails = await Bike.findOne({ user: req.user.id })
-            // If bike available
-            if (bikeDetails) {
+        // Check booking for current user
 
-                // Check booking status
-                const bookingDetails = await Booking.findOne({ bike: bikeDetails.id })
+        var sortbybookingdate = { bookingDate: 1 };
+        bookingDetails = await Booking.find({ bookingStatus: 1 }).sort(sortbybookingdate)
+        if (!bookingDetails) res.status(404).json('Booking requests are empty')
 
-                if (!bookingDetails || bookingDetails.bookingStatus == 0) {
-                    return res.status(404).json("There is no current booking")
-                }
-                return res.status(200).json(bookingDetails)
-            }
-            //If there is no bike for user
-            return res.status(200).json("Please enter your bike details first")
+        res.status(200).json(bookingDetails)
 
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).send('Server Error')
+    }
+
+})
+
+// @route   GET /booking/acceptd
+// @desc    get booking accepted bikes
+// @access  Admin
+router.get('/accepted', auth, async (req, res) => {
+    if (req.user.role !== 2) return res.json('Not authorized')
+
+    try {
+        // Check booking for current user
+        bookingDetails = await Booking.find({ bookingStatus: 2 })
+        if (!bookingDetails) res.status(404).json('No Booking Accepted')
+
+        res.status(200).json(bookingDetails)
+
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).send('Server Error')
+    }
+
+})
+
+// @route   GET /booking/:id
+// @desc    get booking by id
+// @access  Customers
+router.get('/:id', auth, async (req, res) => {
+    if (req.user.role !== 3) return res.json('Create Customer account')
+
+    try {
+        // Check bike for current user
+        const bikeDetails = await Bike.findOne({ user: req.user.id })
+        // If bike available
+        if (bikeDetails) {
+
+            // Check booking status
+            const bookingDetails = await Booking.findOne({ bike: bikeDetails.id }).populate('serviceCenter', 'name')
+
+            return res.status(200).json(bookingDetails)
         }
 
-
-        // // If user is admin, get all booking status for service center
-        if (req.user.role == 2) {
-            // Check booking for current user
-            bookingDetails = await Booking.find({ bookingStatus: 1 })
-            if (!bookingDetails) res.status(404).json('There is no current booking')
-
-            res.status(200).json(bookingDetails)
-        }
 
     } catch (err) {
         console.error(err.message)
@@ -52,8 +76,7 @@ router.get('/', auth, async (req, res) => {
 
 //@router POST /booking/
 //@desc add booking for bike
-//@access Customer, Admin
-
+//@access Customer
 router.post('/request', [auth, [
     check("bikeDetails", "Please enter your bike")
         .not()
@@ -76,83 +99,39 @@ router.post('/request', [auth, [
     const requestedServiceCenter = await ServiceCenter.findOne({ _id: req.body.serviceCenter })
     if (!requestedServiceCenter) return res.status(404).json({ error: [{ 'msg': "Service Center doesnot exist" }] })
 
+    // create new object containing requested booking details
+    const bookingDetails = {}
+    if (req.body.serviceCenter) bookingDetails.serviceCenter = req.body.serviceCenter
+    if (req.body.bookingStatus) bookingDetails.bookingStatus = req.body.bookingStatus
+    bookingDetails.bookingDate = Date.now()
 
+    // update if bike exists
+    const checkBike = await Booking.findOne({ bike: req.body.bikeDetails })
+    if (checkBike) {
+        const updateBooking = await Booking.findOneAndUpdate(
+            // Update profile in this id
+            { bike: req.body.bikeDetails },
+            { $set: bookingDetails, bookingDate: Date.now() },
+            { new: true }
+        ).populate('serviceCenter', 'name')
+        return res.json(updateBooking)
+    }
 
-    // Check if userbike is in queue
-    const checkUserQueue = await Booking.findOne({ bike: req.body.bikeDetails, bookingStatus: 1 })
-    if (checkUserQueue)
-        return res.status(400).json({ error: [{ 'msg': "You are already queued in" + checkUserQueue.serviceCenter }] })
+    // Create new booking
+    let newbooking = new Booking({
+        bike: req.body.bikeDetails,
+        serviceCenter: req.body.serviceCenter,
+        bookingStatus: req.body.bookingStatus,
+        bookingDate: Date.now()
+    })
 
-    // Check if userbike is in booking
-    const checkUserQueue = await Booking.findOne({ bike: req.body.bikeDetails, bookingStatus: 2 })
-    if (checkUserQueue)
-        return res.status(400).json({ error: [{ 'msg': "You are already in booking state in" + checkUserQueue.serviceCenter }] })
+    // save to database
+    await newbooking.save();
 
+    // Populates service center
+    newbooking = await newbooking.populate('serviceCenter', 'name').execPopulate()
 
-    // If service center booking limit is packed
-    if (requestedServiceCenter.bookingCount === requestedServiceCenter.bookingLimit) return res.json('Booking not available')
-
-    // increase booking count of booking request service center
-    await ServiceCenter.findOneAndUpdate(
-        { _id: requestedServiceCenter._id },
-        { bookingCount: requestedServiceCenter.bookingCount + 1 },
-        { new: true }
-    );
-
-    //   Add to queue
-
-
-    res.json(serviceCenter)
-
-
-
-    // ------THE END----------- HERE
-    // const booking = {}
-    // booking.bike = bikebooking.id
-    // booking.bookingStatus = true
-
-    // if (bikebooking) bike.bikeNumber = req.body.bikeNumber
-
-
-
-    // // Build profile Object
-    // const bookingFields = {}
-
-    // bookingFields.bike = req.user.id
-
-    // try {
-    //     // look for the profile with user req.user.id 
-    //     let booking = await Booking.findOne({ user: req.user.id })
-
-    //     // if profile is found for the user
-    //     if (booking) {
-    //         console.log('Profile Found')
-    //         // For Update
-    //         mongoose.set('useFindAndModify', false);
-    //         booking = await Booking.findOneAndUpdate(
-    //             // Update profile in this id
-    //             { user: req.user.id },
-    //             { $set: bookingFields },
-    //             { new: true }
-    //         )
-
-    //         return res.json(booking)
-    //         // console.log('Booking Updated')
-    //     }
-
-    //     console.log('Profile NOT Found')
-    //     // Else Create new profile
-    //     booking = new Booking(bookingFields)
-    //     console.log(booking) //CORRECT (has user id of current user)
-    //     await booking.save()
-    //     // res.json(booking)
-    //     console.log('Booking Created')
-    //     console.log(req.user)
-
-    // } catch (err) {
-    //     console.error(err.message)
-    //     res.status(500).send('Server Error')
-    // }
+    res.status(200).json(newbooking)
 
 })
 

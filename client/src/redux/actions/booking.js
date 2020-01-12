@@ -1,35 +1,32 @@
 import axios from "axios";
 import {
-    GETBOOKING_SUCCESS,
-    GETBOOKING_FAIL,
+    BOOKING_SUCCESS,
+    BOOKING_FAIL,
+    GETBOOKINGBYID_SUCCESS,
+    GETBOOKINGBYID_FAIL
 } from './types';
 import { setAlert } from './alert'
 
-// export const getBooking = () => async dispatch => {
+export const getBooking = () => async dispatch => {
 
-//     try {
-//         const res = await axios.get('/booking')
-//         // console.log(res.data)
+    try {
+        const res = await axios.get('/booking/:id')
+        // console.log(res.data)
+        dispatch({
+            type: GETBOOKINGBYID_SUCCESS,
+            payload: res.data
+        })
 
-//         dispatch({
-//             type: GETBOOKING_SUCCESS,
-//             payload: res.data
-//         })
 
+    } catch (err) {
 
-//     } catch (err) {
-//         const errors = err.response.data.error
-//         console.log(errors)
-//         if (errors) {
-//             dispatch(setAlert(errors[0].msg, 'danger'))
+        dispatch({
+            type: GETBOOKINGBYID_FAIL
+        })
+    }
+}
 
-//         }
-//         dispatch({
-//             type: GETBOOKING_FAIL
-//         })
-//     }
-// }
-
+// request for booking
 export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => async dispatch => {
 
     const body = { serviceCenter, bikeDetails, bookingStatus }
@@ -38,12 +35,12 @@ export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => asyn
         const res = await axios.post('/booking/request', body)
         console.log(res.data)
 
-        // dispatch({
-        //     type: UPDATEPROFILE_SUCCESS,
-        //     payload: res.data
-        // })
+        dispatch({
+            type: BOOKING_SUCCESS,
+            payload: res.data
+        })
 
-        // dispatch(setAlert('Profile updated successfully', 'success'))
+        dispatch(setAlert('Booking Successful', 'success'))
 
 
     } catch (err) {
@@ -53,8 +50,6 @@ export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => asyn
             dispatch(setAlert(errors, 'danger'))
 
         }
-        // dispatch({
-        //     type: GETPROFILE_FAIL
-        // })
+
     }
 }

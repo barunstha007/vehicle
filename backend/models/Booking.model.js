@@ -12,21 +12,23 @@ const bookingSchema = new Schema({
         ref: 'ServiceCenter',
         required: true,
     },
-    // mm-dd-yy format
-
     bookingDate: {
         type: Date,
         trim: true
     },
     servicingDate: Date,
 
+    lastServicingDate: {
+        type: Date,
+    },
     bookingStatus: {
         type: Number,
         default: 0,
     },
     totalPrice: Number,
-}, {
-    timestamps: true
-})
+},
+    {
+        timestamps: true
+    })
 
 module.exports = Booking = mongoose.model('Booking', bookingSchema)
