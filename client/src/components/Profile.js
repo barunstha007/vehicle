@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { getProfile, updateProfile } from '../redux/actions/profile'
 import { getUserBike } from '../redux/actions/userBike'
 import { getBooking } from '../redux/actions/booking'
+import { cancleServicing } from '../redux/actions/booking'
 import Alert from '../layout/Alert'
 import { Redirect } from 'react-router-dom'
 
@@ -300,7 +301,11 @@ function Profile(props) {
                         <label></label>
                     </div>
                     <div className="col-6 p-1">
-                        <p ><span className="btn btn-danger text-white">Cancel Booking</span></p>
+                        <p ><span className="btn btn-danger text-white" onClick={
+                            () => {
+                                props.cancleServicing(props.userBike._id)
+                            }
+                        }>Cancel Booking</span></p>
                     </div>
                 </div>
                 <div className="row mb-4">
@@ -327,7 +332,7 @@ function Profile(props) {
                         <label>Booking Date</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p><Moment format="MM/D/YYYY, HH:mm">{props.bookingDetails.bookingDate}</Moment></p>
+                        <p><Moment format="MM/D/YYYY, hh:mm">{props.bookingDetails.bookingDate}</Moment></p>
                     </div>
                 </div>
                 <div className="row">
@@ -481,7 +486,8 @@ function Profile(props) {
                                 {state.editToggle ? editUserDetails() : userDetails()}
                             </div>
 
-                            {props.bookingDetails.bookingStatus !== 0 ? bookingStatus() : bookServicing()}
+                            {props.bookingDetails.bookingStatus === 1 || props.bookingDetails.bookingStatus === 2 ?
+                                bookingStatus() : bookServicing()}
                         </div>
                     </div>
                 </div>
@@ -495,6 +501,7 @@ Profile.propTypes = {
     getProfile: PropTypes.func.isRequired,
     getUserBike: PropTypes.func.isRequired,
     getBooking: PropTypes.func.isRequired,
+    cancleServicing: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -508,4 +515,6 @@ const mapStateToProps = state => ({
     bookingDetails: state.booking.bookingDetails
 })
 
-export default connect(mapStateToProps, { getUserBike, getProfile, getBooking, updateProfile })(Profile)
+export default connect(mapStateToProps,
+    { getUserBike, getProfile, getBooking, cancleServicing, updateProfile })
+    (Profile)

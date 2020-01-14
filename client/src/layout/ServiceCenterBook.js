@@ -43,7 +43,7 @@ function ServiceCenterBook(props) {
                 style={{ width: '17em ' }}
                 defaultValue={'DEFAULT'}
                 onChange={e => setState({ ...state, selectedServiceCenter: e.target.value })}>
-                <option value="DEFAULT" className="bg-secondary text-whit   userBike: nulle">--Book Servicing--</option>
+                <option value="DEFAULT" disabled className="bg-secondary text-white">--Book Servicing--</option>
                 {serviceLocation}
             </select>
             <button className="btn btn-primary ml-1" type="submit" >Book</button>

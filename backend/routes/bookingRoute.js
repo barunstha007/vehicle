@@ -13,10 +13,13 @@ router.get('/queue', auth, async (req, res) => {
     if (req.user.role !== 2) return res.json('Not authorized')
 
     try {
-        // Check booking for current user
+        // get service center of logged-in admin
+        const currentAdmin = await ServiceCenter.findOne({ admin: req.user.id })
 
+        // Sort by date in ascending order
         var sortbybookingdate = { bookingDate: 1 };
-        bookingDetails = await Booking.find({ bookingStatus: 1 }).sort(sortbybookingdate)
+        // find queued booking details of current admins service center
+        bookingDetails = await Booking.find({ bookingStatus: 1, serviceCenter: currentAdmin }).sort(sortbybookingdate)
         if (!bookingDetails) res.status(404).json('Booking requests are empty')
 
         res.status(200).json(bookingDetails)
@@ -74,8 +77,8 @@ router.get('/:id', auth, async (req, res) => {
 
 })
 
-//@router POST /booking/
-//@desc add booking for bike
+//@route POST /booking/
+//@desc add queue for bike
 //@access Customer
 router.post('/request', [auth, [
     check("bikeDetails", "Please enter your bike")
@@ -114,6 +117,17 @@ router.post('/request', [auth, [
             { $set: bookingDetails, bookingDate: Date.now() },
             { new: true }
         ).populate('serviceCenter', 'name')
+
+        // Increase bookingCount of requested service center if bookingStatus is 1 
+        if (req.body.bookingStatus == 1) {
+            await ServiceCenter.findOneAndUpdate(
+                // Update profile in this id
+                { _id: requestedServiceCenter },
+                { $inc: { bookingCount: 1 } },
+                { new: true }
+            )
+        }
+
         return res.json(updateBooking)
     }
 
@@ -122,16 +136,78 @@ router.post('/request', [auth, [
         bike: req.body.bikeDetails,
         serviceCenter: req.body.serviceCenter,
         bookingStatus: req.body.bookingStatus,
-        bookingDate: Date.now()
+        bookingDate: Date.now(),
     })
 
-    // save to database
-    await newbooking.save();
+    // increase booking count of service center on c
+    await newbooking.save()
+
+    if (req.body.bookingStatus == 1) {
+        await ServiceCenter.findOneAndUpdate(
+            // Update profile in this id
+            { _id: requestedServiceCenter },
+            { $inc: { bookingCount: 1 } },
+            { new: true }
+        )
+    }
 
     // Populates service center
     newbooking = await newbooking.populate('serviceCenter', 'name').execPopulate()
 
     res.status(200).json(newbooking)
+
+})
+
+//@router POST /booking/
+//@desc cancle booking for bike
+//@access Customer
+router.post('/cancle', [auth, [
+    check("bikeDetails", "Please enter your bike")
+        .not()
+        .isEmpty()
+]], async (req, res) => {
+
+    // check if request from customer
+    if (req.user.role !== 3) return res.status(400).json({ error: [{ 'msg': 'Create Customer account!' }] })
+
+    const error = validationResult(req);
+    // If validation errors
+    if (!error.isEmpty()) return res.status(400).json({ error: error.array() });
+
+    // Find requested bike
+    const requestedBike = await Bike.findOne({ _id: req.body.bikeDetails })
+    if (!requestedBike) return res.status(404).json({ error: [{ 'msg': "User Bike is not registered" }] })
+
+
+    // remove booking
+    const bookingDetails = {}
+    bookingDetails.serviceCenter = null
+    bookingDetails.bookingDate = null
+    bookingDetails.bookingStatus = 0
+
+    // update if bike exists
+    const checkBike = await Booking.findOne({ bike: req.body.bikeDetails })
+
+    // get booking serviceCenter to decrease bookingCount
+    const requestedServiceCenter = await ServiceCenter.findOne({ _id: checkBike.serviceCenter })
+
+    // cancel booking
+    if (checkBike) {
+        const cancleBooking = await Booking.findOneAndUpdate(
+            // Update profile in this id
+            { bike: req.body.bikeDetails },
+            { $set: bookingDetails },
+            { new: true }
+        )
+        res.json(cancleBooking)
+    }
+
+    // decrease bookingCount of service center
+    await ServiceCenter.findOneAndUpdate(
+        { _id: requestedServiceCenter },
+        { $inc: { bookingCount: -1 } },
+        { new: true }
+    )
 
 })
 

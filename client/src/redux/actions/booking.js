@@ -3,7 +3,9 @@ import {
     BOOKING_SUCCESS,
     BOOKING_FAIL,
     GETBOOKINGBYID_SUCCESS,
-    GETBOOKINGBYID_FAIL
+    GETBOOKINGBYID_FAIL,
+    CANCLEBOOKING_SUCCESS,
+
 } from './types';
 import { setAlert } from './alert'
 
@@ -41,6 +43,33 @@ export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => asyn
         })
 
         dispatch(setAlert('Booking Successful', 'success'))
+
+
+    } catch (err) {
+        const errors = err.response.data
+        console.log(errors)
+        if (errors) {
+            dispatch(setAlert(errors.error[0].msg, 'danger'))
+
+        }
+
+    }
+}
+
+export const cancleServicing = (bikeDetails) => async dispatch => {
+
+    const body = { bikeDetails }
+    // console.log(body)
+    try {
+        const res = await axios.post('/booking/cancle', body)
+        console.log(res.data)
+
+        dispatch({
+            type: CANCLEBOOKING_SUCCESS,
+            payload: res.data
+        })
+
+        dispatch(setAlert('Cancel Successful', 'success'))
 
 
     } catch (err) {
