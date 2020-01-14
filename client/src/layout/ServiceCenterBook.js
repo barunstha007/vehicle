@@ -13,6 +13,7 @@ function ServiceCenterBook(props) {
 
     const [state, setState] = useState({
         selectedServiceCenter: null,
+        buttonDisabled: false
     })
 
     useEffect(() => {
@@ -31,6 +32,11 @@ function ServiceCenterBook(props) {
 
     const bookHandler = e => {
         e.preventDefault()
+        setState({
+            ...state,
+            buttonDisabled: true
+        })
+
         // console.log(state.selectedServiceCenter, props.userBike)
 
         props.bookServicing(state.selectedServiceCenter, props.userBike._id, 1)
@@ -46,7 +52,7 @@ function ServiceCenterBook(props) {
                 <option value="DEFAULT" disabled className="bg-secondary text-white">--Book Servicing--</option>
                 {serviceLocation}
             </select>
-            <button className="btn btn-primary ml-1" type="submit" >Book</button>
+            <button className="btn btn-primary ml-1" type="submit" disabled={state.buttonDisabled} >Book</button>
         </form>
     )
 }
