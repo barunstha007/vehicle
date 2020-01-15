@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { logout } from '../redux/actions/auth'
 
-function Navigation({ auth: { isAuthenticated, loading }, logout }) {
+function Navigation({ auth: { isAuthenticated, authStatus, loading }, logout }) {
 
     const authLinks = (
         <Navbar.Text>
@@ -20,25 +20,45 @@ function Navigation({ auth: { isAuthenticated, loading }, logout }) {
         </Navbar.Text>
     )
 
+    function userRoleBasedNav() {
+        if (authStatus == 1) {
+            return (
+                <React.Fragment>
+                    <Nav.Link href="/bikemodel-list">Bike Models</Nav.Link>
+                    <Nav.Link href="/service-centers">Service Centers</Nav.Link>
+
+                    <NavDropdown title="Users" id="basic-nav-dropdown">
+                        <NavDropdown.Item href="/superadminlists">Superadmin</NavDropdown.Item>
+                        <NavDropdown.Item href="/adminlists">Admin</NavDropdown.Item>
+                    </NavDropdown>
+                </React.Fragment>
+            )
+        }
+        if (authStatus == 2) {
+            return (
+                <React.Fragment>
+                    <Nav.Link href="/current">Servicing</Nav.Link>
+                    <Nav.Link href="/inqueue">Queue</Nav.Link>
+                    <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+                </React.Fragment>
+            )
+        }
+        if (authStatus == 3) {
+            return (
+                <React.Fragment>
+                    <Nav.Link href="/profile">Profile</Nav.Link>
+                </React.Fragment>
+            )
+        }
+    }
+
     return (
         <Navbar bg="light" expand="sm">
             <Navbar.Brand href="/"> Service Booking</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" expand={768} />
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
-                    <Nav.Link href="/current">Servicing</Nav.Link>
-                    <Nav.Link href="/inqueue">Queue</Nav.Link>
-                    <Nav.Link href="/dashboard">Dashboard</Nav.Link>
-                    <Nav.Link href="/bikemodel-list">Bike Models</Nav.Link>
-                    <Nav.Link href="/service-centers">Service Centers</Nav.Link>
-                    {/* <Nav.Link href="/bike">Bike</Nav.Link> */}
-
-                    {/* <Nav.Link href="/admin-users">Power Users</Nav.Link> */}
-                    <NavDropdown title="Users" id="basic-nav-dropdown">
-                        <NavDropdown.Item href="/superadminlists">Superadmin</NavDropdown.Item>
-                        <NavDropdown.Item href="/adminlists">Admin</NavDropdown.Item>
-                    </NavDropdown>
-                    <Nav.Link href="/profile">Profile</Nav.Link>
+                    {userRoleBasedNav()}
                 </Nav>
                 {!loading && (<React.Fragment>{isAuthenticated ? authLinks : guestLinks}</React.Fragment>)}
             </Navbar.Collapse>
