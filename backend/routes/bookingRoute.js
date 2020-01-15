@@ -91,16 +91,12 @@ router.post('/request', [auth, [
     // check if request from customer
     if (req.user.role !== 3) return res.status(400).json({ error: [{ 'msg': 'Create Customer account!' }] })
 
-    const error = validationResult(req);
     // If validation errors
+    const error = validationResult(req);
     if (!error.isEmpty()) return res.status(400).json({ error: error.array() });
 
-    // Find requested bike
-    const requestedBike = await Bike.findOne({ _id: req.body.bikeDetails })
-    if (!requestedBike) return res.status(404).json({ error: [{ 'msg': "User Bike is not registered" }] })
-    // Find requested service center
+
     const requestedServiceCenter = await ServiceCenter.findOne({ _id: req.body.serviceCenter })
-    if (!requestedServiceCenter) return res.status(404).json({ error: [{ 'msg': "Service Center doesnot exist" }] })
 
     // create new object containing requested booking details
     const bookingDetails = {}
@@ -108,6 +104,15 @@ router.post('/request', [auth, [
     if (req.body.bookingStatus) bookingDetails.bookingStatus = req.body.bookingStatus
     bookingDetails.bookingDate = Date.now()
 
+
+    // Check bookingLimit is less or equal to booking count
+    if (req.body.bookingStatus == 1) {
+
+        if (requestedServiceCenter.bookingCount >= requestedServiceCenter.bookingLimit) {
+            return res.status(400).json({ error: [{ 'msg': 'Booking Full !' }] })
+
+        }
+    }
     // update if bike exists
     const checkBike = await Booking.findOne({ bike: req.body.bikeDetails })
     if (checkBike) {
@@ -128,7 +133,7 @@ router.post('/request', [auth, [
             )
         }
 
-        return res.json(updateBooking)
+        return res.status(200).json(updateBooking)
     }
 
     // Create new booking

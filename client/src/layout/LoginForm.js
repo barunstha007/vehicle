@@ -6,12 +6,32 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Grid from "@material-ui/core/Grid";
 import Link from "@material-ui/core/Link";
+import { withStyles } from '@material-ui/core/styles';
 
 // Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { login } from '../redux/actions/auth'
 import Alert from "../layout/Alert";
+
+const CssTextField = withStyles({
+    root: {
+
+        '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+                borderColor: 'yellow',
+            },
+            '&:hover fieldset': {
+                borderColor: 'yellow',
+            },
+            '&.Mui-focused fieldset': {
+                borderColor: 'yellow',
+            },
+        },
+    },
+})(TextField);
+
+
 
 function LoginForm(props) {
     // Custom functions
@@ -47,10 +67,10 @@ function LoginForm(props) {
         <React.Fragment>
             <Alert />
             <form onSubmit={onSubmitHandler}>
-                <TextField
+
+                <CssTextField
                     variant="outlined"
                     margin="normal"
-
                     fullWidth
                     id="username"
                     label="Username"

@@ -126,7 +126,7 @@ router.post("/", [auth,
 
 //@router   POST /service-center/update
 //@desc     update servicing center
-//@access   Superadmin
+//@access   Superadmin, Admin
 router.post("/update", [auth,
   [
     check("admin", "Please enter admin").not().isEmpty(),

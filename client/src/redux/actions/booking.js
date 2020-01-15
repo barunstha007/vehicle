@@ -37,12 +37,16 @@ export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => asyn
         const res = await axios.post('/booking/request', body)
         console.log(res.data)
 
-        dispatch({
-            type: BOOKING_SUCCESS,
-            payload: res.data
-        })
+        if (res.status == 400)
+            dispatch(setAlert(res.error[0].msg, 'danger'))
+        else {
+            dispatch({
+                type: BOOKING_SUCCESS,
+                payload: res.data
+            })
 
-        dispatch(setAlert('Booking Successful', 'success'))
+            dispatch(setAlert('Booking Successful', 'success'))
+        }
 
 
     } catch (err) {

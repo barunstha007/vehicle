@@ -36,6 +36,13 @@ function ServiceCenterBook(props) {
             ...state,
             buttonDisabled: true
         })
+        // activate button after 2 seconds to prevent increase in booking count
+        setTimeout(function () {
+            setState({
+                ...state,
+                buttonDisabled: false
+            })
+        }, 2000);
 
         // console.log(state.selectedServiceCenter, props.userBike)
 
