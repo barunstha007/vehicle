@@ -3,7 +3,8 @@ import {
     BOOKING_FAIL,
     GETBOOKINGBYID_SUCCESS,
     GETBOOKINGBYID_FAIL,
-    CANCLEBOOKING_SUCCESS
+    CANCLEBOOKING_SUCCESS,
+    GETBOOKINGQUEUE_SUCCESS
 } from '../actions/types'
 
 const initialState = {
@@ -16,12 +17,15 @@ const initialState = {
         totalPrice: 0
     },
 
+    queueDetails: [],
+
     loading: true
 }
 
 export default function (state = initialState, action) {
     switch (action.type) {
 
+        // @Access customer
         case GETBOOKINGBYID_SUCCESS:
             return {
                 ...state,
@@ -35,7 +39,7 @@ export default function (state = initialState, action) {
                 ...state.bookingDetails,
                 bookingDetails: {
                     bookingStatus: action.payload.bookingStatus,
-                    serviceCenter: action.payload.serviceCenter.name,
+                    serviceCenter: Object.assign({}, action.payload.serviceCenter),
                     bookingDate: action.payload.bookingDate
                 },
                 // <select> initial value
@@ -44,7 +48,6 @@ export default function (state = initialState, action) {
             }
 
         case CANCLEBOOKING_SUCCESS:
-
             return {
                 ...state,
                 bookingDetails: {
@@ -52,8 +55,16 @@ export default function (state = initialState, action) {
                     serviceCenter: null,
                     bookingDate: null
                 },
-                // <select> initial value
-                // initialSelect: action.payload[0]._id,
+
+                loading: false
+            }
+
+        // @Access admin
+        case GETBOOKINGQUEUE_SUCCESS:
+            return {
+                ...state,
+                queueDetails: [...action.payload],
+
                 loading: false
             }
 

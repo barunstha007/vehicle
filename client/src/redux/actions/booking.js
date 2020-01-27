@@ -1,14 +1,16 @@
 import axios from "axios";
 import {
     BOOKING_SUCCESS,
-    BOOKING_FAIL,
     GETBOOKINGBYID_SUCCESS,
     GETBOOKINGBYID_FAIL,
     CANCLEBOOKING_SUCCESS,
+    GETBOOKINGQUEUE_SUCCESS,
+    GETBOOKINGQUEUE_FAIL
 
 } from './types';
 import { setAlert } from './alert'
 
+// @Access customers
 export const getBooking = () => async dispatch => {
 
     try {
@@ -28,6 +30,7 @@ export const getBooking = () => async dispatch => {
     }
 }
 
+// @Access customers
 // request for booking
 export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => async dispatch => {
 
@@ -60,6 +63,7 @@ export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => asyn
     }
 }
 
+// @Access customers
 export const cancleServicing = (bikeDetails) => async dispatch => {
 
     const body = { bikeDetails }
@@ -84,5 +88,25 @@ export const cancleServicing = (bikeDetails) => async dispatch => {
 
         }
 
+    }
+}
+
+// @Access admin
+// @desc get queued 
+export const getQueue = () => async dispatch => {
+
+    try {
+        const res = await axios.get('/booking/queue')
+        // console.log(res.data)
+        dispatch({
+            type: GETBOOKINGQUEUE_SUCCESS,
+            payload: res.data
+        })
+
+    } catch (err) {
+
+        dispatch({
+            type: GETBOOKINGQUEUE_FAIL
+        })
     }
 }

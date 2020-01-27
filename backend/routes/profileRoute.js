@@ -14,7 +14,7 @@ router.get('/', auth, async (req, res) => {
     const { role, id } = req.user
 
     try {
-        const userprofile = await User.findById(id)
+        const userprofile = await User.findById(id).select('-password')
         if (userprofile)
             //Return admin
             return res.status(200).json(userprofile)

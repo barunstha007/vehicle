@@ -19,7 +19,35 @@ router.get('/queue', auth, async (req, res) => {
         // Sort by date in ascending order
         var sortbybookingdate = { bookingDate: 1 };
         // find queued booking details of current admins service center
-        bookingDetails = await Booking.find({ bookingStatus: 1, serviceCenter: currentAdmin }).sort(sortbybookingdate)
+        bookingDetails = await Booking.find({ bookingStatus: 1, serviceCenter: currentAdmin })
+            // .populate('serviceCenter', 'name')
+            // Nested population for userDetails and for bike model
+            .populate([
+                {
+                    path: 'bike',
+                    model: 'Bike',
+                    select: 'bikeNumber',
+                    populate: {
+                        path: 'user',
+                        model: 'UserDetails',
+                        select: ['name', 'phone', 'location']
+                    }
+                },
+            ])
+            .populate([
+                {
+                    path: 'bike',
+                    model: 'Bike',
+                    select: 'bikeNumber',
+                    populate: {
+                        path: 'bikeModel',
+                        model: 'BikeModel',
+                        select: 'bikeModel'
+                    },
+                },
+            ])
+            .sort(sortbybookingdate)
+
         if (!bookingDetails) res.status(404).json('Booking requests are empty')
 
         res.status(200).json(bookingDetails)

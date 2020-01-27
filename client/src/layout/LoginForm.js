@@ -54,7 +54,9 @@ function LoginForm(props) {
     }
 
     // IF AUTHENTICATED
-    if (props.isAuthenticated) return <Redirect to="profile" />
+    if (props.authStatus == 1) return <Redirect to="service-centers" />
+    if (props.authStatus == 2) return <Redirect to="dashboard" />
+    if (props.authStatus == 3) return <Redirect to="profile" />
 
     const onChangeHandler = e => {
         // Spread operator because hooks replace the whole object
@@ -128,6 +130,7 @@ LoginForm.propTypes = {
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
+    authStatus: state.auth.authStatus,
     //  authStatus: state.auth.authStatus
 })
 export default connect(mapStateToProps, { login })(LoginForm)

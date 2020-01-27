@@ -337,10 +337,10 @@ function Profile(props) {
                 </div>
                 <div className="row">
                     <div className="col-6 p-1">
-                        <label>Total Online Servicing Booked Till Date</label>
+                        <label>Service Center</label>
                     </div>
                     <div className="col-6 p-1">
-                        <p>11</p>
+                        <p>{props.bookingDetails.serviceCenter.name}</p>
                     </div>
                 </div>
                 <div className="row">
