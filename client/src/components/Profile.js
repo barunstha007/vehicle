@@ -335,6 +335,25 @@ function Profile(props) {
                         <p><Moment format="MM/D/YYYY, hh:mm">{props.bookingDetails.bookingDate}</Moment></p>
                     </div>
                 </div>
+
+                <div className="row">
+                    <div className="col-6 p-1">
+                        <label>Servicing Date</label>
+                    </div>
+                    <div className="col-6 p-1">
+                        {/* Color code based on booking status from props */}
+                        <p ><span className={
+                            props.bookingDetails.bookingStatus == 1 ? 'text-warning' :
+                                (props.bookingDetails.bookingStatus == 2 ? 'text-success' : 'text-secondary')}>
+                            {
+                                props.bookingDetails.bookingStatus == 1 ? '----' :
+                                    (props.bookingDetails.bookingStatus == 2 ?
+                                        <Moment format="MM/D/YYYY, hh:mm">{props.bookingDetails.servicingDate}</Moment>
+                                        : 'No Booking')}
+                        </span></p>
+                    </div>
+                </div>
+
                 <div className="row">
                     <div className="col-6 p-1">
                         <label>Service Center</label>

@@ -248,6 +248,7 @@ router.post('/cancle', [auth, [
 
     // remove booking
     const bookingDetails = {}
+    bookingDetails.servicingDate = null
     bookingDetails.serviceCenter = null
     bookingDetails.bookingDate = null
     bookingDetails.bookingStatus = 0
