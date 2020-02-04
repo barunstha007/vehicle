@@ -68,6 +68,18 @@ export default function (state = initialState, action) {
                 loading: false
             }
 
+        case 'CHANGESERVICINGDATE':
+
+            let queueDetails = [...state.queueDetails];
+            queueDetails[action.index] = { ...queueDetails[action.index], servicingDate: action.date };
+
+            return {
+                ...state,
+                queueDetails,
+                loading: false
+            }
+
+
         default: return state
     }
 }

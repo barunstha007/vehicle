@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -21,31 +21,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 // Custom
 import Moment from 'react-moment'
+import DateTimePicker from 'react-datetime-picker'
 //Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
-import { getQueue, updateProfile } from '../../redux/actions/booking'
+import { getQueue, acceptQueue } from '../../redux/actions/booking'
+import store from '../../redux/store'
 
-
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Donut', 452, 25.0, 51, 4.9),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-    createData('Honeycomb', 408, 3.2, 87, 6.5),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Jelly Bean', 375, 0.0, 94, 0.0),
-    createData('KitKat', 518, 26.0, 65, 7.0),
-    createData('Lollipop', 392, 0.2, 98, 0.0),
-    createData('Marshmallow', 318, 0, 81, 2.0),
-    createData('Nougat', 360, 19.0, 9, 37.0),
-    createData('Oreo', 437, 18.0, 63, 4.0),
-];
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -71,12 +53,14 @@ function getSorting(order, orderBy) {
     return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
+// table Headings
 const headCells = [
-    { id: 'name', numeric: false, disablePadding: true, label: 'Vehicle Numbers' },
-    { id: 'calories', numeric: true, disablePadding: false, label: 'Booking Date' },
-    { id: 'fat', numeric: true, disablePadding: false, label: 'Name' },
-    { id: 'carbs', numeric: true, disablePadding: false, label: 'Phone' },
-    { id: 'protein', numeric: true, disablePadding: false, label: 'Location' },
+    { id: 'vehicleNumber', disablePadding: true, label: 'Vehicle Numbers' },
+    { id: 'bookingDate', disablePadding: false, label: 'Booking Date' },
+    { id: 'checkinDate', disablePadding: false, label: 'Servicing Date' },
+    { id: 'name', disablePadding: false, label: 'Name' },
+    { id: 'phone', disablePadding: false, label: 'Phone' },
+    { id: 'location', disablePadding: false, label: 'Location' },
 ];
 
 function EnhancedTableHead(props) {
@@ -89,17 +73,16 @@ function EnhancedTableHead(props) {
         <TableHead>
             <TableRow>
                 <TableCell padding="checkbox">
-                    <Checkbox
+                    {/* <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={numSelected === rowCount}
                         onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
+                        inputProps={{ 'aria-label': 'select all vehicles' }}
+                    /> */}
                 </TableCell>
                 {headCells.map(headCell => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'default'}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
@@ -168,29 +151,31 @@ const EnhancedTableToolbar = props => {
         </Typography>
             ) : (
                     <Typography className={classes.title} variant="h6" id="tableTitle">
-                        Nutrition
+                        Vehicles In Queue
         </Typography>
                 )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                    <Tooltip title="Filter list">
-                        <IconButton aria-label="filter list">
-                            <FilterListIcon />
-                        </IconButton>
+                <React.Fragment>
+                    <button
+                        className="btn btn-success btn-lg mr-2"
+                        onClick={acceptQueue(props.selected)}>
+                        Servicing
+                    </button>
+                    <Tooltip title="Servicing">
+                        <button className="btn btn-danger btn-lg">
+                            Remove
+                    </button>
                     </Tooltip>
-                )}
+                </React.Fragment>
+            ) : null}
         </Toolbar>
     );
 };
 
 EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
+    selected: PropTypes.array.isRequired,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -235,7 +220,7 @@ function EnhancedTable(props) {
 
     const handleSelectAllClick = event => {
         if (event.target.checked) {
-            const newSelecteds = rows.map(n => n.name);
+            const newSelecteds = props.queueDetails.map(n => n.name);
             setSelected(newSelecteds);
             return;
         }
@@ -260,6 +245,7 @@ function EnhancedTable(props) {
         }
 
         setSelected(newSelected);
+
     };
 
     const handleChangePage = (event, newPage) => {
@@ -275,19 +261,33 @@ function EnhancedTable(props) {
         setDense(event.target.checked);
     };
 
-    const isSelected = name => selected.indexOf(name) !== -1;
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.queueDetails.length - page * rowsPerPage);
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
-    // Custom
+
+    //---------------- Custom ----------------
+
     useEffect(() => {
         props.getQueue()
     }, [])
 
+
+    // change date of queued users
+    const dateChange = index => e => {
+        store.dispatch({
+            type: 'CHANGESERVICINGDATE',
+            index: index,
+            date: e
+        })
+    }
+
+    // checkbox
+    const isSelected = bikeID => selected.indexOf(bikeID) !== -1;
+
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} selected={selected} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -302,42 +302,47 @@ function EnhancedTable(props) {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
+                            rowCount={props.queueDetails.length}
                         />
                         <TableBody>
                             {stableSort(props.queueDetails, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.name);
+                                    const isItemSelected = isSelected(row.bike._id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={event => handleClick(event, row.name)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.name}
+                                            key={row._id}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell padding="checkbox">
+                                            <TableCell padding="checkbox" onClick={event => handleClick(event, row.bike._id)}>
                                                 <Checkbox
                                                     checked={isItemSelected}
                                                     inputProps={{ 'aria-labelledby': labelId }}
                                                 />
                                             </TableCell>
-                                            <TableCell component="th" id={labelId} scope="row" padding="none">
+                                            <TableCell component="th" id={labelId} scope="row" padding="none"
+                                                onClick={event => handleClick(event, row.bike._id)}>
                                                 {row.bike.bikeNumber}
                                             </TableCell>
-                                            <TableCell align="right">
+                                            <TableCell onClick={event => handleClick(event, row.bike._id)}>
                                                 <Moment format="MM/D/YYYY, hh:mm">
                                                     {row.bookingDate}
                                                 </Moment>
                                             </TableCell>
-                                            <TableCell align="right">{row.bike.user.name}</TableCell>
-                                            <TableCell align="right">{row.bike.user.phone}</TableCell>
-                                            <TableCell align="right">{row.bike.user.location}</TableCell>
+                                            <TableCell >
+                                                <DateTimePicker
+                                                    onChange={dateChange(index)}
+                                                    value={row.servicingDate}
+                                                /></TableCell>
+                                            <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.name}</TableCell>
+                                            <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.phone}</TableCell>
+                                            <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.location}</TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -352,7 +357,7 @@ function EnhancedTable(props) {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
+                    count={props.queueDetails.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
@@ -372,13 +377,9 @@ const mapStateToProps = state => ({
     queueDetails: state.booking.queueDetails,
     loading: state.booking.loading,
 
-    // serviceCenter: state.dashboard.serviceCenter,
-    // isAuthenticated: state.auth.isAuthenticated,
-    // loading: state.auth.loading,
-    // authStatus: state.auth.authStatus
 })
 
 export default connect(mapStateToProps,
     {
-        getQueue
+        getQueue, acceptQueue
     })(EnhancedTable)

@@ -99,11 +99,45 @@ router.get('/:id', auth, async (req, res) => {
 
 
     } catch (err) {
-        console.error(err.message)
         res.status(500).send('Server Error')
     }
 
 })
+
+//@route POST /booking/accept
+//@desc  accept queue
+//@access Customer
+router.post('/accept', auth, async (req, res) => {
+
+    // check if request from customer
+    if (req.user.role !== 2) return res.status(400).json({ error: [{ 'msg': 'Not Authorized!' }] })
+
+    try {
+        const acceptedBookings = req.body
+        // res.json(acceptedBookings[0].id)
+
+        acceptedBookings.map(async booking => {
+
+            const updateBooking = await Booking.findOneAndUpdate(
+                // Update profile in this id
+                { bike: booking.id },
+                { $set: { servicingDate: booking.servicingDate, bookingStatus: 2 } },
+                { new: true }
+            )
+        })
+        res.json('Updated')
+
+        // const id = "e1f66d7a852986709f665c3"
+        // const requestedBike = await Booking.findOne({ _id: "5e3923e8a7c3e42634dc1d46" })
+        // res.json(requestedBike)
+
+
+    } catch (err) {
+
+    }
+
+})
+
 
 //@route POST /booking/
 //@desc add queue for bike

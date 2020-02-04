@@ -9,6 +9,7 @@ import {
 
 } from './types';
 import { setAlert } from './alert'
+import store from '../store';
 
 // @Access customers
 export const getBooking = () => async dispatch => {
@@ -92,7 +93,7 @@ export const cancleServicing = (bikeDetails) => async dispatch => {
 }
 
 // @Access admin
-// @desc get queued 
+// @desc get queued bikes of service center
 export const getQueue = () => async dispatch => {
 
     try {
@@ -108,5 +109,47 @@ export const getQueue = () => async dispatch => {
         dispatch({
             type: GETBOOKINGQUEUE_FAIL
         })
+    }
+}
+
+// @Access admin
+// @desc accept queued bikes of service center
+export const acceptQueue = (bikeID) => async dispatch => {
+    try {
+
+        // Initialize an array to save selected id and servicing date
+        const acceptedBookings = []
+        // get queued bike details from store
+        const queuedbike = store.getState().booking.queueDetails
+
+        // map through all the queued bikes 
+        queuedbike.map(item => {
+            // map selected bike ids 
+            bikeID.map((bikeid, i) => {
+                // get servicing date of selected bikes from store
+                if (bikeid == item.bike._id) {
+                    // add every obj to array
+                    let obj = {}
+                    obj.id = item.bike._id
+                    obj.servicingDate = item.servicingDate
+                    acceptedBookings[i] = obj
+                }
+            })
+        })
+        // console.log(acceptedBookings)
+
+        const res = await axios.post('/booking/accept', acceptedBookings)
+        console.log(res.data)
+
+        // dispatch({
+        //     type: GETBOOKINGQUEUE_SUCCESS,
+        //     payload: res.data
+        // })
+
+    } catch (err) {
+
+        // dispatch({
+        //     type: GETBOOKINGQUEUE_FAIL
+        // })
     }
 }

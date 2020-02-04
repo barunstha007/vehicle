@@ -16,11 +16,11 @@ const bookingSchema = new Schema({
         type: Date,
         trim: true
     },
-    servicingDate: Date,
-
-    lastServicingDate: {
+    servicingDate: {
         type: Date,
+        default: null
     },
+    lastServicingDate: Date,
     bookingStatus: {
         type: Number,
         default: 0,
