@@ -9,12 +9,12 @@ const bcrypt = require("bcryptjs");
 // @route   GET '/profile'
 // @desc    get current user profile
 // @access  Superadmin
-router.get('/', auth, async (req, res) => {
+router.get('/user', auth, async (req, res) => {
 
     const { role, id } = req.user
 
     try {
-        const userprofile = await User.findById(id).select('-password')
+        const userprofile = await User.findById(id).select(['-password', '-role', '-assignedServiceCenter'])
         if (userprofile)
             //Return admin
             return res.status(200).json(userprofile)
@@ -52,10 +52,10 @@ router.post("/update/:id", [
             // search requested user
             let userID = await User.findOne({ _id: req.params.id });
 
-            // pass is username is same as in db else check for username availability
-            if (req.body.username === userID.username) { }
+            // pass if username is same as in db else check for username availability
+            if (req.body.username.toLowerCase() === userID.username) { }
             else {
-                let username = await User.findOne({ username: req.body.username });
+                let username = await User.findOne({ username: req.body.username.toLowerCase() });
                 if (username) {
                     return res
                         .status(400)
@@ -90,7 +90,7 @@ router.post("/update/:id", [
 
 
             const userUpdate = {}
-            if (req.body.username) userUpdate.username = req.body.username;
+            if (req.body.username) userUpdate.username = req.body.username.toLowerCase();
             if (req.body.name) userUpdate.name = req.body.name;
             if (req.body.email) userUpdate.email = req.body.email;
             if (req.body.phone) userUpdate.phone = req.body.phone;

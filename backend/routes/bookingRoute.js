@@ -113,23 +113,31 @@ router.post('/accept', auth, async (req, res) => {
     if (req.user.role !== 2) return res.status(400).json({ error: [{ 'msg': 'Not Authorized!' }] })
 
     try {
-        const acceptedBookings = req.body
-        // res.json(acceptedBookings[0].id)
+        const acceptedBookings = req.body.acceptedBookings
 
-        acceptedBookings.map(async booking => {
+        let countUpdated = 0
+        let acceptableBike = []
 
-            const updateBooking = await Booking.findOneAndUpdate(
-                // Update profile in this id
-                { bike: booking.id },
-                { $set: { servicingDate: booking.servicingDate, bookingStatus: 2 } },
-                { new: true }
-            )
+        acceptedBookings.map(async (booking, i) => {
+            // if there is servicing date
+            if (booking.servicingDate !== null) {
+                countUpdated++;
+                let obj = {}
+                obj.bikeid = booking.id
+                acceptableBike[i] = obj
+                // acceptableBike.push(booking.id)
+
+                await Booking.findOneAndUpdate(
+                    // Update profile in this id
+                    { bike: booking.id },
+                    { $set: { servicingDate: booking.servicingDate, bookingStatus: 2 } },
+                    { new: true }
+                )
+
+
+            }
         })
-        res.json('Updated')
-
-        // const id = "e1f66d7a852986709f665c3"
-        // const requestedBike = await Booking.findOne({ _id: "5e3923e8a7c3e42634dc1d46" })
-        // res.json(requestedBike)
+        res.json({ payload: acceptableBike, msg: countUpdated + ' bikes added for servicing' })
 
 
     } catch (err) {

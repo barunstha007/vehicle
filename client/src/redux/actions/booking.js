@@ -5,7 +5,8 @@ import {
     GETBOOKINGBYID_FAIL,
     CANCLEBOOKING_SUCCESS,
     GETBOOKINGQUEUE_SUCCESS,
-    GETBOOKINGQUEUE_FAIL
+    GETBOOKINGQUEUE_FAIL,
+    BOOKINGACCEPT_SUCCESFULL
 
 } from './types';
 import { setAlert } from './alert'
@@ -68,7 +69,7 @@ export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => asyn
 export const cancleServicing = (bikeDetails) => async dispatch => {
 
     const body = { bikeDetails }
-    // console.log(body)
+
     try {
         const res = await axios.post('/booking/cancle', body)
         console.log(res.data)
@@ -136,20 +137,23 @@ export const acceptQueue = (bikeID) => async dispatch => {
                 }
             })
         })
-        // console.log(acceptedBookings)
 
-        const res = await axios.post('/booking/accept', acceptedBookings)
-        console.log(res.data)
+        const body = { acceptedBookings }
 
-        // dispatch({
-        //     type: GETBOOKINGQUEUE_SUCCESS,
-        //     payload: res.data
-        // })
+        const res = await axios.post('/booking/accept', body)
+
+        // console.log(res.data.payload)
+        dispatch({
+            type: BOOKINGACCEPT_SUCCESFULL,
+            payload: res.data.payload,
+            msg: res.data.msg
+        })
+
+        // dispatch(setAlert('Profile updated successfully', 'success'))
+
 
     } catch (err) {
 
-        // dispatch({
-        //     type: GETBOOKINGQUEUE_FAIL
-        // })
+        // dispatch(setAlert('Servicing adding failed', 'danger'))
     }
 }

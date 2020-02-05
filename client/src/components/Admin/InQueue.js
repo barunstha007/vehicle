@@ -27,7 +27,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { getQueue, acceptQueue } from '../../redux/actions/booking'
 import store from '../../redux/store'
-
+import Alert from '../../layout/Alert'
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -73,12 +73,6 @@ function EnhancedTableHead(props) {
         <TableHead>
             <TableRow>
                 <TableCell padding="checkbox">
-                    {/* <Checkbox
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all vehicles' }}
-                    /> */}
                 </TableCell>
                 {headCells.map(headCell => (
                     <TableCell
@@ -137,7 +131,7 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const { numSelected, selected, acceptQueue } = props;
 
     return (
         <Toolbar
@@ -159,7 +153,7 @@ const EnhancedTableToolbar = props => {
                 <React.Fragment>
                     <button
                         className="btn btn-success btn-lg mr-2"
-                        onClick={acceptQueue(props.selected)}>
+                        onClick={() => acceptQueue(selected)}>
                         Servicing
                     </button>
                     <Tooltip title="Servicing">
@@ -176,6 +170,7 @@ const EnhancedTableToolbar = props => {
 EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
     selected: PropTypes.array.isRequired,
+    acceptQueue: PropTypes.func.isRequired,
 };
 
 const useStyles = makeStyles(theme => ({
@@ -286,8 +281,10 @@ function EnhancedTable(props) {
 
     return (
         <div className={classes.root}>
+            <Alert />
+
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} selected={selected} />
+                <EnhancedTableToolbar numSelected={selected.length} selected={selected} acceptQueue={props.acceptQueue} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -371,7 +368,6 @@ function EnhancedTable(props) {
         </div>
     );
 }
-
 
 const mapStateToProps = state => ({
     queueDetails: state.booking.queueDetails,

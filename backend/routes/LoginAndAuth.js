@@ -44,14 +44,15 @@ router.post("/login", [
     }
 
     try {
+      const lowerCasedUsername = req.body.username.toLowerCase()
       // Check user || user email
       // See if user doesnot exist
       // find in db the value of  req.body.phone in email or username or phone
       let user = await User.findOne({
         $or: [
-          { username: req.body.username },
-          { email: req.body.username },
-          { phone: req.body.username }
+          { username: lowerCasedUsername },
+          { email: lowerCasedUsername },
+          { phone: lowerCasedUsername }
         ]
       });
 

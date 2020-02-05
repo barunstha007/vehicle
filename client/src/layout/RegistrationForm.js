@@ -13,13 +13,13 @@ import { register } from '../redux/actions/auth'
 function RegistrationForm(props) {
 
     const [state, setstate] = useState({
-        name: 'test',
-        phone: '12312312',
-        email: 'asdfasdf@gmail.com',
-        location: 'asdfasdf',
-        username: 'username1',
-        password: 'username123',
-        cpassword: 'username123',
+        name: '',
+        phone: '',
+        email: '',
+        location: '',
+        username: '',
+        password: '',
+        cpassword: '',
     })
 
     const onChangeHandler = e => {

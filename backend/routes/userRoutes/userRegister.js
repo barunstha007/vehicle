@@ -42,7 +42,7 @@ router.post("/", [
     try {
       // See if user exists
       // find in db the value of  req.body.email
-      let username = await User.findOne({ username: req.body.username });
+      let username = await User.findOne({ username: req.body.username.toLowerCase() });
       let email = await User.findOne({ email: req.body.email });
       let phone = await User.findOne({ phone: req.body.phone });
 

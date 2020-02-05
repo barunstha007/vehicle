@@ -4,20 +4,30 @@ import {
     GETBOOKINGBYID_SUCCESS,
     GETBOOKINGBYID_FAIL,
     CANCLEBOOKING_SUCCESS,
-    GETBOOKINGQUEUE_SUCCESS
+    GETBOOKINGQUEUE_SUCCESS,
+    BOOKINGACCEPT_SUCCESFULL
 } from '../actions/types'
 
 const initialState = {
     bookingDetails: {
         bookingStatus: 0,
-        serviceCenter: '',
+        serviceCenter: {
+            id: '',
+            name: ''
+        },
         lastBookingDate: null,
         bookingDate: null,
         servicingDate: '',
         totalPrice: 0
     },
 
-    queueDetails: [],
+    queueDetails: [
+        // {
+        //     servicingDate: '',
+        //     bookingStatus: '',
+        //     bike: { _id: '', user: '' }
+        // }
+    ],
 
     loading: true
 }
@@ -78,6 +88,22 @@ export default function (state = initialState, action) {
                 queueDetails,
                 loading: false
             }
+
+        case BOOKINGACCEPT_SUCCESFULL:
+
+            const newArr = action.payload.map(payload => {
+                return (
+                    state.queueDetails.filter(queue => queue.bike._id !== payload.bikeid)
+                )
+            })
+            return {
+                ...state,
+
+                queueDetails: newArr
+            }
+
+
+
 
 
         default: return state
