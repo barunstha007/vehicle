@@ -134,9 +134,18 @@ router.post('/accept', auth, async (req, res) => {
                     { new: true }
                 )
 
-
             }
+
+            // decrease bookingCount on accept
+            await ServiceCenter.findOneAndUpdate(
+                // Update profile in this id
+                { admin: req.user.id },
+                { $inc: { bookingCount: -countUpdated } },
+                { new: true }
+            )
+
         })
+
         res.json({ payload: acceptableBike, msg: countUpdated + ' bikes added for servicing' })
 
 
@@ -278,12 +287,15 @@ router.post('/cancle', [auth, [
         res.json(cancleBooking)
     }
 
-    // decrease bookingCount of service center
-    await ServiceCenter.findOneAndUpdate(
-        { _id: requestedServiceCenter },
-        { $inc: { bookingCount: -1 } },
-        { new: true }
-    )
+    // If service center has not acceptedthe booking because accepting queued bike decrease bookingCount of service center
+    if (checkBike.bookingStatus !== 2) {
+        // decrease bookingCount of service center
+        await ServiceCenter.findOneAndUpdate(
+            { _id: requestedServiceCenter },
+            { $inc: { bookingCount: -1 } },
+            { new: true }
+        )
+    }
 
 })
 

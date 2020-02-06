@@ -96,10 +96,11 @@ export default function (state = initialState, action) {
                     state.queueDetails.filter(queue => queue.bike._id !== payload.bikeid)
                 )
             })
+
             return {
                 ...state,
 
-                queueDetails: newArr
+                queueDetails: newArr[0]
             }
 
 

@@ -142,7 +142,9 @@ export const acceptQueue = (bikeID) => async dispatch => {
 
         const res = await axios.post('/booking/accept', body)
 
-        // console.log(res.data.payload)
+        console.log('Response from backend')
+        console.log(res.data.payload)
+
         dispatch({
             type: BOOKINGACCEPT_SUCCESFULL,
             payload: res.data.payload,
