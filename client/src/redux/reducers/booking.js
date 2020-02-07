@@ -21,13 +21,7 @@ const initialState = {
         totalPrice: 0
     },
 
-    queueDetails: [
-        // {
-        //     servicingDate: '',
-        //     bookingStatus: '',
-        //     bike: { _id: '', user: '' }
-        // }
-    ],
+    queueDetails: [],
 
     loading: true
 }
@@ -91,17 +85,16 @@ export default function (state = initialState, action) {
 
         case BOOKINGACCEPT_SUCCESFULL:
 
-            const newArr = action.payload.map(payload => {
-                return (
-                    state.queueDetails.filter(queue => queue.bike._id !== payload.bikeid)
-                )
-            })
+
+            const submittedIds = action.payload.map(({ bikeid }) => bikeid)
+            // const queuebike = state.queueDetails.map(({ bike }) => bike )
 
             return {
                 ...state,
-
-                queueDetails: newArr[0]
+                queueDetails: state.queueDetails.filter(queue => !submittedIds.includes(queue.bike._id))
+                // queueDetails: queuebike
             }
+
 
 
 

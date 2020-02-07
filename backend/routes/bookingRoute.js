@@ -133,18 +133,16 @@ router.post('/accept', auth, async (req, res) => {
                     { $set: { servicingDate: booking.servicingDate, bookingStatus: 2 } },
                     { new: true }
                 )
-
             }
-
-            // decrease bookingCount on accept
-            await ServiceCenter.findOneAndUpdate(
-                // Update profile in this id
-                { admin: req.user.id },
-                { $inc: { bookingCount: -countUpdated } },
-                { new: true }
-            )
-
         })
+
+        // decrease bookingCount on accept
+        await ServiceCenter.findOneAndUpdate(
+            // Update profile in this id
+            { admin: req.user.id },
+            { $inc: { bookingCount: -countUpdated } },
+            { new: true }
+        )
 
         res.json({ payload: acceptableBike, msg: countUpdated + ' bikes added for servicing' })
 
