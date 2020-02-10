@@ -20,10 +20,12 @@ function BikeForm(props) {
     const [state, setstate] = useState(props.userBike);
 
     useEffect(() => {
-        props.getBikeModellist()
         props.getUserBike()
+        props.getBikeModellist()
 
-        !props.bikeloading && setstate({
+        // console.log(props.getUserBike())
+        // !props.bikeloading && 
+        setstate({
             ...state,
             bikeModel: props.userBike.bikeModel,
             bikeNumber: props.userBike.bikeNumber,

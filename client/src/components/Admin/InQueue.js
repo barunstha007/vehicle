@@ -131,7 +131,16 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
     const classes = useToolbarStyles();
-    const { numSelected, selected, acceptQueue } = props;
+    const { numSelected, selected, acceptQueue, setSelected } = props;
+
+    const onAccept = selectArr => {
+        acceptQueue(selected)
+
+        // empty checkbox
+        setSelected([]);
+
+
+    }
 
     return (
         <Toolbar
@@ -153,7 +162,7 @@ const EnhancedTableToolbar = props => {
                 <React.Fragment>
                     <button
                         className="btn btn-success btn-lg mr-2"
-                        onClick={() => acceptQueue(selected)}>
+                        onClick={() => onAccept(selected)}>
                         Servicing
                     </button>
                     <Tooltip title="Servicing">
@@ -170,6 +179,7 @@ const EnhancedTableToolbar = props => {
 EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
     selected: PropTypes.array.isRequired,
+    setSelected: PropTypes.func.isRequired,
     acceptQueue: PropTypes.func.isRequired,
 };
 
@@ -228,6 +238,7 @@ function EnhancedTable(props) {
 
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, name);
+
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -282,9 +293,8 @@ function EnhancedTable(props) {
     return (
         <div className={classes.root}>
             <Alert />
-
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} selected={selected} acceptQueue={props.acceptQueue} />
+                <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} acceptQueue={props.acceptQueue} />
                 <TableContainer>
                     <Table
                         className={classes.table}

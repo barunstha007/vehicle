@@ -12,6 +12,7 @@ export const getUserBike = () => async dispatch => {
 
     try {
         const res = await axios.get('/mybike')
+        // console.log(res.data)
 
         dispatch({
             type: GETBIKE_SUCCESS,

@@ -17,7 +17,6 @@ export const getBooking = () => async dispatch => {
 
     try {
         const res = await axios.get('/booking/:id')
-        // console.log(res.data)
         dispatch({
             type: GETBOOKINGBYID_SUCCESS,
             payload: res.data
@@ -37,10 +36,8 @@ export const getBooking = () => async dispatch => {
 export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => async dispatch => {
 
     const body = { serviceCenter, bikeDetails, bookingStatus }
-    // console.log(body)
     try {
         const res = await axios.post('/booking/request', body)
-        console.log(res.data)
 
         if (res.status == 400)
             dispatch(setAlert(res.error[0].msg, 'danger'))
@@ -56,7 +53,6 @@ export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => asyn
 
     } catch (err) {
         const errors = err.response.data
-        console.log(errors)
         if (errors) {
             dispatch(setAlert(errors.error[0].msg, 'danger'))
 
@@ -72,7 +68,6 @@ export const cancleServicing = (bikeDetails) => async dispatch => {
 
     try {
         const res = await axios.post('/booking/cancle', body)
-        console.log(res.data)
 
         dispatch({
             type: CANCLEBOOKING_SUCCESS,
@@ -84,7 +79,6 @@ export const cancleServicing = (bikeDetails) => async dispatch => {
 
     } catch (err) {
         const errors = err.response.data.error
-        console.log(errors)
         if (errors) {
             dispatch(setAlert(errors, 'danger'))
 
@@ -99,7 +93,6 @@ export const getQueue = () => async dispatch => {
 
     try {
         const res = await axios.get('/booking/queue')
-        // console.log(res.data)
         dispatch({
             type: GETBOOKINGQUEUE_SUCCESS,
             payload: res.data
@@ -142,16 +135,12 @@ export const acceptQueue = (bikeID) => async dispatch => {
 
         const res = await axios.post('/booking/accept', body)
 
-        console.log('Response from backend')
-        console.log(res.data.payload)
-
         dispatch({
             type: BOOKINGACCEPT_SUCCESFULL,
             payload: res.data.payload,
-            msg: res.data.msg
         })
 
-        // dispatch(setAlert('Profile updated successfully', 'success'))
+        dispatch(setAlert(res.data.msg, 'success'))
 
 
     } catch (err) {

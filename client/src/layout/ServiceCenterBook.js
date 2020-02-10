@@ -44,8 +44,6 @@ function ServiceCenterBook(props) {
             })
         }, 2000);
 
-        // console.log(state.selectedServiceCenter, props.userBike)
-
         props.bookServicing(state.selectedServiceCenter, props.userBike._id, 1)
     }
 

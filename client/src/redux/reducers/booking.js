@@ -85,9 +85,7 @@ export default function (state = initialState, action) {
 
         case BOOKINGACCEPT_SUCCESFULL:
 
-
             const submittedIds = action.payload.map(({ bikeid }) => bikeid)
-            // const queuebike = state.queueDetails.map(({ bike }) => bike )
 
             return {
                 ...state,

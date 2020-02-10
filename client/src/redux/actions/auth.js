@@ -84,7 +84,6 @@ export const login = (loginDetails) => async dispatch => {
     try {
         // POST for registration, with req.body
         const res = await axios.post('/auth/login', body, config)
-        console.log(res.data);
 
         dispatch({
             type: LOGIN_SUCCESS,
