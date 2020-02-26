@@ -26,7 +26,7 @@ function ServiceCenterBook(props) {
     // map state to select options
     const serviceLocation = props.sclists.map((sclist, index) => {
         return (
-            <option key={index} value={sclist._id}> {sclist.name}, {sclist.serviceLocation}</option>
+            <option key={index} value={sclist._id} className={sclist.bookingCount < sclist.bookingLimit ? 'bg-success text-white ' : 'bg-danger text-white'}> {sclist.name}, {sclist.serviceLocation}</option >
         )
     })
 

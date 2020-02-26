@@ -30,7 +30,7 @@ router.get('/queue', auth, async (req, res) => {
                     populate: {
                         path: 'user',
                         model: 'UserDetails',
-                        select: ['name', 'phone', 'location']
+                        select: ['name', 'phone', 'location', 'avatar']
                     }
                 },
             ])
@@ -83,7 +83,7 @@ router.get('/accepted', auth, async (req, res) => {
                     populate: {
                         path: 'user',
                         model: 'UserDetails',
-                        select: ['name', 'phone', 'location']
+                        select: ['name', 'phone', 'location', 'avatar']
                     }
                 },
             ])

@@ -5,12 +5,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import './Home.css'
 import ServiceCenterBook from '../layout/ServiceCenterBook';
 import Banner from '../assets/parts-banner.jpg'
+// Redux
+import Alert from '../layout/Alert'
 
 export default function Home() {
 
     return (
         <React.Fragment>
             <section class="img-container">
+                <Alert />
                 <div class="container">
                     <div class="row" style={{ top: '20%', position: 'absolute' }}>
                         <div class="card shadow" style={{ background: 'rgba(0,0,0,0.7)', height: '30vh ' }}>

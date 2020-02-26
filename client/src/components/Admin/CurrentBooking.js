@@ -74,6 +74,7 @@ const headCells = [
     { id: 'vehicleNumber', disablePadding: true, label: 'Vehicle Numbers' },
     { id: 'bookingDate', disablePadding: false, label: 'Booking Date' },
     { id: 'checkinDate', disablePadding: false, label: 'Servicing Date' },
+    { id: 'avatar', disablePadding: false, label: 'Avatar' },
     { id: 'name', disablePadding: false, label: 'Name' },
     { id: 'phone', disablePadding: false, label: 'Phone' },
     { id: 'location', disablePadding: false, label: 'Location' },
@@ -185,7 +186,7 @@ const EnhancedTableToolbar = props => {
             {/* ``Completed`` Button */}
             {numSelected > 0 ? (
                 <React.Fragment>
-                    <button className="btn btn-success btn-lg">Completed</button>
+                    <button className="btn btn-success btn-lg" onClick={() => onRequeue(selected)}>Completed</button>
                     <button className="btn btn-primary btn-lg ml-1" onClick={() => onRequeue(selected)}>Queue</button>
                 </React.Fragment>
             ) : null}
@@ -357,6 +358,7 @@ function EnhancedTable(props) {
                                                     {row.servicingDate}
                                                 </Moment>
                                             </TableCell>
+                                            <TableCell ><img src={row.bike.user.avatar} style={{ height: '40px' }} /></TableCell>
                                             <TableCell >{row.bike.user.name}</TableCell>
                                             <TableCell >{row.bike.user.phone}</TableCell>
                                             <TableCell >{row.bike.user.location}</TableCell>

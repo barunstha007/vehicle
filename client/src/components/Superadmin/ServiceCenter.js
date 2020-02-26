@@ -9,7 +9,7 @@ import Alert from '../../layout/Alert'
 
 function ServiceCenter(props) {
 
-	const title = ['S.N', 'Location', 'Service Center Name', 'Admin', 'Booking Days', 'Booking Limit', 'Contact', 'Actions']
+	const title = ['S.N', 'Location', 'Service Center Name', 'Admin', 'Total Booking Count', 'Booking Limit', 'Contact', 'Actions']
 
 	// Create input change
 	const [state, setState] = useState({
@@ -17,7 +17,7 @@ function ServiceCenter(props) {
 		name: "",
 		serviceLocation: "",
 		admin: "",
-		maxBookingDays: "",
+		bookingCount: "",
 		bookingLimit: "",
 		contact: "",
 
@@ -39,7 +39,7 @@ function ServiceCenter(props) {
 			name: state.name,
 			serviceLocation: state.serviceLocation,
 			admin: state.admin,
-			maxBookingDays: state.maxBookingDays,
+			bookingCount: state.bookingCount,
 			contact: state.contact,
 			bookingLimit: state.bookingLimit
 		}
@@ -51,7 +51,7 @@ function ServiceCenter(props) {
 			name: "",
 			serviceLocation: "",
 			admin: "",
-			maxBookingDays: "",
+			bookingCount: "",
 			contact: "",
 			bookingLimit: ""
 		})
@@ -86,7 +86,7 @@ function ServiceCenter(props) {
 			name: e.name,
 			serviceLocation: e.serviceLocation,
 			admin: e.admin._id,
-			maxBookingDays: e.maxBookingDays,
+			bookingCount: e.bookingCount,
 			contact: e.contact,
 			bookingLimit: e.bookingLimit,
 
@@ -106,7 +106,7 @@ function ServiceCenter(props) {
 			name: "",
 			serviceLocation: "",
 			admin: "",
-			maxBookingDays: "",
+			bookingCount: "",
 			contact: "",
 			bookingLimit: "",
 
@@ -147,7 +147,7 @@ function ServiceCenter(props) {
 			name: state.name,
 			serviceLocation: state.serviceLocation,
 			admin: state.admin,
-			maxBookingDays: state.maxBookingDays,
+			// bookingCount: state.bookingCount,
 			contact: state.contact,
 			bookingLimit: state.bookingLimit
 		}
@@ -163,7 +163,7 @@ function ServiceCenter(props) {
 			name: "",
 			serviceLocation: "",
 			admin: "",
-			maxBookingDays: "",
+			bookingCount: "",
 			contact: "",
 			bookingLimit: "",
 
@@ -179,7 +179,7 @@ function ServiceCenter(props) {
 				<td className="pt-3-half" name="location">{sclist.serviceLocation}</td>
 				<td className="pt-3-half" name="name">{sclist.name}</td>
 				<td className="pt-3-half" name="admin" className={sclist.admin == null ? 'bg-danger text-white' : ''}>{sclist.admin == null ? sclist.admin = 'NO ADMIN SELECTED' : sclist.admin.name}</td>
-				<td className="pt-3-half" name="bookingDays">{sclist.maxBookingDays}</td>
+				<td className="pt-3-half" name="bookingDays">{sclist.bookingCount}</td>
 				<td className="pt-3-half" name="bookingLimit">{sclist.bookingLimit}</td>
 				<td className="pt-3-half" name="contact">{sclist.contact}</td>
 				<td>
@@ -265,11 +265,12 @@ function ServiceCenter(props) {
 
 								</td>
 								<td><input
-									name="maxBookingDays"
+									name="bookingCount"
 									type="text"
 									className="form-control"
-									placeholder="Bookable Days"
-									value={state.maxBookingDays}
+									disabled
+									// placeholder="Bookable Days"
+									value={state.bookingCount}
 									onChange={onChangeHandler}
 								/>
 								</td>

@@ -59,6 +59,7 @@ const headCells = [
     { id: 'vehicleNumber', disablePadding: true, label: 'Vehicle Numbers' },
     { id: 'bookingDate', disablePadding: false, label: 'Booking Date' },
     { id: 'checkinDate', disablePadding: false, label: 'Servicing Date' },
+    { id: 'Avatar', disablePadding: false, label: 'Avatar' },
     { id: 'name', disablePadding: false, label: 'Name' },
     { id: 'phone', disablePadding: false, label: 'Phone' },
     { id: 'location', disablePadding: false, label: 'Location' },
@@ -349,6 +350,7 @@ function EnhancedTable(props) {
                                                     onChange={dateChange(index)}
                                                     value={row.servicingDate}
                                                 /></TableCell>
+                                            <TableCell onClick={event => handleClick(event, row.bike._id)}><img src={row.bike.user.avatar} style={{ height: '40px' }} /></TableCell>
                                             <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.name}</TableCell>
                                             <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.phone}</TableCell>
                                             <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.location}</TableCell>
