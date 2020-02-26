@@ -92,8 +92,8 @@ export default function (state = initialState, action) {
 
             return {
                 ...state,
-                queueDetails: state.queueDetails.filter(queue => !submittedIds.includes(queue.bike._id))
-                // queueDetails: queuebike
+                queueDetails: state.queueDetails.filter(queue => !submittedIds.includes(queue.bike._id)),
+                loading: false
             }
 
 

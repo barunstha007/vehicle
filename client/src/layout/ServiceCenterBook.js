@@ -32,17 +32,13 @@ function ServiceCenterBook(props) {
 
     const bookHandler = e => {
         e.preventDefault()
-        setState({
-            ...state,
-            buttonDisabled: true
-        })
-        // activate button after 2 seconds to prevent increase in booking count
-        setTimeout(function () {
-            setState({
+        {
+            !props.isloading && setState({
                 ...state,
-                buttonDisabled: false
+                buttonDisabled: true
             })
-        }, 2000);
+        }
+
 
         props.bookServicing(state.selectedServiceCenter, props.userBike._id, 1)
     }
@@ -71,8 +67,9 @@ ServiceCenterBook.propTypes = {
 const mapStateToProps = state => ({
     sclists: state.serviceCenterList.sclist,
     userBike: state.userBike.userBike,
-
+    isloading: state.booking.loading,
     isAuthenticated: state.auth.isAuthenticated
+
 })
 
 export default connect(mapStateToProps, { serviceCenterList, getUserBike, bookServicing })(ServiceCenterBook)

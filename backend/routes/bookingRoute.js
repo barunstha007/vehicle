@@ -252,6 +252,7 @@ router.post('/request', [auth, [
     if (!error.isEmpty()) return res.status(400).json({ error: error.array() });
 
 
+
     const requestedServiceCenter = await ServiceCenter.findOne({ _id: req.body.serviceCenter })
 
     // create new object containing requested booking details
@@ -262,34 +263,35 @@ router.post('/request', [auth, [
 
 
     // Check bookingLimit is less or equal to booking count
-    if (req.body.bookingStatus == 1) {
+    if (requestedServiceCenter.bookingCount >= requestedServiceCenter.bookingLimit) {
+        return res.status(400).json({ error: [{ 'msg': 'Booking Full !' }] })
 
-        if (requestedServiceCenter.bookingCount >= requestedServiceCenter.bookingLimit) {
-            return res.status(400).json({ error: [{ 'msg': 'Booking Full !' }] })
-
-        }
     }
+
     // update if bike exists
     const checkBike = await Booking.findOne({ bike: req.body.bikeDetails })
-    if (checkBike) {
-        const updateBooking = await Booking.findOneAndUpdate(
-            // Update profile in this id
-            { bike: req.body.bikeDetails },
-            { $set: bookingDetails, bookingDate: Date.now() },
-            { new: true }
-        ).populate('serviceCenter', 'name')
 
-        // Increase bookingCount of requested service center if bookingStatus is 1 
-        if (req.body.bookingStatus == 1) {
+    if (checkBike) {
+        if (checkBike.bookingStatus == 0) {
+            const updateBooking = await Booking.findOneAndUpdate(
+                // Update profile in this id
+                { bike: req.body.bikeDetails },
+                { $set: bookingDetails, bookingDate: Date.now() },
+                { new: true }
+            ).populate('serviceCenter', 'name')
+
+
             await ServiceCenter.findOneAndUpdate(
                 // Update profile in this id
                 { _id: requestedServiceCenter },
                 { $inc: { bookingCount: 1 } },
                 { new: true }
             )
-        }
 
-        return res.status(200).json(updateBooking)
+            return res.status(200).json(updateBooking)
+        } else {
+            return res.status(400).json({ error: [{ 'msg': 'Booking Already Done' }] })
+        }
     }
 
     // Create new booking
@@ -316,6 +318,8 @@ router.post('/request', [auth, [
     newbooking = await newbooking.populate('serviceCenter', 'name').execPopulate()
 
     res.status(200).json(newbooking)
+
+
 
 })
 
