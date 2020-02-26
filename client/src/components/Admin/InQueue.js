@@ -28,6 +28,7 @@ import PropTypes from 'prop-types';
 import { getQueue, acceptQueue } from '../../redux/actions/booking'
 import store from '../../redux/store'
 import Alert from '../../layout/Alert'
+import moment from 'moment';
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -163,13 +164,13 @@ const EnhancedTableToolbar = props => {
                     <button
                         className="btn btn-success btn-lg mr-2"
                         onClick={() => onAccept(selected)}>
-                        Servicing
+                        Add
                     </button>
-                    <Tooltip title="Servicing">
+                    {/* <Tooltip title="Servicing">
                         <button className="btn btn-danger btn-lg">
                             Remove
                     </button>
-                    </Tooltip>
+                    </Tooltip> */}
                 </React.Fragment>
             ) : null}
         </Toolbar>
@@ -335,15 +336,16 @@ function EnhancedTable(props) {
                                             </TableCell>
                                             <TableCell component="th" id={labelId} scope="row" padding="none"
                                                 onClick={event => handleClick(event, row.bike._id)}>
-                                                {row.bike.bikeNumber}
+                                                <b>{row.bike.bikeNumber}</b>
                                             </TableCell>
                                             <TableCell onClick={event => handleClick(event, row.bike._id)}>
-                                                <Moment format="MM/D/YYYY, hh:mm">
+                                                <Moment format="MM/D/YYYY, hh:mm" >
                                                     {row.bookingDate}
                                                 </Moment>
                                             </TableCell>
                                             <TableCell >
                                                 <DateTimePicker
+                                                    minDate={moment().toDate()}
                                                     onChange={dateChange(index)}
                                                     value={row.servicingDate}
                                                 /></TableCell>

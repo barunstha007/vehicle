@@ -5,7 +5,9 @@ import {
     GETBOOKINGBYID_FAIL,
     CANCLEBOOKING_SUCCESS,
     GETBOOKINGQUEUE_SUCCESS,
-    BOOKINGACCEPT_SUCCESFULL
+    BOOKINGACCEPT_SUCCESFULL,
+    GETACCEPTEDBOOKING_SUCCESS,
+    REQUEUEBIKE_SUCCESS
 } from '../actions/types'
 
 const initialState = {
@@ -22,6 +24,7 @@ const initialState = {
     },
 
     queueDetails: [],
+    acceptedBooking: [],
 
     loading: true
 }
@@ -94,7 +97,25 @@ export default function (state = initialState, action) {
             }
 
 
+        // @Access admin
+        case GETACCEPTEDBOOKING_SUCCESS:
+            return {
+                ...state,
+                acceptedBooking: [...action.payload],
 
+                loading: false
+            }
+
+
+        case REQUEUEBIKE_SUCCESS:
+
+            // const submittedIds = action.payload.map(() => bikeid)
+
+            return {
+                ...state,
+                acceptedBooking: state.acceptedBooking.filter(accepted => !action.payload.includes(accepted.bike._id))
+                // queueDetails: queuebike
+            }
 
 
 

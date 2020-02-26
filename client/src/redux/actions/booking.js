@@ -6,7 +6,10 @@ import {
     CANCLEBOOKING_SUCCESS,
     GETBOOKINGQUEUE_SUCCESS,
     GETBOOKINGQUEUE_FAIL,
-    BOOKINGACCEPT_SUCCESFULL
+    BOOKINGACCEPT_SUCCESFULL,
+    GETACCEPTEDBOOKING_SUCCESS,
+    GETACCEPTEDBOOKING_FAIL,
+    REQUEUEBIKE_SUCCESS
 
 } from './types';
 import { setAlert } from './alert'
@@ -87,6 +90,8 @@ export const cancleServicing = (bikeDetails) => async dispatch => {
     }
 }
 
+// ------ ADMIN ---------
+
 // @Access admin
 // @desc get queued bikes of service center
 export const getQueue = () => async dispatch => {
@@ -138,6 +143,51 @@ export const acceptQueue = (bikeID) => async dispatch => {
         dispatch({
             type: BOOKINGACCEPT_SUCCESFULL,
             payload: res.data.payload,
+        })
+
+        dispatch(setAlert(res.data.msg, 'success'))
+
+
+    } catch (err) {
+
+        // dispatch(setAlert('Servicing adding failed', 'danger'))
+    }
+}
+
+// @Access admin
+// @desc get booking accepted bikes of service center
+export const getAcceptedBooking = () => async dispatch => {
+
+    try {
+        const res = await axios.get('/booking/accepted')
+        dispatch({
+            type: GETACCEPTEDBOOKING_SUCCESS,
+            payload: res.data
+        })
+
+
+    } catch (err) {
+
+        dispatch({
+            type: GETACCEPTEDBOOKING_FAIL
+        })
+    }
+}
+
+// @Access admin
+// @desc requeue accepted bikes
+export const reQueue = (requeueBikes) => async dispatch => {
+    try {
+
+        console.log(requeueBikes)
+
+        const body = { requeueBikes }
+
+        const res = await axios.post('/booking/requeue', body)
+
+        dispatch({
+            type: REQUEUEBIKE_SUCCESS,
+            payload: res.data.payload
         })
 
         dispatch(setAlert(res.data.msg, 'success'))

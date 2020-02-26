@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -18,29 +17,33 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
+// Redux
+import PropTypes from 'prop-types';
+import { getAcceptedBooking, reQueue } from '../../redux/actions/booking';
+import Alert from '../../layout/Alert'
+import { connect } from 'react-redux';
+import Moment from 'react-moment';
+
 function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
 
-const rows = [
-    createData('BA 60 PA 3080', '11-21-2019', 'Pranav', 9818505260, 'Rs.15000'),
-    createData('BA 61 PA 1234', '11-22-2019', 'Bishnu', 9818260505, 'Rs.15000'),
-    createData('BA 62 PA 1234', '11-23-2019', 'Ravi', 9841787169, 'Rs.15000'),
-    createData('BA 63 PA 1243', '11-23-2019', 'Raju', 9800330021, 'Rs.15000'),
-    createData('BA 64 PA 1243', '11-23-2019', 'Romeo', 9849026656, 'Rs.15000'),
-    createData('BA 65 PA 1243', '11-23-2019', 'Pawan', 9849059770, 'Rs.15000'),
-    createData('BA 66 PA 1243', '11-23-2019', 'Shilu', 9818505260, 'Rs.15000'),
-    createData('BA 67 PA 1243', '11-23-2019', 'Jeet', 9818505260, 'Rs.15000'),
-    createData('BA 68 PA 1243', '11-23-2019', 'Barun', 9818505260, 'Rs.15000'),
-    createData('BA 69 PA 1243', '11-23-2019', 'Arun', 9818505260, 'Rs.15000'),
-    createData('BA 60 PA 1243', '11-23-2019', 'James', 9818505260, 'Rs.15000'),
-    createData('BA 71 PA 1243', '11-23-2019', 'Hari', 9818505260, 'Rs.15000'),
-    createData('BA 72 PA 1243', '11-23-2019', 'Girija', 9818505260, 'Rs.15000'),
-];
+// const rows = [
+//     createData('BA 60 PA 3080', '11-21-2019', 'Pranav', 9818505260, 'Rs.15000'),
+//     createData('BA 61 PA 1234', '11-22-2019', 'Bishnu', 9818260505, 'Rs.15000'),
+//     createData('BA 62 PA 1234', '11-23-2019', 'Ravi', 9841787169, 'Rs.15000'),
+//     createData('BA 63 PA 1243', '11-23-2019', 'Raju', 9800330021, 'Rs.15000'),
+//     createData('BA 64 PA 1243', '11-23-2019', 'Romeo', 9849026656, 'Rs.15000'),
+//     createData('BA 65 PA 1243', '11-23-2019', 'Pawan', 9849059770, 'Rs.15000'),
+//     createData('BA 66 PA 1243', '11-23-2019', 'Shilu', 9818505260, 'Rs.15000'),
+//     createData('BA 67 PA 1243', '11-23-2019', 'Jeet', 9818505260, 'Rs.15000'),
+//     createData('BA 68 PA 1243', '11-23-2019', 'Barun', 9818505260, 'Rs.15000'),
+//     createData('BA 69 PA 1243', '11-23-2019', 'Arun', 9818505260, 'Rs.15000'),
+//     createData('BA 60 PA 1243', '11-23-2019', 'James', 9818505260, 'Rs.15000'),
+//     createData('BA 71 PA 1243', '11-23-2019', 'Hari', 9818505260, 'Rs.15000'),
+//     createData('BA 72 PA 1243', '11-23-2019', 'Girija', 9818505260, 'Rs.15000'),
+// ];
 
-// useEffect(() => {
-
-// }, [])
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -66,12 +69,14 @@ function getSorting(order, orderBy) {
     return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
+// table Headings
 const headCells = [
-    { id: 'name', numeric: false, disablePadding: true, label: 'Vehicle Number' },
-    { id: 'calories', numeric: true, disablePadding: false, label: 'Booked Date' },
-    { id: 'fat', numeric: true, disablePadding: false, label: 'Name' },
-    { id: 'carbs', numeric: true, disablePadding: false, label: 'Phone' },
-    { id: 'protein', numeric: true, disablePadding: false, label: 'Total' },
+    { id: 'vehicleNumber', disablePadding: true, label: 'Vehicle Numbers' },
+    { id: 'bookingDate', disablePadding: false, label: 'Booking Date' },
+    { id: 'checkinDate', disablePadding: false, label: 'Servicing Date' },
+    { id: 'name', disablePadding: false, label: 'Name' },
+    { id: 'phone', disablePadding: false, label: 'Phone' },
+    { id: 'location', disablePadding: false, label: 'Location' },
 ];
 
 function EnhancedTableHead(props) {
@@ -84,12 +89,12 @@ function EnhancedTableHead(props) {
         <TableHead>
             <TableRow>
                 <TableCell padding="checkbox">
-                    <Checkbox
+                    {/* <Checkbox
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={numSelected === rowCount}
                         onChange={onSelectAllClick}
                         inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
+                    /> */}
                 </TableCell>
                 {headCells.map(headCell => (
                     <TableCell
@@ -135,8 +140,8 @@ const useToolbarStyles = makeStyles(theme => ({
     highlight:
         theme.palette.type === 'light'
             ? {
-                color: '#fff',
-                backgroundColor: '#ff6600',
+                color: theme.palette.secondary.main,
+                backgroundColor: lighten(theme.palette.secondary.light, 0.85),
             }
             : {
                 color: theme.palette.text.primary,
@@ -149,7 +154,17 @@ const useToolbarStyles = makeStyles(theme => ({
 
 const EnhancedTableToolbar = props => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const { numSelected, selected, setSelected, reQueue } = props;
+
+    const onRequeue = selectArr => {
+        reQueue(selected)
+        // console.log(selected)
+
+        // empty checkbox
+        setSelected([]);
+
+
+    }
 
     return (
         <Toolbar
@@ -167,8 +182,13 @@ const EnhancedTableToolbar = props => {
         </Typography>
                 )}
 
-            {/* `Delete` Button */}
-            <button className="btn btn-success btn-lg">Completed</button>
+            {/* ``Completed`` Button */}
+            {numSelected > 0 ? (
+                <React.Fragment>
+                    <button className="btn btn-success btn-lg">Completed</button>
+                    <button className="btn btn-primary btn-lg ml-1" onClick={() => onRequeue(selected)}>Queue</button>
+                </React.Fragment>
+            ) : null}
 
         </Toolbar>
     );
@@ -176,12 +196,16 @@ const EnhancedTableToolbar = props => {
 
 EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
+    selected: PropTypes.array.isRequired,
+    setSelected: PropTypes.func.isRequired,
+    reQueue: PropTypes.func.isRequired,
+
 };
 
 const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
-        marginTop: theme.spacing(3),
+        // marginTop: theme.spacing(3),
     },
     paper: {
         width: '100%',
@@ -206,7 +230,8 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function EnhancedTable() {
+// Main Function
+function EnhancedTable(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
@@ -223,7 +248,7 @@ export default function EnhancedTable() {
 
     const handleSelectAllClick = event => {
         if (event.target.checked) {
-            const newSelecteds = rows.map(n => n.name);
+            const newSelecteds = props.acceptedBooking.map(n => n.name);
             setSelected(newSelecteds);
             return;
         }
@@ -263,14 +288,23 @@ export default function EnhancedTable() {
         setDense(event.target.checked);
     };
 
-    const isSelected = name => selected.indexOf(name) !== -1;
+    // checkbox
+    const isSelected = bikeID => selected.indexOf(bikeID) !== -1;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.acceptedBooking.length - page * rowsPerPage);
+
+
+    // ------Custom Code -----------
+
+    useEffect(() => {
+        props.getAcceptedBooking()
+    }, [])
 
     return (
         <div className={classes.root}>
+            <Alert />
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} selected={selected} setSelected={setSelected} reQueue={props.reQueue} />
                 <div className={classes.tableWrapper}>
                     <Table
                         className={classes.table}
@@ -285,23 +319,23 @@ export default function EnhancedTable() {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
+                            rowCount={props.acceptedBooking.length}
                         />
                         <TableBody>
-                            {stableSort(rows, getSorting(order, orderBy))
+                            {stableSort(props.acceptedBooking, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.name);
+                                    const isItemSelected = isSelected(row.bike._id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={event => handleClick(event, row.name)}
+                                            onClick={event => handleClick(event, row.bike._id)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.name}
+                                            key={row._id}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">
@@ -311,12 +345,21 @@ export default function EnhancedTable() {
                                                 />
                                             </TableCell>
                                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                {row.name}
+                                                <b>{row.bike.bikeNumber}</b>
                                             </TableCell>
-                                            <TableCell >{row.calories}</TableCell>
-                                            <TableCell >{row.fat}</TableCell>
-                                            <TableCell >{row.carbs}</TableCell>
-                                            <TableCell >{row.protein}</TableCell>
+                                            <TableCell >
+                                                <Moment format="MM/D/YYYY, hh:mm">
+                                                    {row.bookingDate}
+                                                </Moment>
+                                            </TableCell>
+                                            <TableCell >
+                                                <Moment format="MM/D/YYYY, hh:mm">
+                                                    {row.servicingDate}
+                                                </Moment>
+                                            </TableCell>
+                                            <TableCell >{row.bike.user.name}</TableCell>
+                                            <TableCell >{row.bike.user.phone}</TableCell>
+                                            <TableCell >{row.bike.user.location}</TableCell>
                                         </TableRow>
                                     );
                                 })}
@@ -331,7 +374,7 @@ export default function EnhancedTable() {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
+                    count={props.acceptedBooking.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{
@@ -351,3 +394,11 @@ export default function EnhancedTable() {
         </div>
     );
 }
+
+const mapStateToProps = state => ({
+    acceptedBooking: state.booking.acceptedBooking
+})
+
+export default connect(mapStateToProps, {
+    getAcceptedBooking, reQueue
+})(EnhancedTable)

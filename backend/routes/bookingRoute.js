@@ -66,9 +66,42 @@ router.get('/accepted', auth, async (req, res) => {
     if (req.user.role !== 2) return res.json('Not authorized')
 
     try {
-        // Check booking for current user
-        bookingDetails = await Booking.find({ bookingStatus: 2 })
-        if (!bookingDetails) res.status(404).json('No Booking Accepted')
+        // get service center of logged-in admin
+        const currentAdmin = await ServiceCenter.findOne({ admin: req.user.id })
+
+        // Sort by date in ascending order
+        var sortbybookingdate = { servicingDate: 1 };
+        // find queued booking details of current admins service center
+        bookingDetails = await Booking.find({ bookingStatus: 2, serviceCenter: currentAdmin })
+            // .populate('serviceCenter', 'name')
+            // Nested population for userDetails and for bike model
+            .populate([
+                {
+                    path: 'bike',
+                    model: 'Bike',
+                    select: 'bikeNumber',
+                    populate: {
+                        path: 'user',
+                        model: 'UserDetails',
+                        select: ['name', 'phone', 'location']
+                    }
+                },
+            ])
+            .populate([
+                {
+                    path: 'bike',
+                    model: 'Bike',
+                    select: 'bikeNumber',
+                    populate: {
+                        path: 'bikeModel',
+                        model: 'BikeModel',
+                        select: 'bikeModel'
+                    },
+                },
+            ])
+            .sort(sortbybookingdate)
+
+        if (!bookingDetails) res.status(404).json('Booking requests are empty')
 
         res.status(200).json(bookingDetails)
 
@@ -78,6 +111,52 @@ router.get('/accepted', auth, async (req, res) => {
     }
 
 })
+
+
+//@route POST /booking/requeue
+//@desc  requeue accepted bikes
+//@access Admin
+router.post('/requeue', auth, async (req, res) => {
+
+    // check if request not from admin
+    if (req.user.role !== 2) return res.status(400).json({ error: [{ 'msg': 'Not Authorized!' }] })
+
+
+    try {
+        const requeueBikes = req.body.requeueBikes
+
+        let countBikes = 0
+
+
+        requeueBikes.map(async (bikeid, i) => {
+
+            countBikes++
+            await Booking.findOneAndUpdate(
+                // Update profile in this id
+                { bike: bikeid },
+                { $set: { servicingDate: null, bookingStatus: 1 } },
+                { new: true }
+            )
+
+        })
+
+        // // increase bookingCount on requeuey
+        await ServiceCenter.findOneAndUpdate(
+            // Update profile in this id
+            { admin: req.user.id },
+            { $inc: { bookingCount: countBikes } },
+            { new: true }
+        )
+
+        res.json({ payload: requeueBikes, msg: countBikes + ' bikes added to Queue' })
+
+
+    } catch (err) {
+
+    }
+
+})
+
 
 // @route   GET /booking/:id
 // @desc    get booking by id
@@ -106,7 +185,7 @@ router.get('/:id', auth, async (req, res) => {
 
 //@route POST /booking/accept
 //@desc  accept queue
-//@access Customer
+//@access Admin
 router.post('/accept', auth, async (req, res) => {
 
     // check if request from customer
