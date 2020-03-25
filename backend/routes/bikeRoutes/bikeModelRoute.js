@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 // @desc    add new bike model, role == 1
 //@access   Superadmin  
 router.post("/add", [auth, [
-    check("bikeModel", "Name is required")
+    check("bikeModel", "Bike Model Name is required")
         .not()
         .isEmpty().trim(),
 ]],
@@ -45,6 +45,7 @@ router.post("/add", [auth, [
                 res.status(400).json({ error: error.array() })
             );
         }
+
 
         try {
 

@@ -11,7 +11,6 @@ import {
 } from './types'
 import { setAlert } from './alert'
 import setAuthToken from "../../utils/setAuthToken";
-import { Redirect } from 'react-router-dom';
 
 // Load User
 export const loadUser = () => async dispatch => {

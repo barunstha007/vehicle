@@ -6,7 +6,6 @@ import {
     BIKE_ADDORUPDATE_FAIL
 } from './types';
 import { setAlert } from './alert'
-import { Redirect } from "react-router-dom";
 
 export const getUserBike = () => async dispatch => {
 

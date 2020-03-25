@@ -90,7 +90,7 @@ export default function (state = initialState, action) {
 
             // find index of given id in list
             const index = state.adminlist.findIndex(admin => {
-                return admin._id == action.payload._id
+                return admin._id === action.payload._id
             })
 
             // array, index to replace, item to replace
@@ -100,6 +100,10 @@ export default function (state = initialState, action) {
                 ...state,
                 adminlist: newArray
             }
+
+        case ADMIN_ADD_FAIL:
+        case UPDATEADMIN_FAIL:
+        case ADMIN_DELETE_FAIL:
 
 
         default: return state

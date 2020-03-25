@@ -79,10 +79,6 @@ function Dashboard(props) {
 
         return (
             <React.Fragment>
-                {/* <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab"> */}
-
-                {editorSubmitEditbtn()}
-                <br />
                 {/* Title and value */}
                 <div className="row">
                     <div className="col-6 p-1"><label>Username</label></div>
@@ -108,6 +104,8 @@ function Dashboard(props) {
                     <div className="col-6 p-1"><label>Last Booking Date</label></div>
                     <div className="col-6 p-1"><p>12 Dec 2019</p></div>
                 </div>
+                <br />
+                {editorSubmitEditbtn()}
             </React.Fragment>
 
         )
@@ -117,9 +115,6 @@ function Dashboard(props) {
     function editUserDetails() {
         return (
             <React.Fragment>
-                {/* edit button type */}
-                {editorSubmitEditbtn()}
-                <br />
 
                 {/* Title and value */}
                 {/* Username */}
@@ -223,7 +218,9 @@ function Dashboard(props) {
                     <div className="col-6 p-1">
                         <label>Last Booking Date</label></div>
                     <div className="col-6 p-1"><p>12 Dec 2019</p></div>
-                </div>
+                </div><br />
+                {/* edit button type */}
+                {editorSubmitEditbtn()}
             </React.Fragment>
 
         )
@@ -235,11 +232,11 @@ function Dashboard(props) {
                 <div className="row">
                     <div className="col-6 p-1"><label /></div>
                     <div className="col-3 p-1"><p>
-                        <span className="btn btn-success text-white" onClick={editDashboardSubmit}>&#10004;</span>
+                        <span className="btn btn-success text-white" onClick={editDashboardSubmit}>Save</span>
                     </p>
                     </div>
                     <div className="col-3 "><p >
-                        <span className="btn btn-danger text-white" onClick={editDashboardCancel}>&#10005;</span>
+                        <span className="btn btn-danger text-white" onClick={editDashboardCancel}>Cancel</span>
                     </p>
                     </div>
 
@@ -338,10 +335,6 @@ function Dashboard(props) {
     function serviceCenter() {
         return (
             <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                {/* <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab"> */}
-
-                {sceditorSubmitEditbtn()}
-                <br />
                 {/* Title and value */}
                 <div className="row">
                     <div className="col-6 p-1"><label>Service Center Name</label></div>
@@ -364,6 +357,8 @@ function Dashboard(props) {
                     <div className="col-6 p-1"><label>Contact</label></div>
                     <div className="col-6 p-1"><p>{props.serviceCenter.contact}</p></div>
                 </div>
+                <br />
+                {sceditorSubmitEditbtn()}
             </div>
         )
     }
@@ -374,12 +369,6 @@ function Dashboard(props) {
         return (
             <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 
-                {/* edit button type */}
-                {sceditorSubmitEditbtn()}
-                <br />
-
-                <div className="row">
-                </div>
                 {/* SC Name */}
                 <div className="row">
                     <div className="col-6 p-1">
@@ -457,7 +446,9 @@ function Dashboard(props) {
                         />
                     </div>
                 </div>
-
+                <br />
+                {/* edit button type */}
+                {sceditorSubmitEditbtn()}
 
 
             </div>
@@ -471,11 +462,11 @@ function Dashboard(props) {
                 <div className="row">
                     <div className="col-6 p-1"><label /></div>
                     <div className="col-3 p-1"><p>
-                        <span className="btn btn-success text-white" onClick={sceditDashboardSubmit}>&#10004;</span>
+                        <span className="btn btn-success text-white" onClick={sceditDashboardSubmit}>Save</span>
                     </p>
                     </div>
                     <div className="col-3 "><p >
-                        <span className="btn btn-danger text-white" onClick={sceditDashboardCancel}>&#10005;</span>
+                        <span className="btn btn-danger text-white" onClick={sceditDashboardCancel}>Cancel</span>
                     </p>
                     </div>
 

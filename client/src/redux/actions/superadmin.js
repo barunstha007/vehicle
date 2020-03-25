@@ -23,7 +23,6 @@ export const getSuperadmin = () => async dispatch => {
 
     } catch (err) {
         const errors = err.response.data.error
-        console.log(errors)
         if (errors) {
             dispatch(setAlert(errors[0].msg, 'danger'))
 
@@ -46,11 +45,9 @@ export const updateSuperadmin = (superadmin) => async dispatch => {
             type: UPDATESUPERADMIN_SUCCESS,
             payload: res.data
         })
-        // console.log(res.data)
         dispatch(setAlert('Superadmin Updated successfully', 'success'))
 
     } catch (err) {
-        // console.log(err)
         const errors = err.response.data.error
         if (errors) {
             dispatch(setAlert(errors[0].msg, 'danger'))
@@ -76,18 +73,18 @@ export const addSuperadmin = (superadminDetails) => async dispatch => {
     try {
         // POST for registration, with req.body
         const res = await axios.post('/superadmin/register', body, config)
-
+        console.log(res)
         dispatch({
             type: SUPERADMIN_ADD_SUCCESS,
             // get token from response
-            payload: res.data
+            payload: res.data,
+            status: res.status
         })
         dispatch(setAlert('New Superadmin created', 'success'))
 
 
     } catch (err) {
         const errors = err.response.data.error
-        console.log(errors)
         if (errors) {
             dispatch(setAlert(errors[0].msg, 'danger'))
 
@@ -125,7 +122,6 @@ export const deleteSuperadmin = (superadminID) => async dispatch => {
 
     } catch (err) {
         const errors = err.response.data.error
-        console.log(errors)
         if (errors) {
             dispatch(setAlert(errors[0].msg, 'danger'))
 

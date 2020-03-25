@@ -42,7 +42,7 @@ export const bookServicing = (serviceCenter, bikeDetails, bookingStatus) => asyn
     try {
         const res = await axios.post('/booking/request', body)
 
-        if (res.status == 400)
+        if (res.status === 400)
             dispatch(setAlert(res.error[0].msg, 'danger'))
         else {
             dispatch({

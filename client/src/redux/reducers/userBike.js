@@ -1,7 +1,7 @@
 import {
     GETBIKE_SUCCESS,
     BIKE_ADDORUPDATE_SUCCESS,
-    BIKE_ADDORUPDATE_FAIL
+    // BIKE_ADDORUPDATE_FAIL
 } from '../actions/types'
 
 const initialState = {

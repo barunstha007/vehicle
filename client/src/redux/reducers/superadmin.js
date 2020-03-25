@@ -2,7 +2,7 @@ import {
     GETSUPERADMIN_SUCCESS,
     GETSUPERADMIN_FAIL,
     SUPERADMIN_ADD_SUCCESS,
-    SUPERADMIN_ADD_FAIL,
+    // SUPERADMIN_ADD_FAIL,
     UPDATESUPERADMIN_SUCCESS,
     UPDATESUPERADMIN_FAIL,
     SUPERADMIN_DELETE_SUCCESS,
@@ -11,6 +11,7 @@ import {
 
 const initialState = {
     superadminlist: [],
+    status: 0,
     loading: true
 }
 
@@ -43,6 +44,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 superadminlist: [...state.superadminlist, action.payload],
+                status: 200,
                 loading: false
             }
 

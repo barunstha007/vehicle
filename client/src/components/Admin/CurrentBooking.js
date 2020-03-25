@@ -17,32 +17,20 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
+// Custom
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import Moment from 'react-moment';
+import Loader from 'react-loader-spinner';
+
 // Redux
 import PropTypes from 'prop-types';
 import { getAcceptedBooking, reQueue } from '../../redux/actions/booking';
 import Alert from '../../layout/Alert'
 import { connect } from 'react-redux';
-import Moment from 'react-moment';
 
 function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
 }
-
-// const rows = [
-//     createData('BA 60 PA 3080', '11-21-2019', 'Pranav', 9818505260, 'Rs.15000'),
-//     createData('BA 61 PA 1234', '11-22-2019', 'Bishnu', 9818260505, 'Rs.15000'),
-//     createData('BA 62 PA 1234', '11-23-2019', 'Ravi', 9841787169, 'Rs.15000'),
-//     createData('BA 63 PA 1243', '11-23-2019', 'Raju', 9800330021, 'Rs.15000'),
-//     createData('BA 64 PA 1243', '11-23-2019', 'Romeo', 9849026656, 'Rs.15000'),
-//     createData('BA 65 PA 1243', '11-23-2019', 'Pawan', 9849059770, 'Rs.15000'),
-//     createData('BA 66 PA 1243', '11-23-2019', 'Shilu', 9818505260, 'Rs.15000'),
-//     createData('BA 67 PA 1243', '11-23-2019', 'Jeet', 9818505260, 'Rs.15000'),
-//     createData('BA 68 PA 1243', '11-23-2019', 'Barun', 9818505260, 'Rs.15000'),
-//     createData('BA 69 PA 1243', '11-23-2019', 'Arun', 9818505260, 'Rs.15000'),
-//     createData('BA 60 PA 1243', '11-23-2019', 'James', 9818505260, 'Rs.15000'),
-//     createData('BA 71 PA 1243', '11-23-2019', 'Hari', 9818505260, 'Rs.15000'),
-//     createData('BA 72 PA 1243', '11-23-2019', 'Girija', 9818505260, 'Rs.15000'),
-// ];
 
 
 function desc(a, b, orderBy) {
@@ -322,55 +310,64 @@ function EnhancedTable(props) {
                             onRequestSort={handleRequestSort}
                             rowCount={props.acceptedBooking.length}
                         />
-                        <TableBody>
-                            {stableSort(props.acceptedBooking, getSorting(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
-                                    const isItemSelected = isSelected(row.bike._id);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
+                        {props.loading ?
+                            <div style={{ position: 'absolute', left: '50%' }}> <Loader
+                                type="Oval"
+                                color="#00BFFF"
+                                height={75}
+                                width={75}
 
-                                    return (
-                                        <TableRow
-                                            hover
-                                            onClick={event => handleClick(event, row.bike._id)}
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                            key={row._id}
-                                            selected={isItemSelected}
-                                        >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    checked={isItemSelected}
-                                                    inputProps={{ 'aria-labelledby': labelId }}
-                                                />
-                                            </TableCell>
-                                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                <b>{row.bike.bikeNumber}</b>
-                                            </TableCell>
-                                            <TableCell >
-                                                <Moment format="MM/D/YYYY, hh:mm">
-                                                    {row.bookingDate}
-                                                </Moment>
-                                            </TableCell>
-                                            <TableCell >
-                                                <Moment format="MM/D/YYYY, hh:mm">
-                                                    {row.servicingDate}
-                                                </Moment>
-                                            </TableCell>
-                                            <TableCell ><img src={row.bike.user.avatar} style={{ height: '40px' }} /></TableCell>
-                                            <TableCell >{row.bike.user.name}</TableCell>
-                                            <TableCell >{row.bike.user.phone}</TableCell>
-                                            <TableCell >{row.bike.user.location}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
+                            /></div> :
+                            <TableBody>
+                                {stableSort(props.acceptedBooking, getSorting(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row, index) => {
+                                        const isItemSelected = isSelected(row.bike._id);
+                                        const labelId = `enhanced-table-checkbox-${index}`;
+
+                                        return (
+                                            <TableRow
+                                                hover
+                                                onClick={event => handleClick(event, row.bike._id)}
+                                                role="checkbox"
+                                                aria-checked={isItemSelected}
+                                                tabIndex={-1}
+                                                key={row._id}
+                                                selected={isItemSelected}
+                                            >
+                                                <TableCell padding="checkbox">
+                                                    <Checkbox
+                                                        checked={isItemSelected}
+                                                        inputProps={{ 'aria-labelledby': labelId }}
+                                                    />
+                                                </TableCell>
+                                                <TableCell component="th" id={labelId} scope="row" padding="none">
+                                                    <b>{row.bike.bikeNumber}</b>
+                                                </TableCell>
+                                                <TableCell >
+                                                    <Moment format="MM/D/YYYY, hh:mm">
+                                                        {row.bookingDate}
+                                                    </Moment>
+                                                </TableCell>
+                                                <TableCell >
+                                                    <Moment format="MM/D/YYYY, hh:mm">
+                                                        {row.servicingDate}
+                                                    </Moment>
+                                                </TableCell>
+                                                <TableCell ><img src={row.bike.user.avatar} style={{ height: '40px' }} /></TableCell>
+                                                <TableCell >{row.bike.user.name}</TableCell>
+                                                <TableCell >{row.bike.user.phone}</TableCell>
+                                                <TableCell >{row.bike.user.location}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        }
                     </Table>
                 </div>
                 <TablePagination
@@ -398,7 +395,8 @@ function EnhancedTable(props) {
 }
 
 const mapStateToProps = state => ({
-    acceptedBooking: state.booking.acceptedBooking
+    acceptedBooking: state.booking.acceptedBooking,
+    loading: state.booking.loading
 })
 
 export default connect(mapStateToProps, {

@@ -22,6 +22,9 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 // Custom
 import Moment from 'react-moment'
 import DateTimePicker from 'react-datetime-picker'
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import Loader from 'react-loader-spinner'
+
 //Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
@@ -167,11 +170,7 @@ const EnhancedTableToolbar = props => {
                         onClick={() => onAccept(selected)}>
                         Add
                     </button>
-                    {/* <Tooltip title="Servicing">
-                        <button className="btn btn-danger btn-lg">
-                            Remove
-                    </button>
-                    </Tooltip> */}
+
                 </React.Fragment>
             ) : null}
         </Toolbar>
@@ -313,56 +312,65 @@ function EnhancedTable(props) {
                             onRequestSort={handleRequestSort}
                             rowCount={props.queueDetails.length}
                         />
-                        <TableBody>
-                            {stableSort(props.queueDetails, getSorting(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
-                                    const isItemSelected = isSelected(row.bike._id);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
+                        {props.loading ?
+                            <TableCell>
+                                <div style={{ position: 'absolute', left: '50%' }}> <Loader
+                                    type="Oval"
+                                    color="#00BFFF"
+                                    height={75}
+                                    width={75}
 
-                                    return (
-                                        <TableRow
-                                            hover
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                            key={row._id}
-                                            selected={isItemSelected}
-                                        >
-                                            <TableCell padding="checkbox" onClick={event => handleClick(event, row.bike._id)}>
-                                                <Checkbox
-                                                    checked={isItemSelected}
-                                                    inputProps={{ 'aria-labelledby': labelId }}
-                                                />
-                                            </TableCell>
-                                            <TableCell component="th" id={labelId} scope="row" padding="none"
-                                                onClick={event => handleClick(event, row.bike._id)}>
-                                                <b>{row.bike.bikeNumber}</b>
-                                            </TableCell>
-                                            <TableCell onClick={event => handleClick(event, row.bike._id)}>
-                                                <Moment format="MM/D/YYYY, hh:mm" >
-                                                    {row.bookingDate}
-                                                </Moment>
-                                            </TableCell>
-                                            <TableCell >
-                                                <DateTimePicker
-                                                    minDate={moment().toDate()}
-                                                    onChange={dateChange(index)}
-                                                    value={row.servicingDate}
-                                                /></TableCell>
-                                            <TableCell onClick={event => handleClick(event, row.bike._id)}><img src={row.bike.user.avatar} style={{ height: '40px' }} /></TableCell>
-                                            <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.name}</TableCell>
-                                            <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.phone}</TableCell>
-                                            <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.location}</TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
+                                /></div> </TableCell> :
+                            <TableBody>
+                                {stableSort(props.queueDetails, getSorting(order, orderBy))
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((row, index) => {
+                                        const isItemSelected = isSelected(row.bike._id);
+                                        const labelId = `enhanced-table-checkbox-${index}`;
+
+                                        return (
+                                            <TableRow
+                                                hover
+                                                role="checkbox"
+                                                aria-checked={isItemSelected}
+                                                tabIndex={-1}
+                                                key={row._id}
+                                                selected={isItemSelected}
+                                            >
+                                                <TableCell padding="checkbox" onClick={event => handleClick(event, row.bike._id)}>
+                                                    <Checkbox
+                                                        checked={isItemSelected}
+                                                        inputProps={{ 'aria-labelledby': labelId }}
+                                                    />
+                                                </TableCell>
+                                                <TableCell component="th" id={labelId} scope="row" padding="none"
+                                                    onClick={event => handleClick(event, row.bike._id)}>
+                                                    <b>{row.bike.bikeNumber}</b>
+                                                </TableCell>
+                                                <TableCell onClick={event => handleClick(event, row.bike._id)}>
+                                                    <Moment format="MM/D/YYYY, hh:mm" >
+                                                        {row.bookingDate}
+                                                    </Moment>
+                                                </TableCell>
+                                                <TableCell >
+                                                    <DateTimePicker
+                                                        minDate={moment().toDate()}
+                                                        onChange={dateChange(index)}
+                                                        value={row.servicingDate}
+                                                    /></TableCell>
+                                                <TableCell onClick={event => handleClick(event, row.bike._id)}><img src={row.bike.user.avatar} style={{ height: '40px' }} /></TableCell>
+                                                <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.name}</TableCell>
+                                                <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.phone}</TableCell>
+                                                <TableCell onClick={event => handleClick(event, row.bike._id)}>{row.bike.user.location}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>}
                     </Table>
                 </TableContainer>
                 <TablePagination

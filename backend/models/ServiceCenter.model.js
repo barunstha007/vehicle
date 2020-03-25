@@ -16,10 +16,10 @@ const serviceCenterSchema = new Schema(
       type: String,
       required: true
     },
-    maxBookingDays: {
-      type: Number,
-      required: true
-    },
+    // maxBookingDays: {
+    //   type: Number,
+    //   required: true
+    // },
     bookingLimit: {
       type: Number,
       required: true

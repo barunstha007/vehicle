@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+
 // Redux
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
@@ -21,39 +22,83 @@ function Navigation({ auth: { isAuthenticated, authStatus, loading }, logout }) 
     )
 
     function userRoleBasedNav() {
-        if (authStatus == 1) {
+        if (authStatus === 1) {
             return (
                 <React.Fragment>
-                    <Nav.Link href="/bikemodel-list">Bike Models</Nav.Link>
-                    <Nav.Link href="/service-centers">Service Centers</Nav.Link>
-
                     <NavDropdown title="Users" id="basic-nav-dropdown">
                         <NavDropdown.Item href="/superadminlists">Superadmin</NavDropdown.Item>
                         <NavDropdown.Item href="/adminlists">Admin</NavDropdown.Item>
                     </NavDropdown>
+                    <NavLink
+                        to="/bikemodel-list"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/dashboard"
+                        className="nav-link">
+                        Bike Models
+                     </NavLink>
+                    <NavLink
+                        to="/service-centers"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/dashboard"
+                        className="nav-link">
+                        Service Centers
+                     </NavLink>
+
+
+                    <NavLink
+                        to="/current-status"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/dashboard"
+                        className="nav-link">
+                        Current Status
+                     </NavLink>
                 </React.Fragment>
             )
         }
-        if (authStatus == 2) {
+        if (authStatus === 2) {
             return (
                 <React.Fragment>
-                    <Nav.Link href="/current">Servicing</Nav.Link>
-                    <Nav.Link href="/inqueue">Queue</Nav.Link>
-                    <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+                    <NavLink
+                        to="/dashboard"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/dashboard"
+                        className="nav-link">
+                        Dashboard
+                     </NavLink>
+                    <NavLink
+                        to="/current"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/dashboard"
+                        className="nav-link">
+                        Servicing
+                     </NavLink>
+                    <NavLink
+                        to="/inqueue"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/dashboard"
+                        className="nav-link">
+                        Queue
+                     </NavLink>
                 </React.Fragment>
             )
         }
-        if (authStatus == 3) {
+        if (authStatus === 3) {
             return (
                 <React.Fragment>
-                    <Nav.Link href="/profile">Profile</Nav.Link>
+                    <NavLink
+                        to="/profile"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/dashboard"
+                        className="nav-link">
+                        Profile
+                     </NavLink>
                 </React.Fragment>
             )
         }
     }
 
     return (
-        <Navbar bg="light" expand="sm">
+        <Navbar bg="dark" variant="dark" expand="sm">
             <Navbar.Brand href="/"> Service Booking</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" expand={768} />
             <Navbar.Collapse id="basic-navbar-nav">

@@ -6,10 +6,19 @@ import { connect } from 'react-redux'
 import { serviceCenterList, addServiceCenter, deleteServiceCenter, updateServiceCenter } from '../../redux/actions/serviceCenterList'
 import { vacantAdminList, assignServiceCenter } from '../../redux/actions/admin'
 import Alert from '../../layout/Alert'
+import { Redirect } from 'react-router-dom';
 
 function ServiceCenter(props) {
 
-	const title = ['S.N', 'Location', 'Service Center Name', 'Admin', 'Total Booking Count', 'Booking Limit', 'Contact', 'Actions']
+
+	useEffect(() => {
+		props.serviceCenterList()
+		props.vacantAdminList()
+
+	}, [props.sclists.length, props.vadminlist.length])
+
+
+
 
 	// Create input change
 	const [state, setState] = useState({
@@ -25,11 +34,8 @@ function ServiceCenter(props) {
 	})
 
 
-	useEffect(() => {
-		props.serviceCenterList()
-		props.vacantAdminList()
+	const title = ['S.N', 'Location', 'Service Center Name', 'Admin', 'Total Booking Count', 'Booking Limit', 'Contact', 'Actions']
 
-	}, [props.sclists.length, props.vadminlist.length])
 
 
 	// Create service center
@@ -179,7 +185,7 @@ function ServiceCenter(props) {
 				<td className="pt-3-half" name="location">{sclist.serviceLocation}</td>
 				<td className="pt-3-half" name="name">{sclist.name}</td>
 				<td className="pt-3-half" name="admin" className={sclist.admin == null ? 'bg-danger text-white' : ''}>{sclist.admin == null ? sclist.admin = 'NO ADMIN SELECTED' : sclist.admin.name}</td>
-				<td className="pt-3-half" name="bookingDays">{sclist.bookingCount}</td>
+				<td className="pt-3-half" name="bookingCount">{sclist.bookingCount}</td>
 				<td className="pt-3-half" name="bookingLimit">{sclist.bookingLimit}</td>
 				<td className="pt-3-half" name="contact">{sclist.contact}</td>
 				<td>
@@ -210,6 +216,8 @@ function ServiceCenter(props) {
 		)
 	})
 
+	if (!props.authloading && !props.auth) return (<Redirect to="/login" />)
+
 	return (
 		<div className="card">
 			{/* Title */}
@@ -227,13 +235,13 @@ function ServiceCenter(props) {
 							<tr>
 								{title.map((title, index) => {
 									return (
-										<th key={index} className="text-center text-white bg-secondary">{title}</th>
+										<th key={index} className="text-center text-white bg-secondary ">{title}</th>
 									)
 								})}
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
+							<tr >
 								<td>#</td>
 								<td><input
 									name="serviceLocation"
@@ -319,6 +327,8 @@ ServiceCenter.propTypes = {
 const mapStateToProps = state => ({
 	sclists: state.serviceCenterList.sclist,
 	vadminlist: state.admin.vadminlist,
+	auth: state.auth.isAuthenticated,
+	authloading: state.auth.loading,
 	loading: state.admin.loading
 })
 

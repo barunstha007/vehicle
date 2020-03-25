@@ -61,16 +61,21 @@ function SuperAdminUsers(props) {
     // Create superadmin
     props.addSuperadmin(createSuperadmin)
 
-    setState({
-      name: "",
-      location: "",
-      phone: "",
-      email: "",
-      username: "",
-      password: "",
-      passwordHidden: true
-    })
+    console.log(props.status)
+    if (!props.loading && props.status == 200) {
+
+      setState({
+        name: "",
+        location: "",
+        phone: "",
+        email: "",
+        username: "",
+        password: "",
+        passwordHidden: true
+      })
+    }
   }
+
   const updateHandler = (data) => {
     setState({
 
@@ -101,7 +106,6 @@ function SuperAdminUsers(props) {
     })
   }
   const deleteHandler = suID => {
-    // console.log(suID)
     var confirm = window.confirm('Are you sure you want to delete this superadmin? This deletion is irriversible')
     if (confirm) {
       return props.deleteSuperadmin(suID)
@@ -121,7 +125,6 @@ function SuperAdminUsers(props) {
 
     props.updateSuperadmin(superadminDetails)
 
-    console.log(props.superadminlist)
     // reset state
     setState({
 
@@ -297,8 +300,8 @@ SuperAdminUsers.propTypes = {
 
 const mapStateToProps = state => ({
   superadminlist: state.superadmin.superadminlist,
+  status: state.superadmin.status,
+  loading: state.superadmin.loading
 })
 
-export default connect(mapStateToProps,
-  { getSuperadmin, addSuperadmin, updateSuperadmin, deleteSuperadmin })
-  (SuperAdminUsers)
+export default connect(mapStateToProps, { getSuperadmin, addSuperadmin, updateSuperadmin, deleteSuperadmin })(SuperAdminUsers)

@@ -113,11 +113,11 @@ function Profile(props) {
                 <div className="row">
                     <div className="col-6 p-1"><label /></div>
                     <div className="col-3 p-1"><p>
-                        <span className="btn btn-success text-white" onClick={editProfileSubmit}>&#10004;</span>
+                        <span className="btn btn-success text-white" onClick={editProfileSubmit}>Save</span>
                     </p>
                     </div>
                     <div className="col-3 "><p >
-                        <span className="btn btn-danger text-white" onClick={editProfileCancel}>&#10005;</span>
+                        <span className="btn btn-danger text-white" onClick={editProfileCancel}>Cancel</span>
                     </p>
                     </div>
 
@@ -142,10 +142,7 @@ function Profile(props) {
     function userDetails() {
         return (
             <React.Fragment>
-                {/* <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab"> */}
 
-                {editorSubmitEditbtn()}
-                <br />
                 {/* Title and value */}
                 <div className="row">
                     <div className="col-6 p-1"><label>Username</label></div>
@@ -171,6 +168,10 @@ function Profile(props) {
                     <div className="col-6 p-1"><label>Last Booking Date</label></div>
                     <div className="col-6 p-1"><p>12 Dec 2019</p></div>
                 </div>
+                <br />
+                {/* <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab"> */}
+
+                {editorSubmitEditbtn()}
             </React.Fragment>
 
         )
@@ -180,10 +181,6 @@ function Profile(props) {
     function editUserDetails() {
         return (
             <React.Fragment>
-                {/* edit button type */}
-                {editorSubmitEditbtn()}
-                <br />
-
                 {/* Title and value */}
                 {/* Username */}
                 <div className="row">
@@ -287,6 +284,9 @@ function Profile(props) {
                         <label>Last Booking Date</label></div>
                     <div className="col-6 p-1"><p>12 Dec 2019</p></div>
                 </div>
+                <br />
+                {/* edit button type */}
+                {editorSubmitEditbtn()}
             </React.Fragment>
 
         )
@@ -505,7 +505,7 @@ function Profile(props) {
                                 {state.editToggle ? editUserDetails() : userDetails()}
                             </div>
 
-                            {props.bookingDetails.bookingStatus === 1 || props.bookingDetails.bookingStatus === 2 ?
+                            {!props.bookingLoading && props.bookingDetails.bookingStatus === 1 || props.bookingDetails.bookingStatus === 2 ?
                                 bookingStatus() : bookServicing()}
                         </div>
                     </div>
@@ -530,8 +530,8 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
     loading: state.auth.loading,
     authStatus: state.auth.authStatus,
-
-    bookingDetails: state.booking.bookingDetails
+    bookingDetails: state.booking.bookingDetails,
+    bookingLoading: state.booking.loading
 })
 
 export default connect(mapStateToProps,

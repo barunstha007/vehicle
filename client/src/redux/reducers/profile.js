@@ -12,9 +12,14 @@ export default function (state = initialState, action) {
     switch (action.type) {
         case GETPROFILE_SUCCESS:
             // Insert object to object
-            return Object.assign({}, state, {
-                userProfile: action.payload
-            })
+            // return Object.assign({}, state, {
+            //     userProfile: action.payload
+            // })
+            return {
+                ...state,
+                userProfile: Object.assign({}, action.payload),
+                loading: false
+            }
 
 
         case UPDATEPROFILE_SUCCESS:
@@ -22,6 +27,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 userProfile: action.payload,
+                loading: false
             }
 
         default: return state

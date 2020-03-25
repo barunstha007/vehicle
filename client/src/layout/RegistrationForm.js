@@ -46,14 +46,9 @@ function RegistrationForm(props) {
         }
         // send data to register action
         props.register(register)
-        // console.log('Register Success')
     }
 
     if (props.isAuthenticated) return <Redirect to="/bike" />
-
-    // else console.log('Not Authenticated')
-    // return <Redirect to="profile" />
-
 
 
     return (

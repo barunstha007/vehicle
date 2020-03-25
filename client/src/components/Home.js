@@ -4,7 +4,7 @@ import { IoIosTime } from 'react-icons/io';
 import "react-datepicker/dist/react-datepicker.css";
 import './Home.css'
 import ServiceCenterBook from '../layout/ServiceCenterBook';
-import Banner from '../assets/parts-banner.jpg'
+// import Banner from '../assets/parts-banner.jpg'
 // Redux
 import Alert from '../layout/Alert'
 
@@ -12,14 +12,14 @@ export default function Home() {
 
     return (
         <React.Fragment>
-            <section class="img-container">
+            <section className="img-container">
                 <Alert />
-                <div class="container">
-                    <div class="row" style={{ top: '20%', position: 'absolute' }}>
-                        <div class="card shadow" style={{ background: 'rgba(0,0,0,0.7)', height: '30vh ' }}>
-                            <div class="card-body" style={{ width: '26rem' }}>
-                                <div class="row">
-                                    <div class="col-md-12 ">
+                <div className="container">
+                    <div className="row" style={{ top: '20%', position: 'absolute' }}>
+                        <div className="card shadow" style={{ background: 'rgba(0,0,0,0.7)', height: '30vh ' }}>
+                            <div className="card-body" style={{ width: '26rem' }}>
+                                <div className="row">
+                                    <div className="col-md-12 ">
                                         <h3 className="text-white">Available Service Centers</h3>
                                         <hr />
                                         <ServiceCenterBook />

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom'
+// import { Redirect } from 'react-router-dom'
 
 // Redux
+import store from '../redux/store'
 import { connect } from 'react-redux'
 import { serviceCenterList } from '../redux/actions/serviceCenterList'
 import { getUserBike } from '../redux/actions/userBike'
 import { bookServicing } from '../redux/actions/booking'
+import { setAlert } from '../redux/actions/alert'
+
 
 
 function ServiceCenterBook(props) {
@@ -32,6 +35,9 @@ function ServiceCenterBook(props) {
 
     const bookHandler = e => {
         e.preventDefault()
+
+        // if (!props.isAuthenticated) store.dispatch(setAlert('Please login to book', 'danger'))
+
         {
             !props.isloading && setState({
                 ...state,

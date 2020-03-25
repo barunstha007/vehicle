@@ -47,12 +47,18 @@ router.post("/register", [
     check("name", "Name is required")
       .not()
       .isEmpty(),
+    check("name", "Minimum name lenth is 3")
+      .isLength(3),
     check("phone", "Please Enter a Phone")
       .not()
       .isEmpty(),
+    check("phone", "Minimum phone lenth is 7")
+      .isLength(7),
     check("location", "Please Enter location")
       .not()
       .isEmpty(),
+    check("location", "Minimum location lenth is 5")
+      .isLength(5),
     check("email", "PLease include a valid email").isEmail(),
     check("username", "Username must be atleast 4 characters").isLength({
       min: 4
@@ -129,7 +135,6 @@ router.post("/register", [
         (err, token) => {
           if (err) res.json({ err });
           res.json(user);
-          console.log("Token Generate SUCCESFULL");
         }
       );
 

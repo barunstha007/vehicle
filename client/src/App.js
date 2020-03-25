@@ -19,6 +19,7 @@ import ServiceCenter from './components/Superadmin/ServiceCenter'
 import SuperAdminUsers from './components/Superadmin/SuperAdminUsers'
 import AdminUsers from './components/Superadmin/AdminUsers'
 import BikeModelList from './components/Superadmin/BikeModelList'
+import CurrentStatus from './components/Superadmin/CurrentStatus'
 
 
 // Redux
@@ -91,6 +92,9 @@ const App = () => {
             </Route>
             <Route path="/bikemodel-list">
               <BikeModelList />
+            </Route>
+            <Route path="/current-status">
+              <CurrentStatus />
             </Route>
           </Switch>
         </Router>

@@ -65,7 +65,6 @@ router.post("/", [auth,
       .not()
       .isEmpty(),
 
-    check("maxBookingDays", "Enter max booking days in number").isNumeric(),
     check("bookingLimit", "Maximum booking limit of bikes in number").isNumeric(),
     check("contact", "Contact Number must be a number").isNumeric()
   ]
@@ -79,9 +78,9 @@ router.post("/", [auth,
     // check input validation
     const error = validationResult(req);
     // If validation errors
-    if (!error.isEmpty()) {
-      return res.status(400).json({ error: error.array() });
-    }
+    // if (!error.isEmpty()) {
+    //   return res.status(400).json({ error: error.array() });
+    // }
 
     try {
       // if Superadmin, can create and update any service center
@@ -92,7 +91,6 @@ router.post("/", [auth,
       if (req.body.admin) newServiceCenter.admin = req.body.admin;
       if (req.body.name) newServiceCenter.name = req.body.name;
       if (req.body.serviceLocation) newServiceCenter.serviceLocation = req.body.serviceLocation;
-      if (req.body.maxBookingDays) newServiceCenter.maxBookingDays = req.body.maxBookingDays;
       if (req.body.bookingLimit) newServiceCenter.bookingLimit = req.body.bookingLimit;
       if (req.body.contact) newServiceCenter.contact = req.body.contact;
 
@@ -137,7 +135,6 @@ router.post("/update", [auth,
       .not()
       .isNumeric(),
 
-    check("maxBookingDays", "Enter max booking days in number").isNumeric(),
     check("bookingLimit", "Maximum booking limit of bikes in number").isNumeric(),
     check("contact", "Contact Number must be a number").isNumeric()
   ]
@@ -164,7 +161,6 @@ router.post("/update", [auth,
       if (req.body.admin) newServiceCenter.admin = req.body.admin;
       if (req.body.name) newServiceCenter.name = req.body.name;
       if (req.body.serviceLocation) newServiceCenter.serviceLocation = req.body.serviceLocation;
-      if (req.body.maxBookingDays) newServiceCenter.maxBookingDays = req.body.maxBookingDays;
       if (req.body.bookingLimit) newServiceCenter.bookingLimit = req.body.bookingLimit;
       if (req.body.contact) newServiceCenter.contact = req.body.contact;
 
