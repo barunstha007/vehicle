@@ -29,6 +29,7 @@ import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './redux/actions/auth'
 import Profile from './components/Profile';
 import { getUserBike } from './redux/actions/userBike';
+import Packages from './components/Packages';
 
 // If localstorage has token, set token
 if (localStorage.token) {
@@ -49,6 +50,9 @@ const App = () => {
         <Router>
           <Navigation />
           <Switch>
+            <Route path="/packages" exact>
+              <Packages />
+            </Route>
             {/* User */}
             <Route path="/" exact>
               <Home />

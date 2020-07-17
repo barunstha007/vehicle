@@ -29,6 +29,7 @@ function Navigation({ auth: { isAuthenticated, authStatus, loading }, logout }) 
                         <NavDropdown.Item href="/superadminlists">Superadmin</NavDropdown.Item>
                         <NavDropdown.Item href="/adminlists">Admin</NavDropdown.Item>
                     </NavDropdown>
+
                     <NavLink
                         to="/bikemodel-list"
                         activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
@@ -102,6 +103,9 @@ function Navigation({ auth: { isAuthenticated, authStatus, loading }, logout }) 
             <Navbar.Brand href="/"> Service Booking</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" expand={768} />
             <Navbar.Collapse id="basic-navbar-nav">
+                <Navbar.Text className="mr-2">
+                    <a href="/packages">Packages</a>
+                </Navbar.Text>
                 <Nav className="mr-auto">
                     {userRoleBasedNav()}
                 </Nav>

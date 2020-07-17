@@ -9,6 +9,7 @@ import bikeModel from './bikeModel'
 import userBike from './userBike'
 import dashboard from './dashboard'
 import booking from './booking'
+import packages from './packages'
 
 export default combineReducers({
     alert,
@@ -21,4 +22,5 @@ export default combineReducers({
     userBike,
     dashboard,
     booking,
+    packages
 })
