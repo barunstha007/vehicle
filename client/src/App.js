@@ -27,9 +27,13 @@ import { Provider } from 'react-redux';
 import store from './redux/store'
 import setAuthToken from './utils/setAuthToken';
 import { loadUser } from './redux/actions/auth'
+import { serviceCenterList } from './redux/actions/serviceCenterList'
+
 import Profile from './components/Profile';
 import { getUserBike } from './redux/actions/userBike';
 import Packages from './components/Packages';
+import CustomerMsg from './components/Messages/CustomerMsg';
+import Feedbacks from './components/Admin/Feedbacks';
 
 // If localstorage has token, set token
 if (localStorage.token) {
@@ -40,6 +44,7 @@ const App = () => {
 
   useEffect(() => {
     // load user (auth) action called in start of the component lifecycle
+    store.dispatch(serviceCenterList())
     store.dispatch(loadUser())
   }, [])
 
@@ -99,6 +104,12 @@ const App = () => {
             </Route>
             <Route path="/current-status">
               <CurrentStatus />
+            </Route>
+            <Route path="/messages">
+              <CustomerMsg />
+            </Route>
+            <Route path="/service-center-feedbacks">
+              <Feedbacks />
             </Route>
           </Switch>
         </Router>

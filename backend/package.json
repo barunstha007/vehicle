@@ -13,7 +13,7 @@
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install client  && npm run build client"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Proprietary",
   "keywords": [],
   "description": "",
   "dependencies": {

@@ -44,8 +44,6 @@ export const assignServiceCenter = (id, assignedServiceCenter) => async dispatch
             payload: res.data
         })
 
-        console.log('Action=> AssignServiceCenterSuccess')
-        console.log(res.data)
 
     } catch (err) {
         console.log(err)

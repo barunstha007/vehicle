@@ -80,6 +80,13 @@ function Navigation({ auth: { isAuthenticated, authStatus, loading }, logout }) 
                         className="nav-link">
                         Queue
                      </NavLink>
+                    <NavLink
+                        to="/service-center-feedbacks"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/service-center-feedbacks"
+                        className="nav-link">
+                        Feedbacks
+                     </NavLink>
                 </React.Fragment>
             )
         }
@@ -93,6 +100,12 @@ function Navigation({ auth: { isAuthenticated, authStatus, loading }, logout }) 
                         className="nav-link">
                         Profile
                      </NavLink>
+                    <NavLink
+                        to="/messages"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/messages"
+                        className="nav-link">
+                    </NavLink>
                 </React.Fragment>
             )
         }
@@ -103,10 +116,14 @@ function Navigation({ auth: { isAuthenticated, authStatus, loading }, logout }) 
             <Navbar.Brand href="/"> Service Booking</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" expand={768} />
             <Navbar.Collapse id="basic-navbar-nav">
-                <Navbar.Text className="mr-2">
-                    <a href="/packages">Packages</a>
-                </Navbar.Text>
                 <Nav className="mr-auto">
+                    <NavLink
+                        to="/packages"
+                        activeStyle={{ color: 'black', backgroundColor: 'cyan' }}
+                        activeClassName="/packages"
+                        className="nav-link">
+                        Servicing Packages
+                     </NavLink>
                     {userRoleBasedNav()}
                 </Nav>
                 {!loading && (<React.Fragment>{isAuthenticated ? authLinks : guestLinks}</React.Fragment>)}

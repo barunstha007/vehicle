@@ -34,6 +34,7 @@ const bikeModelRoute = require("./routes/bikeRoutes/bikeModelRoute");
 const bikeRoute = require("./routes/bikeRoute");
 const profileRoute = require("./routes/profileRoute");
 const bookingRoute = require("./routes/bookingRoute");
+const feedbackRoute = require("./routes/feedbackRoute");
 
 app.use("/auth", login);
 app.use("/register", userRegisterRoute);
@@ -44,6 +45,7 @@ app.use("/mybike", bikeRoute);
 app.use("/bikemodel", bikeModelRoute);
 app.use("/profile", profileRoute);
 app.use("/booking", bookingRoute);
+app.use("/feedback", feedbackRoute);
 
 // Serve a static assets if in production
 if (process.env.NODE_ENV === 'production') {

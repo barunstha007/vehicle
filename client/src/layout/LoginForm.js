@@ -17,17 +17,6 @@ import Alert from "../layout/Alert";
 const CssTextField = withStyles({
     root: {
 
-        '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-                borderColor: 'yellow',
-            },
-            '&:hover fieldset': {
-                borderColor: 'yellow',
-            },
-            '&.Mui-focused fieldset': {
-                borderColor: 'yellow',
-            },
-        },
     },
 })(TextField);
 
@@ -93,10 +82,6 @@ function LoginForm(props) {
                     value={state.password}
                     onChange={onChangeHandler}
                 />
-                <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
-                />
                 <Button
                     type="submit"
                     fullWidth
@@ -108,9 +93,6 @@ function LoginForm(props) {
           </Button>
                 <Grid container>
                     <Grid item xs>
-                        <Link href="#" variant="body2">
-                            Forgot password?
-              </Link>
                     </Grid>
                     <Grid item>
                         <Link href="/register" variant="body2">

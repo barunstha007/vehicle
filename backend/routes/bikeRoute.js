@@ -19,7 +19,6 @@ router.get('/', auth, async (req, res) => {
     return res.json('No Bike found for current user')
 
   } catch (err) {
-    console.error(err.message)
     res.status(500).send('Server Error')
   }
 

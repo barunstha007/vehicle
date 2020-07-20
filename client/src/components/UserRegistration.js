@@ -13,9 +13,9 @@ function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-      </Link>{' '}
+            <Link color="inherit" href="https://thequantumsoft.com/">
+                All Rights Reserved
+      </Link>{" "}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
@@ -55,7 +55,7 @@ export default function SignUp() {
     return (
         <Container component="main" maxWidth="xs">
 
-            <div className={classes.paper}>
+            <div className={classes.paper} style={{ minHeight: '80vh' }}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>

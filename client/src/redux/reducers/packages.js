@@ -20,7 +20,7 @@ const initialState = {
             id: 3,
             title: 'Dashain & tIHAR oFFER',
             desc: 'On the splendid occasion of dashain all the bike parts have 20% discount and the servicing fee is free untill the end of the festival',
-            image: 'https://lh3.googleusercontent.com/proxy/AXTWp02mj3XpbcgtNorDnL2DIasMl0ROkxOsnXYTQd0ny-LRIACenVkYXdrZzf94UoNbXx5y2O-hEJuQC8fZICjvp-G0DGClo4vvDCYIaFIR6r5AnJOJ87KooaNmPjcWagRYh6BuUQ'
+            image: 'https://media.karousell.com/media/photos/products/2019/09/17/ktm_duke_200_servicing_1568729974_f4015f0b_progressive.jpg'
         },
         {
             id: 4,
