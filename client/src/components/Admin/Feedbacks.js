@@ -5,7 +5,7 @@ import { IoIosSend } from 'react-icons/io'
 import { useDispatch } from 'react-redux'
 import { sendFeedback } from '../../redux/actions/feedbacks'
 import Alert from '../../layout/Alert'
-import { setAlert } from '../../redux/actions/alert'
+import { useSelector, setAlert } from '../../redux/actions/alert'
 
 function Feedbacks() {
 
