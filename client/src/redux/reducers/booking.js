@@ -1,124 +1,133 @@
 import {
-    BOOKING_SUCCESS,
-    // BOOKING_FAIL,
-    GETBOOKINGBYID_SUCCESS,
-    // GETBOOKINGBYID_FAIL,
-    CANCLEBOOKING_SUCCESS,
-    GETBOOKINGQUEUE_SUCCESS,
-    BOOKINGACCEPT_SUCCESFULL,
-    GETACCEPTEDBOOKING_SUCCESS,
-    REQUEUEBIKE_SUCCESS
-} from '../actions/types'
+  BOOKING_SUCCESS,
+  // BOOKING_FAIL,
+  GETBOOKINGBYID_SUCCESS,
+  // GETBOOKINGBYID_FAIL,
+  CANCLEBOOKING_SUCCESS,
+  GETBOOKINGQUEUE_SUCCESS,
+  BOOKINGACCEPT_SUCCESFULL,
+  GETACCEPTEDBOOKING_SUCCESS,
+  REQUEUEBIKE_SUCCESS,
+} from "../actions/types";
 
 const initialState = {
-    bookingDetails: {
-        bookingStatus: 0,
-        serviceCenter: {
-            id: '',
-            name: ''
-        },
-        lastBookingDate: null,
-        bookingDate: null,
-        servicingDate: '',
-        totalPrice: 0
+  bookingDetails: {
+    bookingStatus: 0,
+    serviceCenter: {
+      id: "",
+      name: "",
     },
+    lastBookingDate: null,
+    bookingDate: null,
+    servicingDate: "",
+    totalPrice: 0,
+  },
 
-    queueDetails: [],
-    acceptedBooking: [],
+  queueDetails: [],
+  acceptedBooking: [],
 
-    loading: true
-}
+  loading: true,
+};
 
 export default function (state = initialState, action) {
-    switch (action.type) {
+  switch (action.type) {
+    // @Access customer
+    case GETBOOKINGBYID_SUCCESS:
+      return {
+        ...state,
+        bookingDetails: Object.assign({}, action.payload),
+        loading: false,
+      };
 
-        // @Access customer
-        case GETBOOKINGBYID_SUCCESS:
-            return {
-                ...state,
-                bookingDetails: Object.assign({}, action.payload),
-                loading: false
-            }
+    case BOOKING_SUCCESS:
+      return {
+        ...state,
+        ...state.bookingDetails,
+        bookingDetails: {
+          bookingStatus: action.payload.bookingStatus,
+          serviceCenter: Object.assign({}, action.payload.serviceCenter),
+          bookingDate: action.payload.bookingDate,
+        },
+        // <select> initial value
+        // initialSelect: action.payload[0]._id,
+        loading: false,
+      };
 
-        case BOOKING_SUCCESS:
-            return {
-                ...state,
-                ...state.bookingDetails,
-                bookingDetails: {
-                    bookingStatus: action.payload.bookingStatus,
-                    serviceCenter: Object.assign({}, action.payload.serviceCenter),
-                    bookingDate: action.payload.bookingDate
-                },
-                // <select> initial value
-                // initialSelect: action.payload[0]._id,
-                loading: false
-            }
+    case CANCLEBOOKING_SUCCESS:
+      return {
+        ...state,
+        bookingDetails: {
+          bookingStatus: 0,
+          serviceCenter: null,
+          bookingDate: null,
+        },
 
-        case CANCLEBOOKING_SUCCESS:
-            return {
-                ...state,
-                bookingDetails: {
-                    bookingStatus: 0,
-                    serviceCenter: null,
-                    bookingDate: null
-                },
+        loading: false,
+      };
 
-                loading: false
-            }
+    // @Access admin
+    case GETBOOKINGQUEUE_SUCCESS:
+      return {
+        ...state,
+        queueDetails: [...action.payload],
 
-        // @Access admin
-        case GETBOOKINGQUEUE_SUCCESS:
-            return {
-                ...state,
-                queueDetails: [...action.payload],
+        loading: false,
+      };
 
-                loading: false
-            }
+    case "CHANGESERVICINGDATE":
+      let queueDetails = [...state.queueDetails];
+      queueDetails[action.index] = {
+        ...queueDetails[action.index],
+        servicingDate: action.date,
+      };
 
-        case 'CHANGESERVICINGDATE':
+      return {
+        ...state,
+        queueDetails,
+        loading: false,
+      };
 
-            let queueDetails = [...state.queueDetails];
-            queueDetails[action.index] = { ...queueDetails[action.index], servicingDate: action.date };
+    case BOOKINGACCEPT_SUCCESFULL:
+      const submittedIds = action.payload.map(({ bikeid }) => bikeid);
 
-            return {
-                ...state,
-                queueDetails,
-                loading: false
-            }
+      return {
+        ...state,
+        queueDetails: state.queueDetails.filter(
+          (queue) => !submittedIds.includes(queue.bike._id)
+        ),
+        loading: false,
+      };
 
-        case BOOKINGACCEPT_SUCCESFULL:
+    // @Access admin
+    case GETACCEPTEDBOOKING_SUCCESS:
+      return {
+        ...state,
+        acceptedBooking: [...action.payload],
 
-            const submittedIds = action.payload.map(({ bikeid }) => bikeid)
+        loading: false,
+      };
 
-            return {
-                ...state,
-                queueDetails: state.queueDetails.filter(queue => !submittedIds.includes(queue.bike._id)),
-                loading: false
-            }
+    case REQUEUEBIKE_SUCCESS:
+      // const submittedIds = action.payload.map(() => bikeid)
 
+      return {
+        ...state,
+        acceptedBooking: state.acceptedBooking.filter(
+          (accepted) => !action.payload.includes(accepted.bike._id)
+        ),
+        // queueDetails: queuebike
+      };
 
-        // @Access admin
-        case GETACCEPTEDBOOKING_SUCCESS:
-            return {
-                ...state,
-                acceptedBooking: [...action.payload],
+    case "COMPLETE_SERVICING":
+      return {
+        ...state,
+        acceptedBooking: state.acceptedBooking.filter(
+          (accepted) => !action.payload.includes(accepted.bike._id)
+        ),
+        // queueDetails: queuebike
+      };
 
-                loading: false
-            }
-
-
-        case REQUEUEBIKE_SUCCESS:
-
-            // const submittedIds = action.payload.map(() => bikeid)
-
-            return {
-                ...state,
-                acceptedBooking: state.acceptedBooking.filter(accepted => !action.payload.includes(accepted.bike._id))
-                // queueDetails: queuebike
-            }
-
-
-
-        default: return state
-    }
+    default:
+      return state;
+  }
 }

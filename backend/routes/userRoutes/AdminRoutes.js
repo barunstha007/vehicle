@@ -11,75 +11,69 @@ const { check, validationResult } = require("express-validator");
 // @route   GET '/admin'
 // @desc    get all vacant admin
 // @access  Superadmin
-router.get('/', auth, async (req, res) => {
-
+router.get("/", auth, async (req, res) => {
   //   Check if User is Superadmin
   if (req.user.role !== 1) {
     return res.status(400).json("Not authorized");
   }
 
   try {
-    // Search admin 
-    const adminList = await User.find({ role: 2, assignedServiceCenter: 0 }).select("-password")
+    // Search admin
+    const adminList = await User.find({
+      role: 2,
+      assignedServiceCenter: 0,
+    }).select("-password");
 
     //Return admin
-    res.json(adminList)
-
+    res.json(adminList);
   } catch (err) {
-    console.error(err.message)
-    res.status(500).send('Server Error')
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
-
-})
+});
 
 // @route   GET '/admin/all'
 // @desc    get all admin
 // @access  Superadmin
-router.get('/all', auth, async (req, res) => {
-
+router.get("/all", auth, async (req, res) => {
   //   Check if User is Superadmin
   if (req.user.role !== 1) {
     return res.status(400).json("Not authorized");
   }
 
   try {
-
-    // Search admin 
-    const admin = await User.find({ role: 2 }).select("-password")
+    // Search admin
+    const admin = await User.find({ role: 2 }).select("-password");
 
     //If there is admin
-    res.json(admin)
-
+    res.json(admin);
   } catch (err) {
-    console.error(err.message)
-    res.status(500).send('Server Error')
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
-
-})
+});
 
 // @route   POST '/admin/register'
 // @desc    Register admin, role == 2
 //@access   Superadmin
-router.post("/register", [
-  auth,
+router.post(
+  "/register",
   [
-    // express validator
-    check("name", "Name is required")
-      .not()
-      .isEmpty(),
-    check("phone", "Please Enter a Phone")
-      .not()
-      .isEmpty(),
-    check("location", "Please Enter location")
-      .not()
-      .isEmpty(),
-    check("email", "PLease include a valid email").isEmail(),
-    check("username", "Username must be atleast 4 characters").isLength({
-      min: 4
-    }),
-    check("password", "Password must be atleast 5 characters").isLength({
-      min: 5
-    })]],
+    auth,
+    [
+      // express validator
+      check("name", "Name is required").not().isEmpty(),
+      check("phone", "Please Enter a Phone").not().isEmpty(),
+      check("location", "Please Enter location").not().isEmpty(),
+      check("email", "PLease include a valid email").isEmail(),
+      check("username", "Username must be atleast 4 characters").isLength({
+        min: 4,
+      }),
+      check("password", "Password must be atleast 5 characters").isLength({
+        min: 5,
+      }),
+    ],
+  ],
   // async await function
   async (req, res) => {
     //   Check if User is Superadmin
@@ -102,17 +96,25 @@ router.post("/register", [
       let phone = await User.findOne({ phone: req.body.phone });
 
       // See if user exists
-      if (username || email || phone) {
+      if (username) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
+          .json({ errors: [{ msg: "Username already exists" }] });
+      } else if (email) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Email already exists" }] });
+      } else if (phone) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Phone already exists" }] });
       }
 
       //Get user Gravatar from the email in request body
       const avatar = gravatar.url(req.body.email, {
         s: "200",
         r: "pg",
-        d: "mm"
+        d: "mm",
       });
 
       // saving details from req.body
@@ -125,7 +127,7 @@ router.post("/register", [
         password: req.body.password,
         role: 2,
         assignedServiceCenter: 0,
-        avatar
+        avatar,
       });
 
       // Encrypt password
@@ -139,8 +141,8 @@ router.post("/register", [
       const payload = {
         user: {
           id: user.id,
-          role: user.role
-        }
+          role: user.role,
+        },
       };
 
       jwt.sign(
@@ -165,13 +167,18 @@ router.post("/register", [
 // @route    POST '/admin/update/:id'
 // @desc     Update admin
 // @access   Superadmin, Same Admin
-router.post("/update/:id", [auth, [
-  check("admin.username", "Please enter username").not().isEmpty(),
-  check("admin.name", "Please enter name").not().isEmpty(),
-  check("admin.email", "Please enter email").isEmail(),
-  check("admin.phone", "Please enter a phone number").isNumeric(),
-  check("admin.location", "Please enter location").not().isEmpty(),
-]],
+router.post(
+  "/update/:id",
+  [
+    auth,
+    [
+      check("admin.username", "Please enter username").not().isEmpty(),
+      check("admin.name", "Please enter name").not().isEmpty(),
+      check("admin.email", "Please enter email").isEmail(),
+      check("admin.phone", "Please enter a phone number").isNumeric(),
+      check("admin.location", "Please enter location").not().isEmpty(),
+    ],
+  ],
   async (req, res) => {
     //   Check if User is not Superadmin or Admin
     if (req.user.role > 2) {
@@ -186,9 +193,7 @@ router.post("/update/:id", [auth, [
     // If validation errors
 
     if (!error.isEmpty()) {
-      return (
-        res.status(400).json({ error: error.array() })
-      );
+      return res.status(400).json({ error: error.array() });
     }
 
     // Initialise new Object and set properties from request
@@ -208,15 +213,14 @@ router.post("/update/:id", [auth, [
         const salt = await bcrypt.genSalt(10);
         admin.password = await bcrypt.hash(req.body.admin.password, salt);
       } catch (err) {
-        return res.json(err)
+        return res.json(err);
       }
     }
-
 
     try {
       let adminDetails = await User.findOne({ _id: req.params.id, role: 2 });
 
-      // If admin exists, Update 
+      // If admin exists, Update
       if (adminDetails) {
         adminDetails = await User.findOneAndUpdate(
           { _id: req.params.id },
@@ -226,9 +230,7 @@ router.post("/update/:id", [auth, [
 
         return res.json(adminDetails);
       }
-      res.json('User not Found')
-
-
+      res.json("User not Found");
     } catch (err) {
       res.status(500).send(err.message);
     }
@@ -245,7 +247,7 @@ router.delete("/:id", auth, async (req, res) => {
   }
 
   try {
-    // If admin exists, Update 
+    // If admin exists, Update
     let admin = await User.findOne({ _id: req.params.id, role: 2 });
 
     // If user exists
@@ -254,22 +256,26 @@ router.delete("/:id", auth, async (req, res) => {
 
       return res.json("Admin deleted");
     }
-    res.json('User not Found')
-
-
+    res.json("User not Found");
   } catch (err) {
     res.status(500).send(err.message);
   }
-}
-);
+});
 
 //@route    POST '/admin/assignServiceCenter'
 //@desc     Update assignAdminServieCenter admin
 //@access   Superadmin
-router.post("/assignServiceCenter", [auth, [
-  check("id", "Please select admin").not().isEmpty(),
-  check("assignedServiceCenter", "Please assign ServiceCenter").not().isEmpty()
-]],
+router.post(
+  "/assignServiceCenter",
+  [
+    auth,
+    [
+      check("id", "Please select admin").not().isEmpty(),
+      check("assignedServiceCenter", "Please assign ServiceCenter")
+        .not()
+        .isEmpty(),
+    ],
+  ],
   // async (req, res) => { res.json('body') }
   async (req, res) => {
     //   Check if User is not Superadmin or Admin
@@ -281,9 +287,7 @@ router.post("/assignServiceCenter", [auth, [
     // If validation errors
 
     if (!error.isEmpty()) {
-      return (
-        res.status(400).json({ error: error.array() })
-      );
+      return res.status(400).json({ error: error.array() });
     }
 
     // Initialise new Object and set properties from request
@@ -295,7 +299,7 @@ router.post("/assignServiceCenter", [auth, [
     try {
       let adminDetails = await User.findOne({ _id: req.body.id, role: 2 });
 
-      // If admin exists, Update 
+      // If admin exists, Update
       if (adminDetails) {
         adminDetails = await User.findOneAndUpdate(
           { _id: req.body.id },
@@ -305,9 +309,7 @@ router.post("/assignServiceCenter", [auth, [
 
         return res.json(adminDetails);
       }
-      res.json('Admin not Found')
-
-
+      res.json("Admin not Found");
     } catch (err) {
       res.status(500).send(err.message);
     }
