@@ -12,7 +12,15 @@ function Packages() {
 
     return (
         <div className="container">
-            <div className="header clearfix my-2 ">
+
+            <div className="jumbotron bg-white material-card mt-4">
+                <h1 className="display-3" style={{ paddingRight: ' 0px' }}>Servicing Packages</h1>
+                <p className="lead">Our servicing packages helps to be quick in decision making for the kind of servicing you desire!</p>
+                <p><a className="btn btn-lg btn-success col-4" href="/login" role="button" >Sign up today</a></p>
+            </div>
+
+            {/* Search */}
+            <div className="header clearfix mb-2">
                 <form className="form-inline my-lg-0">
                     <input className="form-control mr-sm-2" type="search" placeholder="SEARCH"
                         value={searchInput}
@@ -22,17 +30,11 @@ function Packages() {
 
             </div>
 
-            <div className="jumbotron">
-                <h1 className="display-3" style={{ paddingRight: ' 0px' }}>Packages</h1>
-                <p className="lead">We Provide verious packages for all of your bikes & scooter</p>
-                <p><a className="btn btn-lg btn-success" href="/login" role="button" >Sign up today</a></p>
-            </div>
-
-            <div className="row marketing">
+            <div className="row marketing justify-content-center pb-4">
 
                 {searchInput.trim() ? packageList.map(item => {
                     return (
-                        <div className="col-lg-6 my-4 p-4 shadow" key={item.id}>
+                        <div className="col-lg-6 my-4 p-4 material-card" key={item.id}>
                             <div key={item.id}>
                                 <h4>{item.title.toUpperCase()}</h4>
                                 <p>
@@ -46,8 +48,8 @@ function Packages() {
                 }) :
                     orgPackageList.map(item => {
                         return (
-                            <div className="col-lg-6 my-4 p-4 shadow" key={item.id}>
-                                <div key={item.id}>
+                            <div className="col-lg-5 m-1 p-4 material-card" key={item.id}>
+                                <div className="text-center" key={item.id}>
                                     <h4>{item.title.toUpperCase()}</h4>
                                     <img style={{ objectFit: 'cover' }} src={item.image} height="250" width="250" />
                                     <br />

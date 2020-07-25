@@ -62,7 +62,13 @@ export const register = (userDetails) => async (dispatch) => {
 
   // Stringify userdetails
   const body = JSON.stringify(userDetails);
-
+  const { name, phone, email, location, username, password } = userDetails;
+  if (!name) return dispatch(setAlert('Name is empty', "danger"));
+  if (!phone) return dispatch(setAlert('Phone is empty', "danger"));
+  if (!email) return dispatch(setAlert('Email is empty', "danger"));
+  if (!location) return dispatch(setAlert('Location is empty', "danger"));
+  if (!username) return dispatch(setAlert('Username is empty', "danger"));
+  if (!password) return dispatch(setAlert('Password is empty', "danger"));
   try {
     // POST for registration, with req.body
     const res = await axios.post("/register", body, config);
@@ -76,11 +82,10 @@ export const register = (userDetails) => async (dispatch) => {
     // load user after login
     dispatch(loadUser());
   } catch (err) {
-    dispatch(setAlert(err, "danger"));
-
-    dispatch({
-      type: REGISTER_FAIL,
-    });
+    const errors = err.response.data.error;
+    if (errors) {
+      dispatch(setAlert(errors[0].msg, "danger"));
+    }
   }
 };
 

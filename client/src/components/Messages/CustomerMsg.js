@@ -22,7 +22,6 @@ function CustomerMsg() {
 
     const submitFeedback = async (e) => {
         e.preventDefault()
-        console.log(dislike)
         if (sc && like && msg.trim()) {
             await dispatch(sendFeedback(sc, 'like', msg))
             setsc(''); setlike(false); setdislike(false); setmsg('')
@@ -37,11 +36,11 @@ function CustomerMsg() {
         <>
             <Alert />
             <h1 className="text-center">Send a Feedback</h1>
-            <div className="container material-card mt-4 p-4" style={{ backgroundColor: '#f0f0f0' }}>
+            <div className="container material-card mt-4 p-4">
                 <h3>Service center</h3>
                 <select className="custom-select custom-select-lg mb-3" value={sc} onChange={selectHandler}>
                     <option selected >-- Choose service center --</option>
-                    {sclist.map(list => <option value={list._id}>{list.name}</option>)}
+                    {sclist.map((list, i) => <option value={list._id} key={i}>{list.name}</option>)}
                 </select>
                 {/* votes */}
                 <h3>Vote</h3>

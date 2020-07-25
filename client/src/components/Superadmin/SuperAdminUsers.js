@@ -59,21 +59,8 @@ function SuperAdminUsers(props) {
     }
 
     // Create superadmin
-    props.addSuperadmin(createSuperadmin)
+    props.addSuperadmin(createSuperadmin, setState)
 
-    console.log(props.status)
-    if (!props.loading && props.status == 200) {
-
-      setState({
-        name: "",
-        location: "",
-        phone: "",
-        email: "",
-        username: "",
-        password: "",
-        passwordHidden: true
-      })
-    }
   }
 
   const updateHandler = (data) => {
@@ -205,13 +192,13 @@ function SuperAdminUsers(props) {
           <span className="table-add float-right mb-3 mr-2"><a href="#!" className="text-success"><i
             className="fas fa-plus fa-2x" aria-hidden="true"></i></a></span>
           <Alert />
-          <table className="table table-bordered table-responsive-md table-striped text-center">
+          <table className="material-card table table-bordered table-responsive-md table-striped text-center">
             {/* Table Headers */}
             <thead>
               <tr>
                 {title.map((title, index) => {
                   return (
-                    <th key={index} className="text-center text-white bg-secondary">{title}</th>
+                    <th key={index} className="text-center bg-white">{title}</th>
                   )
                 })}
               </tr>

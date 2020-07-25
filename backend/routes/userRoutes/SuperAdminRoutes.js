@@ -87,11 +87,24 @@ router.post("/register", [
       let email = await User.findOne({ email: req.body.email });
       let phone = await User.findOne({ phone: req.body.phone });
 
+
       // See if user exists
-      if (username || email || phone) {
+      if (username) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
+          .json({ errors: [{ msg: "Username already exists" }] });
+      }
+      // See if user exists
+      if (email) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Email already exists" }] });
+      }
+      // See if user exists
+      if (phone) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Phone already exists" }] });
       }
 
       //Get user Gravatar from the email in request body

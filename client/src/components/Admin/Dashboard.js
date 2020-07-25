@@ -268,6 +268,7 @@ function Dashboard(props) {
           <div className="col-6 p-1">
             <p>
               <span
+                style={{ cursor: 'pointer' }}
                 className="btn btn-secondary text-white"
                 onClick={editDashboardHandler}
               >
@@ -511,6 +512,7 @@ function Dashboard(props) {
           <div className="col-3 p-1">
             <p>
               <span
+                style={{ cursor: 'pointer' }}
                 className="btn btn-success text-white"
                 onClick={sceditDashboardSubmit}
               >
@@ -521,6 +523,7 @@ function Dashboard(props) {
           <div className="col-3 ">
             <p>
               <span
+                style={{ cursor: 'pointer' }}
                 className="btn btn-danger text-white"
                 onClick={sceditDashboardCancel}
               >
@@ -540,6 +543,7 @@ function Dashboard(props) {
           <div className="col-6 p-1">
             <p>
               <span
+                style={{ cursor: 'pointer' }}
                 className="btn btn-secondary text-white"
                 onClick={sceditDashboardHandler}
               >
@@ -585,7 +589,7 @@ function Dashboard(props) {
   if (!props.loading && !props.isAuthenticated) return <Redirect to="/login" />;
 
   return (
-    <div className="container emp-profile shadow">
+    <div className="container emp-profile material-card">
       <form method="post">
         {/* upload photo and Title Row */}
         <div className="row">
@@ -610,9 +614,9 @@ function Dashboard(props) {
                 {props.userProfile.name}
               </h5>
 
-              <p className="proile-rating">
-                BOOKING RANKINGS : <span>8/40</span>
-              </p>
+              <h6 className="mb-4">
+                <i>{props.userProfile.email}</i>
+              </h6>
               <ul className="nav nav-tabs" id="myTab" role="tablist">
                 <li className="nav-item">
                   <a

@@ -36,8 +36,6 @@ function ServiceCenterBook(props) {
     const bookHandler = e => {
         e.preventDefault()
 
-        // if (!props.isAuthenticated) store.dispatch(setAlert('Please login to book', 'danger'))
-
         {
             !props.isloading && setState({
                 ...state,
@@ -59,7 +57,7 @@ function ServiceCenterBook(props) {
                 <option value="DEFAULT" disabled className="bg-secondary text-white">--Book Servicing--</option>
                 {serviceLocation}
             </select>
-            <button className="btn btn-primary ml-1" type="submit" disabled={state.buttonDisabled} >Book</button>
+            <button className="btn btn-primary ml-1" style={{ width: '4em' }} type="submit" disabled={state.buttonDisabled} >Book</button>
         </form>
     )
 }

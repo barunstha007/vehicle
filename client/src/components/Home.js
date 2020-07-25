@@ -35,7 +35,7 @@ export default function Home() {
             <div className="container">
                 <div className="row mt-4">
                     <div className="col-lg-4 col-md-12 h-auto ">
-                        <div className="box-part text-center shadow " style={{ height: '17rem' }}>
+                        <div className="box-part text-center material-card" style={{ height: '17rem' }}>
                             <FaCalendarCheck size='30' color='red' />
                             <div className="card-title title">
                                 <h4>Book Servicing Remotely</h4>
@@ -50,7 +50,7 @@ export default function Home() {
                     </div>
 
                     <div className="col-lg-4 col-md-12">
-                        <div className="box-part text-center shadow" style={{ height: '17rem' }}>
+                        <div className="box-part text-center material-card" style={{ height: '17rem' }}>
                             <IoIosTime size='30' color='blue' />
                             <div className="card-title title">
                                 <h4>Get Queued Up</h4>
@@ -65,7 +65,7 @@ export default function Home() {
                     </div>
 
                     <div className="col-lg-4 col-md-12 h-25">
-                        <div className="box-part text-center shadow" style={{ height: '17rem' }}>
+                        <div className="box-part text-center material-card" style={{ height: '17rem' }}>
 
                             <FaFlagCheckered size='30' color='green' />
                             <div className="card-title title">

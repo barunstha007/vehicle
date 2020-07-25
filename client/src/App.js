@@ -22,8 +22,9 @@ import BikeModelList from "./components/Superadmin/BikeModelList";
 import SuperuserMessage from "./components/Superadmin/SuperuserMessage";
 
 // Redux
-import { Provider } from "react-redux";
 import store from "./redux/store";
+
+import { Provider } from "react-redux";
 import setAuthToken from "./utils/setAuthToken";
 import { loadUser } from "./redux/actions/auth";
 import { serviceCenterList } from "./redux/actions/serviceCenterList";
@@ -34,6 +35,7 @@ import Packages from "./components/Packages";
 import CustomerMsg from "./components/Messages/CustomerMsg";
 import Feedbacks from "./components/Admin/Feedbacks";
 import About from "./components/About";
+import Footer from "./components/Footer";
 
 // If localstorage has token, set token
 if (localStorage.token) {
@@ -47,8 +49,8 @@ const App = () => {
   }, []);
 
   return (
-    <Provider store={store}>
-      <div className="App">
+    <>
+      <div className="App" style={{ minHeight: '95vh', backgroundColor: '#f5f2f2' }}>
         <Router>
           <Navigation />
           <Switch>
@@ -114,7 +116,8 @@ const App = () => {
           </Switch>
         </Router>
       </div>
-    </Provider>
+      <Footer />
+    </>
   );
 };
 

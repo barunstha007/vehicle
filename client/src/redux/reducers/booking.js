@@ -17,6 +17,7 @@ const initialState = {
       id: "",
       name: "",
     },
+    completionRead: false,
     lastBookingDate: null,
     bookingDate: null,
     servicingDate: "",
@@ -108,7 +109,6 @@ export default function (state = initialState, action) {
       };
 
     case REQUEUEBIKE_SUCCESS:
-      // const submittedIds = action.payload.map(() => bikeid)
 
       return {
         ...state,
@@ -127,6 +127,11 @@ export default function (state = initialState, action) {
         // queueDetails: queuebike
       };
 
+    case 'COMPLETE_BOOKING_SUCCESS':
+      return {
+        ...state,
+        bookingDetails: { ...state.bookingDetails, completionRead: true }
+      }
     default:
       return state;
   }

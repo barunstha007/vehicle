@@ -7,11 +7,12 @@ function SuperuserMessage() {
   const adminMessage = useSelector((state) => state.feedbacks.adminMessage);
 
   return (
-    <div className="mt-3 container">
+    <div className="mt-3 container material-card">
       <h1>Admin Messages</h1>
 
       {/* USER FEEDBACKS */}
-      <div className="pt-3">
+      <div className="p-3">
+        {!adminMessage.length && <h5>No Messages</h5>}
         {adminMessage.map((message, i) => (
           <ul className="comment-list" key={i}>
             <li className="comment col-lg-6 col-sm-12 border p-3">

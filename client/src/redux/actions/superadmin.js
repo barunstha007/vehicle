@@ -60,7 +60,7 @@ export const updateSuperadmin = (superadmin) => async dispatch => {
 }
 
 
-export const addSuperadmin = (superadminDetails) => async dispatch => {
+export const addSuperadmin = (superadminDetails, setState) => async dispatch => {
     const config = {
         headers: {
             'Content-type': 'application/json'
@@ -73,7 +73,7 @@ export const addSuperadmin = (superadminDetails) => async dispatch => {
     try {
         // POST for registration, with req.body
         const res = await axios.post('/superadmin/register', body, config)
-        console.log(res)
+
         dispatch({
             type: SUPERADMIN_ADD_SUCCESS,
             // get token from response
@@ -81,10 +81,19 @@ export const addSuperadmin = (superadminDetails) => async dispatch => {
             status: res.status
         })
         dispatch(setAlert('New Superadmin created', 'success'))
+        setState({
+            name: "",
+            location: "",
+            phone: "",
+            email: "",
+            username: "",
+            password: "",
+            passwordHidden: true
+        })
 
 
     } catch (err) {
-        const errors = err.response.data.error
+        const errors = err.response.data.errors
         if (errors) {
             dispatch(setAlert(errors[0].msg, 'danger'))
 

@@ -43,7 +43,6 @@ export const assignServiceCenter = (id, assignedServiceCenter) => async (
       payload: res.data,
     });
   } catch (err) {
-    console.log(err);
     dispatch({
       type: ASSIGNSERVICECENTER_FAIL,
     });
@@ -60,7 +59,6 @@ export const getAdmin = () => async (dispatch) => {
     });
   } catch (err) {
     const errors = err.response.data.error;
-    console.log(errors);
     if (errors) {
       dispatch(setAlert(errors[0].msg, "danger"));
     }
@@ -100,8 +98,7 @@ export const addAdmin = (adminDetails, setState) => async (dispatch) => {
       passwordHidden: true,
     });
   } catch (err) {
-    const errors = err.response.data.error;
-    console.log(errors);
+    const errors = err.response.data.errors;
     if (errors) {
       dispatch(setAlert(errors[0].msg, "danger"));
     }
@@ -134,7 +131,6 @@ export const deleteAdmin = (adminID) => async (dispatch) => {
     });
   } catch (err) {
     const errors = err.response.data.error;
-    console.log(errors);
     if (errors) {
       dispatch(setAlert(errors[0].msg, "danger"));
     }
@@ -157,7 +153,6 @@ export const updateAdmin = (admin) => async (dispatch) => {
 
     dispatch(setAlert("Admin Updated successfully", "success"));
   } catch (err) {
-    // console.log(err)
     const errors = err.response.data.error;
     if (errors) {
       dispatch(setAlert(errors[0].msg, "danger"));

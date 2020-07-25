@@ -56,7 +56,7 @@ function SignIn() {
     const classes = useStyles();
 
     return (<Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
+        <div className={`material-card p-4 ${classes.paper}`}>
             <Avatar className={classes.avatar}>
                 <LockOutlinedIcon />
             </Avatar>
@@ -65,9 +65,6 @@ function SignIn() {
         </Typography>
             <BikeForm classes={classes} />
         </div>
-        <Box mt={8}>
-            <Copyright />
-        </Box>
     </Container>
     );
 }

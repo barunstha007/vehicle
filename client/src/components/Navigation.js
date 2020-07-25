@@ -38,7 +38,7 @@ function Navigation({
 
           <NavLink
             to="/bikemodel-list"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/dashboard"
             className="nav-link"
           >
@@ -46,7 +46,7 @@ function Navigation({
           </NavLink>
           <NavLink
             to="/service-centers"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/dashboard"
             className="nav-link"
           >
@@ -55,7 +55,7 @@ function Navigation({
 
           <NavLink
             to="/superuser-messages"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/superuser-messages"
             className="nav-link"
           >
@@ -69,7 +69,7 @@ function Navigation({
         <React.Fragment>
           <NavLink
             to="/dashboard"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/dashboard"
             className="nav-link"
           >
@@ -77,7 +77,7 @@ function Navigation({
           </NavLink>
           <NavLink
             to="/current"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/dashboard"
             className="nav-link"
           >
@@ -85,7 +85,7 @@ function Navigation({
           </NavLink>
           <NavLink
             to="/inqueue"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/dashboard"
             className="nav-link"
           >
@@ -93,7 +93,7 @@ function Navigation({
           </NavLink>
           <NavLink
             to="/service-center-feedbacks"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/service-center-feedbacks"
             className="nav-link"
           >
@@ -107,7 +107,7 @@ function Navigation({
         <React.Fragment>
           <NavLink
             to="/profile"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/dashboard"
             className="nav-link"
           >
@@ -115,7 +115,7 @@ function Navigation({
           </NavLink>
           <NavLink
             to="/messages"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/messages"
             className="nav-link"
           >
@@ -127,14 +127,14 @@ function Navigation({
   }
 
   return (
-    <Navbar bg="dark" variant="dark" expand="sm">
+    <Navbar bg="light" variant="light" expand="sm" className="p-3 shadow">
       <Navbar.Brand href="/"> Service Booking</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" expand={768} />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <NavLink
             to="/about"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/about"
             className="nav-link"
           >
@@ -142,7 +142,7 @@ function Navigation({
           </NavLink>
           <NavLink
             to="/packages"
-            activeStyle={{ color: "black", backgroundColor: "cyan" }}
+            activeStyle={{ color: "black", backgroundColor: "#e3e3e3" }}
             activeClassName="/packages"
             className="nav-link"
           >

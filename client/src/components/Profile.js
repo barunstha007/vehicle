@@ -112,6 +112,7 @@ function Profile(props) {
           <div className="col-3 p-1">
             <p>
               <span
+                style={{ cursor: 'pointer' }}
                 className="btn btn-success text-white"
                 onClick={editProfileSubmit}
               >
@@ -122,6 +123,7 @@ function Profile(props) {
           <div className="col-3 ">
             <p>
               <span
+                style={{ cursor: 'pointer' }}
                 className="btn btn-danger text-white"
                 onClick={editProfileCancel}
               >
@@ -141,6 +143,7 @@ function Profile(props) {
           <div className="col-6 p-1">
             <p>
               <span
+                style={{ cursor: 'pointer' }}
                 className="btn btn-secondary text-white"
                 onClick={editProfileHandler}
               >
@@ -197,14 +200,7 @@ function Profile(props) {
             <p>{props.userProfile.location}</p>
           </div>
         </div>
-        <div className="row">
-          <div className="col-6 p-1">
-            <label>Last Booking Date</label>
-          </div>
-          <div className="col-6 p-1">
-            <p>12 Dec 2019</p>
-          </div>
-        </div>
+
         <br />
         {/* <div className="tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab"> */}
 
@@ -315,15 +311,7 @@ function Profile(props) {
             </InputGroup>
           </div>
         </div>
-        {/* Last Booking Date */}
-        <div className="row">
-          <div className="col-6 p-1">
-            <label>Last Booking Date</label>
-          </div>
-          <div className="col-6 p-1">
-            <p>12 Dec 2019</p>
-          </div>
-        </div>
+
         <br />
         {/* edit button type */}
         {editorSubmitEditbtn()}
@@ -341,43 +329,44 @@ function Profile(props) {
       >
         {/* Cancle Button */}
         {props.bookingDetails.bookingStatus == 3 &&
-        !props.bookingDetails.completionRead ? (
-          <div className="row">
-            <div className="col-6 p-1">
-              <label></label>
+          !props.bookingDetails.completionRead ? (
+            <div className="row">
+              <div className="col-6 p-1">
+                <label></label>
+              </div>
+              <div className="col-6 p-1">
+                <p>
+                  <div
+                    style={{ cursor: 'pointer' }}
+                    className="btn btn-primary text-white material-btn"
+                    onClick={() => {
+                      props.sendCompletedRead(props.userBike._id);
+                    }}
+                  >
+                    Complete Booking
+                </div>
+                </p>
+              </div>
             </div>
-            <div className="col-6 p-1">
-              <p>
-                <span
-                  className="btn btn-primary text-white"
-                  onClick={() => {
-                    props.sendCompletedRead(props.userBike._id);
-                  }}
-                >
-                  Complete Booking
+          ) : (
+            <div className="row">
+              <div className="col-6 p-1">
+                <label></label>
+              </div>
+              <div className="col-6 p-1">
+                <p>
+                  <span
+                    className="btn btn-danger text-white"
+                    onClick={() => {
+                      props.cancleServicing(props.userBike._id);
+                    }}
+                  >
+                    Cancel Booking
                 </span>
-              </p>
+                </p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="row">
-            <div className="col-6 p-1">
-              <label></label>
-            </div>
-            <div className="col-6 p-1">
-              <p>
-                <span
-                  className="btn btn-danger text-white"
-                  onClick={() => {
-                    props.cancleServicing(props.userBike._id);
-                  }}
-                >
-                  Cancel Booking
-                </span>
-              </p>
-            </div>
-          </div>
-        )}
+          )}
 
         <div className="row mb-4"></div>
         {/* booking status */}
@@ -393,19 +382,19 @@ function Profile(props) {
                   props.bookingDetails.bookingStatus == 1
                     ? "text-warning"
                     : props.bookingDetails.bookingStatus == 2
-                    ? "text-success"
-                    : props.bookingDetails.bookingStatus == 3
-                    ? "text-success"
-                    : "text-secondary"
+                      ? "text-success"
+                      : props.bookingDetails.bookingStatus == 3
+                        ? "text-success"
+                        : "text-secondary"
                 }
               >
                 {props.bookingDetails.bookingStatus == 1
                   ? "In Queue"
                   : props.bookingDetails.bookingStatus == 2
-                  ? "Accepted"
-                  : props.bookingDetails.bookingStatus == 3
-                  ? "Completed"
-                  : "No Booking"}
+                    ? "Accepted"
+                    : props.bookingDetails.bookingStatus == 3
+                      ? "Completed"
+                      : "No Booking"}
               </span>
             </p>
           </div>
@@ -437,10 +426,10 @@ function Profile(props) {
                   props.bookingDetails.bookingStatus == 1
                     ? "text-warning"
                     : props.bookingDetails.bookingStatus == 2
-                    ? "text-success"
-                    : props.bookingDetails.bookingStatus == 3
-                    ? "text-primary"
-                    : "text-secondary"
+                      ? "text-success"
+                      : props.bookingDetails.bookingStatus == 3
+                        ? "text-primary"
+                        : "text-secondary"
                 }
               >
                 {props.bookingDetails.bookingStatus == 1 ? (
@@ -454,8 +443,8 @@ function Profile(props) {
                     {props.bookingDetails.servicingDate}
                   </Moment>
                 ) : (
-                  "No Booking"
-                )}
+                        "No Booking"
+                      )}
               </span>
             </p>
           </div>
@@ -473,10 +462,10 @@ function Profile(props) {
                   props.bookingDetails.bookingStatus == 1
                     ? "text-secondary"
                     : props.bookingDetails.bookingStatus == 2
-                    ? "text-secondary"
-                    : props.bookingDetails.bookingStatus == 3
-                    ? "text-success"
-                    : "text-secondary"
+                      ? "text-secondary"
+                      : props.bookingDetails.bookingStatus == 3
+                        ? "text-success"
+                        : "text-secondary"
                 }
               >
                 {props.bookingDetails.bookingStatus == 1 ? (
@@ -488,8 +477,8 @@ function Profile(props) {
                     {props.bookingDetails.completedDate}
                   </Moment>
                 ) : (
-                  "No Booking"
-                )}
+                        "No Booking"
+                      )}
               </span>
             </p>
           </div>
@@ -600,7 +589,7 @@ function Profile(props) {
   }
 
   return (
-    <div className="container emp-profile shadow">
+    <div className="container emp-profile material-card">
       <form method="post">
         {/* upload photo and Title Row */}
         <div className="row">
@@ -621,9 +610,9 @@ function Profile(props) {
                 {props.userProfile.name}
               </h5>
 
-              <p className="proile-rating">
-                BOOKING RANKINGS : <span>8/40</span>
-              </p>
+              <h6 className="mb-4">
+                <i>{props.userProfile.email}</i>
+              </h6>
               <ul className="nav nav-tabs" id="myTab" role="tablist">
                 <li className="nav-item">
                   <a
@@ -673,9 +662,9 @@ function Profile(props) {
 
               {(!props.bookingLoading &&
                 props.bookingDetails.bookingStatus === 1) ||
-              props.bookingDetails.bookingStatus === 2 ||
-              (props.bookingDetails.bookingStatus === 3 &&
-                !props.bookingDetails.completionRead)
+                props.bookingDetails.bookingStatus === 2 ||
+                (props.bookingDetails.bookingStatus === 3 &&
+                  !props.bookingDetails.completionRead)
                 ? bookingStatus()
                 : bookServicing()}
             </div>

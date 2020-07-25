@@ -233,16 +233,8 @@ function AdminUsers(props) {
             </a>
           </span>
           <Alert />
-          {/* <span >
-                        <input
-                            name="name"
-                            type="text"
-                            className="form-control col-sm-2"
-                            placeholder="Search admin"
-                            value={state.name}
-                            onChange={onChangeHandler} />
-                    </span><br /> */}
-          <table className="table table-bordered table-responsive-md table-striped text-center">
+
+          <table className="material-card table table-bordered table-responsive-md table-striped text-center">
             {/* Table Headers */}
             <thead>
               <tr>
@@ -250,7 +242,7 @@ function AdminUsers(props) {
                   return (
                     <th
                       key={index}
-                      className="text-center text-white bg-secondary"
+                      className="text-center"
                     >
                       {title}
                     </th>

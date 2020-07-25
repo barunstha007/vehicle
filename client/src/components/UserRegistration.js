@@ -55,7 +55,7 @@ export default function SignUp() {
     return (
         <Container component="main" maxWidth="xs">
 
-            <div className={classes.paper} style={{ minHeight: '80vh' }}>
+            <div className={`material-card p-4 ${classes.paper}`}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
                 </Avatar>
@@ -65,9 +65,6 @@ export default function SignUp() {
                 {/* Smart Component */}
                 <RegistrationForm classes={classes} />
             </div>
-            <Box mt={5}>
-                <Copyright />
-            </Box>
         </Container>
     );
 }

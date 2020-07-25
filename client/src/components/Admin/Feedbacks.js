@@ -30,12 +30,11 @@ function Feedbacks() {
   };
 
   return (
-    <>
+    <div className="">
       <Alert />
       <h1 className="text-center">Message to Superuser</h1>
       <div
         className="container material-card mt-4 p-4"
-        style={{ backgroundColor: "#f0f0f0" }}
       >
         <h3>Message</h3>
         <textarea
@@ -56,15 +55,15 @@ function Feedbacks() {
       </div>
 
       <hr />
-      <div className="mt-3 container">
+      <div className="mt-3 container p-4">
         <h1>Feedbacks</h1>
 
         {/* USER FEEDBACKS */}
         <div className="pt-3">
           {feedbacks.length ? (
             feedbacks.map((feedback, i) => (
-              <ul className="comment-list" key={i}>
-                <li className="comment col-lg-6 col-sm-12 border p-3">
+              <ul className="comment-list material-card" key={i}>
+                <li className="comment col-lg-6 col-sm-12 border material-card p-3">
                   <div className="d-flex">
                     <div className="vcard bio col-10">
                       <img
@@ -79,8 +78,8 @@ function Feedbacks() {
                       {feedback.vote === "like" ? (
                         <AiTwotoneLike size={30} color="blue" />
                       ) : (
-                        <AiTwotoneDislike size={30} color="red" />
-                      )}
+                          <AiTwotoneDislike size={30} color="red" />
+                        )}
                     </div>
                   </div>
                   <div className="comment-body">
@@ -93,12 +92,13 @@ function Feedbacks() {
                 </li>
               </ul>
             ))
-          ) : (
-            <h4>No Feedbacks</h4>
-          )}
+          ) : <div className="material-card p-4">
+              <h4>No Feedbacks</h4>
+            </div>
+          }
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
