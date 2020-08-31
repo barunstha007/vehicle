@@ -1,3 +1,4 @@
 module.exports = {
-    ATLAS_URI: 'mongodb+srv://lokesh:Mongo@123@cluster0-gkcjp.mongodb.net/test?retryWrites=true&w=majority',
-}
+  ATLAS_URI:
+    "mongodb+srv://barun:mongo@123@cluster0-anycd.mongodb.net/<dbname>?retryWrites=true&w=majority",
+};

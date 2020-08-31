@@ -1,117 +1,99 @@
 import axios from "axios";
 import {
-    GETBIKEMODEL_SUCCESS,
-    GETBIKEMODEL_FAIL,
-    BIKEMODEL_ADD_SUCCESS,
-    BIKEMODEL_ADD_FAIL,
-    BIKEMODEL_DELETE_SUCCESS,
-    BIKEMODEL_DELETE_FAIL,
-    UPDATEBIKEMODEL_SUCCESS,
-    UPDATEBIKEMODEL_FAIL
-} from './types';
-import { setAlert } from './alert'
+  GETBIKEMODEL_SUCCESS,
+  GETBIKEMODEL_FAIL,
+  BIKEMODEL_ADD_SUCCESS,
+  BIKEMODEL_ADD_FAIL,
+  BIKEMODEL_DELETE_SUCCESS,
+  BIKEMODEL_DELETE_FAIL,
+  UPDATEBIKEMODEL_SUCCESS,
+  UPDATEBIKEMODEL_FAIL,
+} from "./types";
+import { setAlert } from "./alert";
 
-export const getBikeModellist = () => async dispatch => {
-
-    try {
-        const res = await axios.get('/bikemodel')
-        dispatch({
-            type: GETBIKEMODEL_SUCCESS,
-            payload: res.data
-        })
-
-
-    } catch (err) {
-        const error = err.response.data
-        if (error) {
-            dispatch(setAlert(error, 'danger'))
-
-        }
-        dispatch({
-            type: GETBIKEMODEL_FAIL
-        })
+export const getBikeModellist = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/bikemodel");
+    dispatch({
+      type: GETBIKEMODEL_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
+    const error = err.response.data;
+    if (error) {
+      dispatch(setAlert(error, "danger"));
     }
-}
+    dispatch({
+      type: GETBIKEMODEL_FAIL,
+    });
+  }
+};
 
-export const addbikeModel = (bikeModel) => async dispatch => {
-    const config = {
-        headers: {
-            'Content-type': 'application/json'
-        }
-    }
+export const addbikeModel = (bikeModel) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-type": "application/json",
+    },
+  };
 
-    // Stringify admindetails
-    const body = JSON.stringify(bikeModel)
+  // Stringify admindetails
+  const body = JSON.stringify(bikeModel);
 
-    try {
-        // POST for registration, with req.body
-        const res = await axios.post('/bikemodel/add', body, config)
+  try {
+    // POST for registration, with req.body
+    const res = await axios.post("/bikemodel/add", body, config);
 
-        dispatch({
-            type: BIKEMODEL_ADD_SUCCESS,
-            payload: res.data
-        })
+    dispatch({
+      type: BIKEMODEL_ADD_SUCCESS,
+      payload: res.data,
+    });
 
-        dispatch(setAlert('New Bike Model created', 'success'))
+    dispatch(setAlert("New Bike Model created", "success"));
+  } catch (err) {
+    const error = err.response.data.error[0].msg;
+    dispatch(setAlert(error, "danger"));
 
+    dispatch({
+      type: BIKEMODEL_ADD_FAIL,
+    });
+  }
+};
 
-    } catch (err) {
-        dispatch(setAlert(err, 'danger'))
+export const deletebikeModel = (bikeModelID) => async (dispatch) => {
+  const id = bikeModelID._id;
 
-        dispatch({
-            type: BIKEMODEL_ADD_FAIL
-        })
-    }
-}
+  try {
+    // DELETE bike model
+    const res = await axios.delete("/bikemodel/" + id);
 
-export const deletebikeModel = (bikeModelID) => async dispatch => {
+    dispatch(setAlert(res.data, "success"));
 
-    const id = bikeModelID._id
+    // delete from list
+    dispatch({
+      type: BIKEMODEL_DELETE_SUCCESS,
+      payload: id,
+    });
+  } catch (err) {
+    const error = err.response.data.error[0].msg;
+    dispatch(setAlert(error, "danger"));
+  }
+};
 
-    try {
-        // DELETE bike model
-        const res = await axios.delete('/bikemodel/' + id)
+export const updatebikeModel = (bikeModelDetails) => async (dispatch) => {
+  try {
+    const id = bikeModelDetails.id;
+    const bikeModel = bikeModelDetails.bikeModel;
+    const body = { bikeModel };
+    const res = await axios.post("/bikemodel/update/" + id, body);
 
-        dispatch(setAlert(res.data, 'success'))
+    dispatch({
+      type: UPDATEBIKEMODEL_SUCCESS,
+      payload: res.data,
+    });
 
-        // delete from list
-        dispatch({
-            type: BIKEMODEL_DELETE_SUCCESS,
-            payload: id
-        })
-
-
-
-    } catch (err) {
-        dispatch(setAlert(err.data, 'danger'))
-        dispatch({
-            type: BIKEMODEL_DELETE_FAIL
-        })
-    }
-}
-
-export const updatebikeModel = (bikeModelDetails) => async dispatch => {
-
-
-    try {
-        const id = bikeModelDetails.id
-        const bikeModel = bikeModelDetails.bikeModel
-        const body = { bikeModel }
-        const res = await axios.post('/bikemodel/update/' + id, body)
-
-        dispatch({
-            type: UPDATEBIKEMODEL_SUCCESS,
-            payload: res.data
-        })
-
-        dispatch(setAlert('Bike Model Updated successfully', 'success'))
-
-    } catch (err) {
-
-        dispatch(setAlert('Some Error occurred', 'danger'))
-        dispatch({
-            type: UPDATEBIKEMODEL_FAIL
-        })
-    }
-}
-
+    dispatch(setAlert("Bike Model Updated successfully", "success"));
+  } catch (err) {
+    const error = err.response.data.error[0].msg;
+    dispatch(setAlert(error, "danger"));
+  }
+};
